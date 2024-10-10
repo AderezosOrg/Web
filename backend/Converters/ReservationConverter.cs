@@ -1,0 +1,24 @@
+using DTO;
+using DefaultNamespace;
+
+namespace Converters
+{
+    public class ReservationConverter : IConverter1To3<Reservation, Contact, Room, ReservationDTO>
+    {
+        public ReservationDTO Convert(Reservation reservation, Contact contact, Room room)
+        {
+            return new ReservationDTO
+            {
+                UserID = reservation.UserID,
+                RoomID = reservation.RoomID,
+                ReservationDate = reservation.ReservationDate,
+                UseDate = reservation.UseDate,
+                UserPhoneNumber = contact.PhoneNumber,
+                UserEmail = contact.Email,
+                RoomCode = room.Code,
+                RoomFloorNumber = room.FloorNumber,
+                RoomAvailable = room.Available
+            };
+        }
+    }
+}
