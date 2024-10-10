@@ -1,0 +1,12 @@
+services:
+  mysqldb:
+    image: mysql:9
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+    ports:
+      - 3307:3306
