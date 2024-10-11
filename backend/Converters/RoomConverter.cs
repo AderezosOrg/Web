@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Converters
 {
-    public class RoomConverter : IConverter1To5<Room, RoomTemplate, Hotel, List<BedInformation>, List<RoomBathInformation>, RoomDTO>
+    public class RoomConverter : IConverter1To6<Room, RoomTemplate, Hotel, List<BedInformation>, List<RoomBathInformation>,List<RoomServices>,  RoomDTO>
     {
-        public RoomDTO Convert(Room room, RoomTemplate roomTemplate, Hotel hotel, List<BedInformation> bedInformations, List<RoomBathInformation> roomBathInformations)
+        public RoomDTO Convert(Room room, RoomTemplate roomTemplate, Hotel hotel, List<BedInformation> bedInformations, List<RoomBathInformation> roomBathInformations, List<RoomServices> services)
         {
             var bedList = bedInformations
                 .Where(b => b.RoomTemplateID == room.RoomTemplateID)
@@ -18,6 +18,11 @@ namespace Converters
             var bathList = roomBathInformations
                 .Where(b => b.RoomTemplateID == room.RoomTemplateID)
                 .Select(b => b.BathRoomID)
+                .ToList();
+            
+            var serviceList = services
+                .Where(s => s.RoomID == room.RoomID)
+                .Select(s => s.ServiceID)
                 .ToList();
 
             return new RoomDTO
@@ -31,7 +36,8 @@ namespace Converters
                 HotelName = hotel.Name,
                 HotelAllowsPets = hotel.AllowsPets,
                 Beds = bedList,
-                Bathrooms = bathList
+                Bathrooms = bathList,
+                Services = serviceList
             };
         }
     }
