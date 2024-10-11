@@ -49,12 +49,12 @@ public class ReservationController : ControllerBase
     [HttpPost]
     public ActionResult<bool> CreateReservation(ReservationDTO reservationDto)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpPatch("{reservationId}")]
     public ActionResult<bool> CancelReservation(Guid reservationId, bool Available)
     {
-        return true;
+        return Ok(true);
     }
 }

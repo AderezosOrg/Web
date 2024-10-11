@@ -46,18 +46,18 @@ public class UserController : ControllerBase
     [HttpPost]
     public ActionResult<bool> CreateUser(UserDTO userDto)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpDelete("{userId}")]
     public ActionResult<bool> DeleteUserById(Guid userId)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpPut("{userId}")]
     public ActionResult<bool> EditUserById(Guid userId, UserDTO userDto)
     {
-        return true;
+        return Ok(true);
     }
 }

@@ -59,13 +59,13 @@ public class HotelController : ControllerBase
     [HttpPost]
     public ActionResult<bool> CreateHotel([FromBody] HotelDTO hotelDto)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpPut("{hotelId}")]
     public ActionResult<bool> UpdateHotel(Guid hotelId, HotelDTO hotelDto)
     {
-        return true;
+        return Ok(true);
     }
     
 }

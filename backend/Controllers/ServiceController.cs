@@ -33,12 +33,12 @@ public class ServiceController : ControllerBase
     [HttpPost]
     public ActionResult<bool> CreateService([FromBody] ServiceDTO serviceDto)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpPatch("{serviceId}")]
     public ActionResult<bool> ChangeServiceType(Guid serviceId, string type)
     {
-        return true;
+        return Ok(true);
     }
 }

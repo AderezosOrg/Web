@@ -42,12 +42,12 @@ public class ContactController : ControllerBase
     [HttpPost]
     public ActionResult<bool> CreateContact([FromBody] ContactDTO contactDto)
     {
-        return true;
+        return Ok(true);
     }
     
     [HttpPut("{contactId}")]
     public ActionResult<bool> ChangeContact(Guid contactId, ContactDTO contactDto)
     {
-        return true;
+        return Ok(true);
     }
 }
