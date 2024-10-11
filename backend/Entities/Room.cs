@@ -6,7 +6,7 @@ public class Room
     public string Code { get; set; }
     public int FloorNumber { get; set; }
     public bool Available { get; set; }
-    public uint PricePerNight { get; set; }
+    public decimal PricePerNight { get; set; }
 
     // Foreign keys
     public Guid RoomTemplateID { get; set; }
