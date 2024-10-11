@@ -14,6 +14,7 @@ public class RoomDTO
     
     public List<Guid> Beds { get; set; }
     public List<Guid> Bathrooms { get; set; }
+    public List<Guid> Services { get; set; }
 
     // Hotel properties (from FK)
     public string HotelName { get; set; }
