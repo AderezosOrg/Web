@@ -31,7 +31,8 @@ public class RoomController : ControllerBase
                 Services = new List<Guid>
                 {
                     Guid.NewGuid()
-                }
+                },
+                PricePerNight = 20m
             }
         );
     }
@@ -62,7 +63,8 @@ public class RoomController : ControllerBase
                 Services = new List<Guid>
                 {
                     Guid.NewGuid()
-                }
+                },
+                PricePerNight = 20m
             }
         });
     }
@@ -136,7 +138,8 @@ public class RoomController : ControllerBase
                 Services = new List<Guid>
                 {
                     Guid.NewGuid()
-                }
+                },
+                PricePerNight = 23m
             }
         });
     }
@@ -167,7 +170,8 @@ public class RoomController : ControllerBase
                 Services = new List<Guid>
                 {
                     Guid.NewGuid()
-                }
+                },
+                PricePerNight = 20m
             }
         });
     }
@@ -198,7 +202,8 @@ public class RoomController : ControllerBase
                 Services = new List<Guid>
                 {
                     Guid.NewGuid()
-                }
+                },
+                PricePerNight = 20m
             }
         });
     }
