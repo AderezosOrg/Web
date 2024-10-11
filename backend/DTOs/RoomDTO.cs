@@ -7,6 +7,7 @@ public class RoomDTO
     public string Code { get; set; }
     public int FloorNumber { get; set; }
     public bool Available { get; set; }
+    public decimal PricePerNight { get; set; }
 
     // RoomTemplate properties (from FK)
     public string RoomTemplateSide { get; set; }

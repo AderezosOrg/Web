@@ -31,6 +31,7 @@ namespace Converters
                 Code = room.Code,
                 FloorNumber = room.FloorNumber,
                 Available = room.Available,
+                PricePerNight = room.PricePerNight,
                 RoomTemplateSide = roomTemplate.Side,
                 RoomTemplateWindows = roomTemplate.Windows,
                 HotelName = hotel.Name,
