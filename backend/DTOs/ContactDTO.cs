@@ -1,4 +1,4 @@
-namespace DefaultNamespace;
+namespace DTOs;
 
 public class ContactDTO
 {

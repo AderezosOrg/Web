@@ -1,4 +1,4 @@
-namespace DTO;
+namespace IConverters;
 
 public interface IConverter1To1<TInput, TOutput>
 {

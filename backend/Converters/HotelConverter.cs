@@ -1,5 +1,6 @@
-using DTO;
-using DefaultNamespace;
+using DTOs;
+using Entities;
+using IConverters;
 
 namespace Converters
 {
