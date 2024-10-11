@@ -11,7 +11,7 @@ namespace Converters
         public ContactDTO Convert(Contact contact, List<Reservation> reservations)
         {
             var reservationList = reservations
-                .Where(r => r.UserID == contact.ContactID) 
+                .Where(r => r.ContactID == contact.ContactID) 
                 .Select(r => r.RoomID) 
                 .ToList();
 

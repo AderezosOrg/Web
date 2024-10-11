@@ -3,7 +3,7 @@ namespace DTOs;
 public class ReservationDTO
 {
     // Reservation properties
-    public Guid UserID { get; set; }
+    public Guid ContactID { get; set; }
     public Guid RoomID { get; set; }
     public DateTime ReservationDate { get; set; }
     public DateTime UseDate { get; set; }

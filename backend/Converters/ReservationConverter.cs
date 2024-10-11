@@ -10,7 +10,7 @@ namespace Converters
         {
             return new ReservationDTO
             {
-                UserID = reservation.UserID,
+                ContactID = reservation.ContactID,
                 RoomID = reservation.RoomID,
                 ReservationDate = reservation.ReservationDate,
                 UseDate = reservation.UseDate,
