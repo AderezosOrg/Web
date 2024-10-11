@@ -1,8 +1,8 @@
-using DTOs;
+using DTOs.WithId;
 using Entities;
 using IConverters;
 
-namespace Converters
+namespace Converters.ToDTO
 {
     public class BedConverter : IConverter1To2<Bed, BedInformation, BedDTO>
     {

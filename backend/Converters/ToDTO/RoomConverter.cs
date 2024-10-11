@@ -1,10 +1,8 @@
-using DTOs;
+using DTOs.WithId;
 using Entities;
 using IConverters;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Converters
+namespace Converters.ToDTO
 {
     public class RoomConverter : IConverter1To6<Room, RoomTemplate, Hotel, List<BedInformation>, List<RoomBathInformation>,List<RoomServices>,  RoomDTO>
     {
@@ -30,7 +28,6 @@ namespace Converters
                 RoomID = room.RoomID,
                 Code = room.Code,
                 FloorNumber = room.FloorNumber,
-                Available = room.Available,
                 PricePerNight = room.PricePerNight,
                 RoomTemplateSide = roomTemplate.Side,
                 RoomTemplateWindows = roomTemplate.Windows,

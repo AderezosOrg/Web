@@ -1,9 +1,8 @@
-namespace DTOs;
+namespace DTOs.WithoutId;
 
-public class HotelDTO
+public class HotelPostDTO
 {
     // Hotel properties
-    public Guid HotelID { get; set; }
     public int Stars { get; set; }
     public string Name { get; set; }
     public bool AllowsPets { get; set; }

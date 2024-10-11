@@ -1,4 +1,4 @@
-using DTOs;
+using DTOs.WithId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -12,7 +12,6 @@ public class RoomController : ControllerBase
     {
         return Ok(new RoomDTO
             {
-                Available = true,
                 Bathrooms = new List<Guid>
                 {
                     Guid.NewGuid()
@@ -44,7 +43,6 @@ public class RoomController : ControllerBase
         {
             new RoomDTO
             {
-                Available = true,
                 Bathrooms = new List<Guid>
                 {
                     Guid.NewGuid()
@@ -119,7 +117,6 @@ public class RoomController : ControllerBase
         {
             new RoomDTO
             {
-                Available = true,
                 Bathrooms = new List<Guid>
                 {
                     Guid.NewGuid()
@@ -151,7 +148,6 @@ public class RoomController : ControllerBase
         {
             new RoomDTO
             {
-                Available = true,
                 Bathrooms = new List<Guid>
                 {
                     
@@ -183,7 +179,6 @@ public class RoomController : ControllerBase
         {
             new RoomDTO
             {
-                Available = true,
                 Bathrooms = new List<Guid>
                 {
                     

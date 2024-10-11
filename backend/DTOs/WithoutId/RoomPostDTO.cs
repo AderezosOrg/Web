@@ -1,12 +1,10 @@
-namespace DTOs;
+namespace DTOs.WithoutId;
 
 public class RoomDTO
 {
     // Room properties
-    public Guid RoomID { get; set; }
     public string Code { get; set; }
     public int FloorNumber { get; set; }
-    public bool Available { get; set; }
     public decimal PricePerNight { get; set; }
 
     // RoomTemplate properties (from FK)
