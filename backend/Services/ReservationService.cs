@@ -3,7 +3,7 @@ using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
-using backend.Converters.ToPostDTO
+using backend.Converters.ToPostDTO;
 
 namespace backend.Services;
 
@@ -131,6 +131,8 @@ public class ReservationService : AbstractReservationService
             else 
                 throw new Exception("Reservation not created");
         }
+
+        throw new Exception("Reservation data not found");
     }
 
     public override async Task<bool> CancelReservation(Guid reservationId, bool available)
@@ -147,5 +149,6 @@ public class ReservationService : AbstractReservationService
                 throw new Exception("Reservation not cancelled");
 
         }
+        throw new Exception("Reservation not found");
     }
 }
