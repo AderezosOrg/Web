@@ -3,14 +3,14 @@ using DTOs.WithoutId;
 using Entities;
 using IConverters;
 
-namespace Converters.ToDTO;
-public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, BathroomDTO>
+namespace backend.Converters.ToPostDTO;
+
+public class BathroomPostConverter : IConverter1To2<Bathroom, RoomBathInformation, BathroomPostDTO>
 {
-    public BathroomDTO Convert(Bathroom bathroom, RoomBathInformation roomBathInformation)
+    public BathroomPostDTO Convert(Bathroom bathroom, RoomBathInformation roomBathInformation)
     {
-        return new BathroomDTO
+        return new BathroomPostDTO()
         {
-            BathRoomID = bathroom.BathRoomID,
             Shower = bathroom.Shower,
             Toilet = bathroom.Toilet,
             DressingTable = bathroom.DressingTable,
@@ -18,3 +18,4 @@ public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, B
         };
     }
 }
+

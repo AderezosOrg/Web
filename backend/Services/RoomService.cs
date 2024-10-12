@@ -1,4 +1,4 @@
-using DTOs;
+/*using DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using backend.Services.Interfaces;
@@ -11,7 +11,6 @@ public class RoomService : IRoomService
     {
         new RoomDTO
         {
-            Available = true,
             Bathrooms = new List<Guid> { Guid.NewGuid() },
             Beds = new List<Guid> { Guid.NewGuid() },
             Code = "12m",
@@ -41,7 +40,6 @@ public class RoomService : IRoomService
         var room = _rooms.FirstOrDefault(r => r.RoomID == roomId);
         if (room != null)
         {
-            room.Available = available;
             return true;
         }
         return false;
@@ -82,11 +80,6 @@ public class RoomService : IRoomService
         };
     }
 
-    public List<RoomDTO> GetAvailableRooms()
-    {
-        return _rooms.Where(r => r.Available).ToList();
-    }
-
     public List<RoomDTO> GetRoomsByFloor(int floorNumber)
     {
         return _rooms.Where(r => r.FloorNumber == floorNumber).ToList();
@@ -108,4 +101,4 @@ public class RoomService : IRoomService
             }
         };
     }
-}
+}*/

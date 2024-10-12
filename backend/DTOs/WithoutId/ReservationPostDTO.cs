@@ -14,5 +14,5 @@ public class ReservationPostDTO
     // Room properties (from FK)
     public string RoomCode { get; set; }
     public int RoomFloorNumber { get; set; }
-    public bool RoomAvailable { get; set; }
+    public decimal PricePerNight { get; set; }
 }

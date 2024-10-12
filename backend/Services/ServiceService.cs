@@ -1,44 +1,76 @@
-using DTOs;
-using System.Collections.Generic;
-using System.Linq;
-using backend.Services.Interfaces;
+using backend.Services.AbstractClass;
+using DTOs.WithoutId;
+using Entities;
+using Converters.ToDTO;
+using DTOs.WithId;
+using backend.Converters.ToPostDTO;
+
 namespace backend.Services;
 
-public class ServiceService : IServiceService
+public class ServiceService : AbstractServiceService
 {
-    private List<ServiceDTO> _services = new List<ServiceDTO>
+    private static List<Service> _services = new List<Service>()
     {
-        new ServiceDTO
+        new Service()
         {
-            ServiceID = Guid.NewGuid(),
             Type = "Room Service"
+        },
+        new Service()
+        {
+            Type = "Food Service"
         }
     };
+    
+    private ServicePostConverter _servicePostConverter = new ServicePostConverter();
 
-    public ServiceDTO GetServiceById(Guid serviceId)
+    public override async Task<ServicePostDTO> GetServiceById(Guid serviceId)
     {
-        return _services.FirstOrDefault(s => s.ServiceID == serviceId);
-    }
-
-    public List<ServiceDTO> GetServices()
-    {
-        return _services;
-    }
-
-    public bool CreateService(ServiceDTO serviceDto)
-    {
-        _services.Add(serviceDto);
-        return true;
-    }
-
-    public bool ChangeServiceType(Guid serviceId, string type)
-    {
+        await Task.Delay(10);
         var service = _services.FirstOrDefault(s => s.ServiceID == serviceId);
-        if (service != null)
+        if (service == null)
+            throw new Exception("Service not found");
+        return _servicePostConverter.Convert(service);
+    }
+
+    public override async Task<List<ServicePostDTO>> GetServices()
+    {
+        await Task.Delay(10);
+        List<ServicePostDTO> result = _services.Select(s =>
         {
-            service.Type = type;
-            return true;
+            return _servicePostConverter.Convert(s);
+        }).ToList();
+
+        return result;
+    }
+
+    public override async Task<ServicePostDTO> CreateService(ServicePostDTO servicePostDto)
+    {
+        await Task.Delay(10);
+        if (servicePostDto != null)
+        {
+            var newService = new Service
+            {
+                ServiceID = Guid.NewGuid(),
+                Type = servicePostDto.Type,
+            };
+            _services.Add(newService);
+            if(_services.Contains(newService))
+                return servicePostDto;
+            else
+                throw new Exception("Service not created");
         }
-        return false;
+        throw new Exception("Service not data found");
+    }
+
+    public override async Task<String> ChangeServiceType(Guid serviceId, string type)
+    {
+       await Task.Delay(10);
+       var existingService = _services.FirstOrDefault(s => s.ServiceID == serviceId);
+       if (existingService != null)
+       {
+           existingService.Type = type;
+           return type;
+       }
+       throw new Exception("Service not found");
     }
 }

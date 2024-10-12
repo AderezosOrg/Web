@@ -1,6 +1,6 @@
 namespace DTOs.WithoutId;
 
-public class RoomDTO
+public class RoomPostDTO
 {
     // Room properties
     public string Code { get; set; }

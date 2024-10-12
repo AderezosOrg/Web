@@ -1,69 +1,180 @@
 using DTOs;
 using System.Collections.Generic;
 using System.Linq;
-using backend.Services.Interfaces;
+using backend.Services.AbstractClass;
+using DTOs.WithoutId;
+using Entities;
+using Converters.ToDTO;
+using DTOs.WithId;
+using backend.Converters.ToPostDTO;
 
 namespace backend.Services;
 
-public class HotelService : IHotelService
+public class HotelService : AbstractHotelService
 {
-    private List<HotelDTO> _hotels = new List<HotelDTO>
+    private static List<Hotel> _hotels = new List<Hotel>()
     {
-        new HotelDTO
+        new Hotel()
         {
             Address = "123'3'2",
             AllowsPets = false,
-            DressingTable = true,
-            HotelEmail = "test@testeado.com",
             HotelID = Guid.NewGuid(),
-            HotelPhoneNumber = "123123123",
             Name = "My Hotel",
-            Shower = false,
             Stars = 3,
-            Toilet = false,
-            UserEmail = "user@testeado.com",
-            UserPhoneNumber = "+23456789",
-            UserCINumber = "1272012",
-            UserName = "Paco"
+        },
+        new Hotel()
+        {
+            Address = "236'4'0",
+            AllowsPets = true,
+            HotelID = Guid.NewGuid(),
+            Name = "YOUR Hotel",
+            Stars = 5,
         }
     };
 
-    public HotelDTO GetHotelById(Guid hotelID)
+    private List<User> _users = new List<User>()
     {
-        return _hotels.FirstOrDefault(h => h.HotelID == hotelID);
+        new User()
+        {
+            CINumber = "123456",
+            ContactID = Guid.NewGuid(),
+            Name = "John Doe",
+            UserID = Guid.NewGuid(),
+        },
+        new User()
+        {
+            CINumber = "654321",
+            ContactID = Guid.NewGuid(),
+            Name = "DOE hSA",
+            UserID = Guid.NewGuid(),
+        }
+    };
+
+    private List<Contact> _contacts = new List<Contact>()
+    {
+        new Contact()
+        {
+            ContactID = Guid.NewGuid(),
+            Email = "johndoe@gmail.com",
+            PhoneNumber = "555-555-5555",
+        },
+        new Contact()
+        {
+            ContactID = Guid.NewGuid(),
+            Email = "seguro@gmail.com",
+            PhoneNumber = "666-666-5555",
+        }
+    };
+
+    private List<Bathroom> _bathrooms = new List<Bathroom>()
+    {
+        new Bathroom()
+        {
+            BathRoomID = Guid.NewGuid(),
+            DressingTable = true,
+            Shower = false,
+            Toilet = true
+        },
+        new Bathroom()
+        {
+            BathRoomID = Guid.NewGuid(),
+            DressingTable = false,
+            Shower = false,
+            Toilet = true
+        }
+    };
+    
+    private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
+
+    public override async Task<HotelPostDTO> GetHotelById(Guid hotelID)
+    {
+        await Task.Delay(10);
+        var hotel = _hotels.FirstOrDefault(h => h.HotelID == hotelID);
+        if (hotel == null)
+            throw new Exception("Hotel not found");
+        var user = _users.FirstOrDefault(u => u.UserID == hotel.UserID);
+        var contact = _contacts.FirstOrDefault(c => c.ContactID == hotel.ContactID);
+        var bathroom = _bathrooms.FirstOrDefault(b => b.BathRoomID == hotel.BathRoomID);
+        return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
-    public List<HotelDTO> GetHotels()
+    public override async Task<List<HotelPostDTO>> GetHotels()
     {
-        return _hotels;
+        await Task.Delay(10);
+        List<HotelPostDTO> result = _hotels.Select(h =>
+        {
+            var user = _users.FirstOrDefault(u => u.UserID == h.UserID);
+            var contact = _contacts.FirstOrDefault(c => c.ContactID == h.ContactID);
+            var bathroom = _bathrooms.FirstOrDefault(b => b.BathRoomID == h.BathRoomID);
+            return _hotelPostConverter.Convert(h, user, contact, bathroom);
+        }).ToList();
+        
+        return result;
     }
 
-    public bool CreateHotel(HotelDTO hotelDto)
+    public override async Task<HotelPostDTO> CreateHotel(HotelPostDTO hotelPostDto)
     {
-        _hotels.Add(hotelDto);
-        return true;
+        await Task.Delay(10);
+        if (hotelPostDto != null)
+        {
+            var newHotel = new Hotel
+            {
+                Address = hotelPostDto.Address,
+                AllowsPets = hotelPostDto.AllowsPets,
+                BathRoomID = Guid.NewGuid(),
+                ContactID = Guid.NewGuid(),
+                HotelID = Guid.NewGuid(),
+                Name = hotelPostDto.Name,
+                UserID = Guid.NewGuid(),
+            };
+            _hotels.Add(newHotel);
+
+            var newUser = new User
+            {
+                CINumber = hotelPostDto.UserCINumber,
+                ContactID = Guid.NewGuid(),
+                Name = hotelPostDto.UserName,
+                UserID = Guid.NewGuid(),
+            };
+            _users.Add(newUser);
+
+            var newContact = new Contact
+            {
+                ContactID = Guid.NewGuid(),
+                Email = hotelPostDto.HotelEmail,
+                PhoneNumber = hotelPostDto.HotelPhoneNumber
+            };
+            _contacts.Add(newContact);
+
+            var newBathroom = new Bathroom
+            {
+                BathRoomID = Guid.NewGuid(),
+                DressingTable = hotelPostDto.DressingTable,
+                Shower = hotelPostDto.Shower,
+                Toilet = hotelPostDto.Toilet
+            };
+            _bathrooms.Add(newBathroom);
+            if (_hotels.Contains(newHotel) && _users.Contains(newUser) && _contacts.Contains(newContact) && _bathrooms.Contains(newBathroom))
+                return hotelPostDto;
+            else
+                throw new Exception("Hotel not created");
+        }
+        throw new Exception("Hotel not data found");
     }
 
-    public bool UpdateHotel(Guid hotelID, HotelDTO hotelDto)
+    public override async Task<HotelPostDTO> UpdateHotel(Guid hotelID, HotelPostDTO hotelPostDtoDto)
     {
+        await Task.Delay(10);
         var existingHotel = _hotels.FirstOrDefault(h => h.HotelID == hotelID);
         if (existingHotel != null)
         {
-            existingHotel.Address = hotelDto.Address;
-            existingHotel.AllowsPets = hotelDto.AllowsPets;
-            existingHotel.DressingTable = hotelDto.DressingTable;
-            existingHotel.HotelEmail = hotelDto.HotelEmail;
-            existingHotel.HotelPhoneNumber = hotelDto.HotelPhoneNumber;
-            existingHotel.Name = hotelDto.Name;
-            existingHotel.Shower = hotelDto.Shower;
-            existingHotel.Stars = hotelDto.Stars;
-            existingHotel.Toilet = hotelDto.Toilet;
-            existingHotel.UserEmail = hotelDto.UserEmail;
-            existingHotel.UserPhoneNumber = hotelDto.UserPhoneNumber;
-            existingHotel.UserCINumber = hotelDto.UserCINumber;
-            existingHotel.UserName = hotelDto.UserName;
-            return true;
+            existingHotel.Name = hotelPostDtoDto.Name;
+            existingHotel.Address = hotelPostDtoDto.Address;
+            existingHotel.AllowsPets = hotelPostDtoDto.AllowsPets;
+            existingHotel.Stars = hotelPostDtoDto.Stars;
+            
+            return hotelPostDtoDto;
         }
-        return false;
+        throw new Exception("Hotel not found");
     }
 }

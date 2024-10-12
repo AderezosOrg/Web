@@ -18,7 +18,7 @@ namespace Converters.ToDTO
                 UserEmail = contact.Email,
                 RoomCode = room.Code,
                 RoomFloorNumber = room.FloorNumber,
-                RoomAvailable = room.Available
+                PricePerNight = room.PricePerNight,
             };
         }
     }
