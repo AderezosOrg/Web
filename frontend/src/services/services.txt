@@ -1,0 +1,3 @@
+Aquí van los servicios o llamadas a APIs que manejan la lógica de negocio
+relacionada con las llamadas a APIs, la comunicación con el backend, 
+o cualquier otro servicio externo.

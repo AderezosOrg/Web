@@ -1,0 +1,2 @@
+Un layout define una estructura común que se repite en varias páginas de tu aplicación, 
+como la barra de navegación, el pie de página, y cualquier otra estructura común entre las páginas.

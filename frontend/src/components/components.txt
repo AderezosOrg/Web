@@ -1,0 +1,2 @@
+Aquí van los componentes reutilizables como botones, tarjetas de habitaciones, etc. 
+Estos componentes se pueden reutilizar en varias páginas.
