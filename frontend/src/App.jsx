@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import Button from './components/Button'
+import { Formik, Form } from 'formik';
+import InputField from './components/Input';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [isNameCorrect, setIsNameCorrect] = useState(true);
 
   return (
     <>
@@ -16,13 +21,40 @@ function App() {
         </a>
       </div>
       <h1 className="text-5xl font-bold mb-6">Vite + React + Tailwind</h1>
+
+      <Formik
+        initialValues={{ name: ''}}
+        onSubmit={(values) => {
+          if (!values.name.trim())
+            {
+              setIsNameCorrect(false);
+              return;
+            } else {
+              setIsNameCorrect(true);
+            }
+          console.log('Submitted values:', values);
+        }}
+      >
+        {() => (
+          <Form className="flex flex-col gap-4">
+            <InputField
+              id="name"
+              name="name"
+              placeholder="Name..."
+              label="Name"
+              isCorrect={isNameCorrect}
+            />
+          </Form>
+        )}
+      </Formik>
+
       <div className="card p-6">
-        <button
+        <Button
+          type={"common"}
           onClick={() => setCount((count) => count + 1)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Count is {count}
-        </button>
+        </Button>
         <p className="mt-4">
           Edita <code>src/App.jsx</code> y guarda para ver el cambio.
         </p>
