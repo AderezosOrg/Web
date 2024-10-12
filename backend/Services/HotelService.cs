@@ -85,7 +85,8 @@ public class HotelService : AbstractHotelService
     };
     
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
-
+    private HotelConverter _hotelConverter = new HotelConverter();
+    
     public override async Task<HotelPostDTO> GetHotelById(Guid hotelID)
     {
         await Task.Delay(10);
@@ -98,15 +99,15 @@ public class HotelService : AbstractHotelService
         return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
-    public override async Task<List<HotelPostDTO>> GetHotels()
+    public override async Task<List<HotelDTO>> GetHotels()
     {
         await Task.Delay(10);
-        List<HotelPostDTO> result = _hotels.Select(h =>
+        List<HotelDTO> result = _hotels.Select(h =>
         {
             var user = _users.FirstOrDefault(u => u.UserID == h.UserID);
             var contact = _contacts.FirstOrDefault(c => c.ContactID == h.ContactID);
             var bathroom = _bathrooms.FirstOrDefault(b => b.BathRoomID == h.BathRoomID);
-            return _hotelPostConverter.Convert(h, user, contact, bathroom);
+            return _hotelConverter.Convert(h, user, contact, bathroom);
         }).ToList();
         
         return result;

@@ -68,6 +68,7 @@ public class UserService : AbstractUserService
     };
     
     private UserPostConverter _userPostConverter = new UserPostConverter();
+    private UserConverter _userConverter = new UserConverter();
     public override async Task<UserPostDTO> GetUserById(Guid userId)
     {
         await Task.Delay(10);
@@ -79,14 +80,14 @@ public class UserService : AbstractUserService
         return _userPostConverter.Convert(user,contact, hotel);
     }
 
-    public override async Task<List<UserPostDTO>> GetUsers()
+    public override async Task<List<UserDTO>> GetUsers()
     {
         await Task.Delay(10);
-        List<UserPostDTO> result = _users.Select(x =>
+        List<UserDTO> result = _users.Select(x =>
         {
             var contact = _contacts.FirstOrDefault(c => c.ContactID == x.ContactID);
             var hotel = _hotels.Where(h => h.UserID == x.UserID).ToList();
-            return _userPostConverter.Convert(x, contact, hotel);
+            return _userConverter.Convert(x, contact, hotel);
         }).ToList();
         
         return result;

@@ -18,3 +18,4 @@ public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, B
         };
     }
 }
+

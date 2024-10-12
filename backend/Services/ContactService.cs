@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using backend.Converters.ToPostDTO;
 using backend.Services.AbstractClass;
+using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
@@ -48,6 +49,7 @@ public class ContactService : AbstractContactService
     };
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
+    private ContactConverter _contactConverter = new ContactConverter();
     public override async Task<ContactPostDTO> GetContactById(Guid contactID)
     {
         await Task.Delay(10);
@@ -58,13 +60,13 @@ public class ContactService : AbstractContactService
         return _contactPostConverter.Convert(contact, reservation);
     }
 
-    public override async Task<List<ContactPostDTO>> GetContacts()
+    public override async Task<List<ContactDTO>> GetContacts()
     {
         await Task.Delay(10);
-        List<ContactPostDTO> result = _contact.Select(x =>
+        List<ContactDTO> result = _contact.Select(x =>
         {
             var reservation = _reservations.Where(x => x.ContactID == x.ContactID).ToList();
-            return _contactPostConverter.Convert(x, reservation);
+            return _contactConverter.Convert(x, reservation);
         }).ToList();
         
         return result;

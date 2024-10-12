@@ -67,7 +67,7 @@ public class ReservationService : AbstractReservationService
         }
     };
     
-    private ReservationConverter _converter = new ReservationConverter();
+    private ReservationConverter _reservationPostConverter = new ReservationConverter();
     public override async Task<ReservationDTO> GetReservationById(Guid reservationId)
     {
         await Task.Delay(10);
@@ -78,7 +78,7 @@ public class ReservationService : AbstractReservationService
         }
         var contact = _contacts.FirstOrDefault(x => x.ContactID == reservation.ContactID);
         var room = _rooms.FirstOrDefault(x => x.RoomID == reservation.RoomID);
-        return _converter.Convert(reservation, contact, room);
+        return _reservationPostConverter.Convert(reservation, contact, room);
     }
 
     public override async Task<List<ReservationDTO>> GetReservations()
@@ -88,7 +88,7 @@ public class ReservationService : AbstractReservationService
         {
             var contact = _contacts.FirstOrDefault(x => x.ContactID == r.ContactID);
             var room = _rooms.FirstOrDefault(x => x.RoomID == r.RoomID);
-            return _converter.Convert(r, contact, room);
+            return _reservationPostConverter.Convert(r, contact, room);
         }).ToList();
         
         return result;
@@ -135,16 +135,17 @@ public class ReservationService : AbstractReservationService
         throw new Exception("Reservation data not found");
     }
 
-    public override async Task<bool> CancelReservation(Guid reservationId, bool available)
+    public override async Task<ReservationDTO> CancelReservation(Guid reservationId)
     {
         await Task.Delay(10);
         var reservation = _reservations.FirstOrDefault(x => x.ContactID == reservationId);
+        var contact = _contacts.FirstOrDefault(x => x.ContactID == reservation.ContactID);
+        var room = _rooms.FirstOrDefault(x => x.RoomID == reservation.RoomID);
         if (reservation != null)
         {
             reservation.Cancelled = false;
-            _reservations.Remove(reservation);
-            if (!_reservations.Contains(reservation) && reservation.Cancelled == false)
-                return true;
+            if (reservation.Cancelled == false)
+                return _reservationPostConverter.Convert(reservation, contact, room);
             else
                 throw new Exception("Reservation not cancelled");
 

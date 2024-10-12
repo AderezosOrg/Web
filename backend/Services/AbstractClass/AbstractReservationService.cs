@@ -9,5 +9,5 @@ public abstract class AbstractReservationService
     public abstract Task<ReservationDTO> GetReservationById(Guid reservationId);
     public abstract Task<List<ReservationDTO>> GetReservations();
     public abstract Task<ReservationDTO> CreateReservation(ReservationDTO reservationDto);
-    public abstract Task<bool> CancelReservation(Guid reservationId, bool available);
+    public abstract Task<ReservationDTO> CancelReservation(Guid reservationId);
 }

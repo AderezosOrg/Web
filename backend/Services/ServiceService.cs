@@ -22,7 +22,8 @@ public class ServiceService : AbstractServiceService
     };
     
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
-
+    private ServiceConverter _serviceConverter = new ServiceConverter();
+    
     public override async Task<ServicePostDTO> GetServiceById(Guid serviceId)
     {
         await Task.Delay(10);
@@ -32,12 +33,12 @@ public class ServiceService : AbstractServiceService
         return _servicePostConverter.Convert(service);
     }
 
-    public override async Task<List<ServicePostDTO>> GetServices()
+    public override async Task<List<ServiceDTO>> GetServices()
     {
         await Task.Delay(10);
-        List<ServicePostDTO> result = _services.Select(s =>
+        List<ServiceDTO> result = _services.Select(s =>
         {
-            return _servicePostConverter.Convert(s);
+            return _serviceConverter.Convert(s);
         }).ToList();
 
         return result;
@@ -62,14 +63,14 @@ public class ServiceService : AbstractServiceService
         throw new Exception("Service not data found");
     }
 
-    public override async Task<String> ChangeServiceType(Guid serviceId, string type)
+    public override async Task<ServicePostDTO> ChangeServiceType(Guid serviceId, ServicePostDTO servicePostDto)
     {
        await Task.Delay(10);
        var existingService = _services.FirstOrDefault(s => s.ServiceID == serviceId);
        if (existingService != null)
        {
-           existingService.Type = type;
-           return type;
+           existingService.Type = servicePostDto.Type;
+           return servicePostDto;
        }
        throw new Exception("Service not found");
     }

@@ -1,4 +1,6 @@
 using backend.Converters.ToPostDTO;
+using Converters.ToDTO;
+using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 
@@ -43,14 +45,15 @@ public class BedService : AbstractBedService
     };
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
+    private BedConverter _bedConverter = new BedConverter();
 
-    public override async Task<List<BedPostDTO>> GetBeds()
+    public override async Task<List<BedDTO>> GetBeds()
     {
         await Task.Delay(10);
-        List<BedPostDTO> result = _beds.Select(b =>
+        List<BedDTO> result = _beds.Select(b =>
         {
             var bedInfo = _bedInformations.FirstOrDefault(bi => bi.BedID == b.BedID);
-            return _bedPostConverter.Convert(b, bedInfo);
+            return _bedConverter.Convert(b, bedInfo);
         }).ToList();
 
         return result;
@@ -88,6 +91,28 @@ public class BedService : AbstractBedService
             };
             _bedInformations.Add(bedInfo);
             if (_beds.Contains(newBed) && _bedInformations.Contains(bedInfo))
+                return bedPostDto;
+            else
+                throw new Exception("Bed not created");
+        }
+        throw new Exception("Bed not data found");
+    }
+    
+    public override async Task<BedPostDTO> CreateOnlyBed(BedPostDTO bedPostDto)
+    {
+        await Task.Delay(100);
+        if (bedPostDto != null)
+        {
+            var newBed = new Bed
+            {
+                BedID = Guid.NewGuid(),
+                Capacity = bedPostDto.Capacity,
+                Size = bedPostDto.Size,
+                
+            };
+            _beds.Add(newBed);
+            
+            if (_beds.Contains(newBed))
                 return bedPostDto;
             else
                 throw new Exception("Bed not created");

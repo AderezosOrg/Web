@@ -44,14 +44,15 @@ public class BathRoomServices : AbstractBathroomService
     };
     
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
-
-    public override async Task<List<BathroomPostDTO>> GetBathRooms()
+    private BathroomConverter _bathroomConverter = new BathroomConverter();
+    
+    public override async Task<List<BathroomDTO>> GetBathRooms()
     {
         await Task.Delay(10);
-        List<BathroomPostDTO> result = _bathroom.Select(b =>
+        List<BathroomDTO> result = _bathroom.Select(b =>
         {
             var roomBathInfo = _roomBathInformation.FirstOrDefault(info => info.BathRoomID == b.BathRoomID);
-            return _bathroomPostConverter.Convert(b, roomBathInfo);
+            return _bathroomConverter.Convert(b, roomBathInfo);
         }).ToList();
 
         return result;

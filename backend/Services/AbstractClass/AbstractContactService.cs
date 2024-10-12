@@ -1,3 +1,4 @@
+using DTOs.WithId;
 using DTOs.WithoutId;
 
 namespace backend.Services.AbstractClass;
@@ -5,7 +6,7 @@ namespace backend.Services.AbstractClass;
 public abstract class AbstractContactService
 {
     public abstract Task<ContactPostDTO> GetContactById(Guid contactID);
-    public abstract Task<List<ContactPostDTO>> GetContacts();
+    public abstract Task<List<ContactDTO>> GetContacts();
     public abstract Task<ContactPostDTO> CreateContact(ContactPostDTO contactDto);
     public abstract Task<ContactPostDTO> ChangeContact(Guid contactID, ContactPostDTO contactDto);
 }
