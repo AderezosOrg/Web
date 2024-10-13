@@ -1,8 +1,7 @@
-namespace DTOs;
+namespace DTOs.WithoutId;
 
-public class BedDTO
+public class BedPostDTO
 {
-    public Guid BedID { get; set; }
     public string Size { get; set; }
     public string Capacity { get; set; }
     

@@ -1,8 +1,8 @@
-using DTOs;
+using DTOs.WithId;
 using Entities;
 using IConverters;
 
-namespace Converters
+namespace Converters.ToDTO
 {
     public class ReservationConverter : IConverter1To3<Reservation, Contact, Room, ReservationDTO>
     {
@@ -18,7 +18,7 @@ namespace Converters
                 UserEmail = contact.Email,
                 RoomCode = room.Code,
                 RoomFloorNumber = room.FloorNumber,
-                RoomAvailable = room.Available
+                PricePerNight = room.PricePerNight,
             };
         }
     }

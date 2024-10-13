@@ -5,7 +5,6 @@ public class Room
     public Guid RoomID { get; set; }
     public string Code { get; set; }
     public int FloorNumber { get; set; }
-    public bool Available { get; set; }
     public decimal PricePerNight { get; set; }
 
     // Foreign keys
