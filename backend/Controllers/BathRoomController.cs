@@ -1,4 +1,6 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,58 +9,43 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class BathRoomController : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<List<BathroomDTO>> GetBathRooms()
+    private readonly BathRoomServices _bathRoomServices;
+    public BathRoomController(BathRoomServices bathRoomService)
     {
-        return Ok(new List<BathroomDTO>
-        {
-            new BathroomDTO()
-            {
-                BathRoomID = Guid.NewGuid(),
-                BathroomQuantity = 2,
-                Shower = false,
-                DressingTable = true,
-                Toilet = false
-            }
-        });
+        _bathRoomServices = bathRoomService;
+    }
+    [HttpGet]
+    public async Task<ActionResult<List<BathroomDTO>>> GetBathRooms()
+    {
+        List<BathroomDTO> bathrooms = await _bathRoomServices.GetBathRooms(); 
+        return Ok(bathrooms);
     }
     
-    [HttpGet("{BathroomID}")]
-    public ActionResult<BathroomDTO> GetBathRoomById(Guid BathroomID)
+    [HttpGet("{bathroomId}")]
+    public async Task<ActionResult<BathroomPostDTO>> GetBathRoomById(Guid bathroomId)
     {
-        return Ok(
-            new BathroomDTO()
-            {
-                BathRoomID = Guid.NewGuid(),
-                BathroomQuantity = 2,
-                Shower = true,
-                DressingTable = true,
-                Toilet = false
-            });
+        BathroomPostDTO bathroom = await _bathRoomServices.GetBathRoomById(bathroomId);
+        return Ok(bathroom);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateBathRoom(BathroomDTO bathroomDto)
+    public async Task<ActionResult<BathroomPostDTO>> CreateBathRoom(BathroomPostDTO bathroomDto)
     {
-        return Ok(true);
+        BathroomPostDTO newBathRoom = await _bathRoomServices.CreateBathRoom(bathroomDto);
+        return Ok(newBathRoom);
     }
     
-    [HttpPut("{BathroomID}")]
-    public ActionResult<BathroomDTO> EditBathRoom(Guid BathroomID, BathroomDTO bathroomDto)
+    [HttpPut("{bathroomId}")]
+    public async Task<ActionResult<BathroomPostDTO>> EditBathRoom(Guid bathroomId, BathroomPostDTO bathroomDto)
     {
-        return Ok(new BathroomDTO()
-        {
-            BathRoomID = Guid.NewGuid(),
-            BathroomQuantity = 2,
-            Shower = false,
-            DressingTable = true,
-            Toilet = true
-        });
+        BathroomPostDTO editBathRoom = await _bathRoomServices.EditBathRoom(bathroomId, bathroomDto);
+        return Ok(editBathRoom);
     }
     
-    [HttpDelete("{BathroomID}")]
-    public ActionResult<bool> DeleteBathRoom(Guid BathroomID)
+    [HttpDelete("{bathroomId}")]
+    public async Task<ActionResult<bool>> DeleteBathRoom(Guid bathroomId)
     {
-        return Ok(true);
+        bool confirm = await _bathRoomServices.DeleteBathRoom(bathroomId);
+        return Ok(confirm);
     }
 }

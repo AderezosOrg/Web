@@ -1,4 +1,7 @@
+using backend.Services;
+using backend.Services.AbstractClass;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,107 +10,46 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class RoomController : ControllerBase
 {
-    [HttpGet("{roomId}")]
-    public ActionResult<RoomDTO> GetRoomById(Guid roomId)
+    private readonly RoomService _roomService;
+
+    public RoomController(RoomService roomService)
     {
-        return Ok(new RoomDTO
-            {
-                Bathrooms = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Beds = new List<Guid>
-                {
-                    
-                },
-                Code = "12m",
-                FloorNumber = 0,
-                HotelAllowsPets = false,
-                HotelName = "Hotel",
-                RoomID = Guid.NewGuid(),
-                RoomTemplateSide = "east",
-                RoomTemplateWindows = 3,
-                Services = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                PricePerNight = 20m
-            }
-        );
+        _roomService = roomService;
+    }
+
+    [HttpGet("{roomId}")]
+    public async Task<ActionResult<RoomPostDTO>> GetRoomById(Guid roomId)
+    {
+        RoomPostDTO room = await _roomService.GetRoomById(roomId);
+        return Ok(room);
     }
     
     [HttpGet]
-    public ActionResult<List<RoomDTO>> GetRooms()
+    public async Task<ActionResult<List<RoomDTO>>> GetRooms()
     {
-        return Ok(new List<RoomDTO>
-        {
-            new RoomDTO
-            {
-                Bathrooms = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Beds = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Code = "12m",
-                FloorNumber = 0,
-                HotelAllowsPets = false,
-                HotelName = "Hotel",
-                RoomID = Guid.NewGuid(),
-                RoomTemplateSide = "east",
-                RoomTemplateWindows = 3,
-                Services = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                PricePerNight = 20m
-            }
-        });
-    }
-    
-    [HttpPatch("{roomId}")]
-    public ActionResult<bool> EditRoomAvailabilityById(Guid roomId)
-    {
-        return Ok(true);
+        List<RoomDTO> rooms = await _roomService.GetRooms();
+        return Ok(rooms);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateRoom(RoomDTO roomDto)
+    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomPostDTO roomDto)
     {
-        return Ok(true);
+        RoomPostDTO room = await _roomService.CreateRoom(roomDto);
+        return Ok(room);
     }
     
     [HttpGet("beds/{roomId}")]
-    public ActionResult<List<BedDTO>> GetRoomBedsById(Guid roomId)
+    public async Task<ActionResult<List<BedDTO>>> GetRoomBedsById(Guid roomId)
     {
-        return Ok(new List<BedDTO>
-        {
-            new BedDTO
-            {
-                BedID = Guid.NewGuid(),
-                BedQuantity = 2,
-                Capacity = "2",
-                Size = "king"
-            }
-        });
+        List<BedPostDTO> beds = await _roomService.GetRoomBedsById(roomId);
+        return Ok(beds);
     }
     
     [HttpGet("bathrooms/{roomId}")]
-    public ActionResult<List<BathroomDTO>> GetRoomBathRoomsById(Guid roomId)
+    public async Task<ActionResult<List<BathroomDTO>>> GetRoomBathRoomsById(Guid roomId)
     {
-        return Ok(new List<BathroomDTO>
-        {
-            new BathroomDTO()
-            {
-                BathRoomID = Guid.NewGuid(),
-                BathroomQuantity = 2,
-                Shower = false,
-                DressingTable = true,
-                Toilet = false
-            }
-        });
+        List<BathroomPostDTO> beds = await _roomService.GetRoomBathroomsById(roomId);
+        return Ok(beds);
     }
     
     [HttpGet("availalble")]
@@ -142,78 +84,25 @@ public class RoomController : ControllerBase
     }
     
     [HttpGet("floor/{floorNumber}")]
-    public ActionResult<List<RoomDTO>> GetRoomsByFloor(int floorNumber)
+    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByFloor(int floorNumber)
     {
-        return Ok(new List<RoomDTO>
-        {
-            new RoomDTO
-            {
-                Bathrooms = new List<Guid>
-                {
-                    
-                },
-                Beds = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Code = "2m",
-                FloorNumber = 0,
-                HotelAllowsPets = false,
-                HotelName = "Hotel",
-                RoomID = Guid.NewGuid(),
-                RoomTemplateSide = "west",
-                RoomTemplateWindows = 3,
-                Services = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                PricePerNight = 20m
-            }
-        });
+        List<RoomDTO> rooms = await _roomService.GetRoomsByFloor(floorNumber);
+        return Ok(rooms);
     }
     
     [HttpGet("prices/{minPrice}/{maxPrice}")]
-    public ActionResult<List<RoomDTO>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
+    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
     {
-        return Ok(new List<RoomDTO>
-        {
-            new RoomDTO
-            {
-                Bathrooms = new List<Guid>
-                {
-                    
-                },
-                Beds = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Code = "2m",
-                FloorNumber = 0,
-                HotelAllowsPets = true,
-                HotelName = "Hotel",
-                RoomID = Guid.NewGuid(),
-                RoomTemplateSide = "west",
-                RoomTemplateWindows = 3,
-                Services = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                PricePerNight = 20m
-            }
-        });
+        List<RoomDTO> rooms = await _roomService.GetRoomsByPriceRange(minPrice, maxPrice);
+        return Ok(rooms);
     }
 
     [HttpGet("services/{roomId}")]
-    public ActionResult<List<ServiceDTO>> GetRoomServicesById(Guid roomId)
+    public async Task<ActionResult<List<ServiceDTO>>> GetRoomServicesById(Guid roomId)
     {
-        return Ok(new List<ServiceDTO>
-        {
-            new ServiceDTO()
-            {
-                ServiceID = Guid.NewGuid(),
-                Type = "breakfast to the room"
-            }
-        });
+        List<ServicePostDTO> services = await _roomService.GetRoomServicesById(roomId);
+        return Ok(services);
+        
     }
     
 }

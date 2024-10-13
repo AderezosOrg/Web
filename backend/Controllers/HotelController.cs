@@ -1,4 +1,6 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,65 +9,39 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class HotelController : ControllerBase
 {
-    [HttpGet("{hotelId}")]
-    public ActionResult<HotelDTO> GetHotelById(Guid hotelId)
+    private readonly HotelService _hotelService;
+
+    public HotelController(HotelService hotelService)
     {
-        return Ok(new HotelDTO
-        {
-            Address = "123'3'2",
-            AllowsPets = false,
-            DressingTable = true,
-            HotelEmail = "test@testeado.com",
-            HotelID = Guid.NewGuid(),
-            HotelPhoneNumber = "123123123",
-            Name = "My Hotel",
-            Shower = false,
-            Stars = 3,
-            Toilet = false,
-            UserEmail = "user@testeado.com",
-            UserPhoneNumber = "+23456789",
-            UserCINumber = "1272012",
-            UserName = "Paco"
-            
-        });
+        _hotelService = hotelService;
+    }
+
+    [HttpGet("{hotelId}")]
+    public async Task<ActionResult<HotelPostDTO>> GetHotelById(Guid hotelId)
+    {
+        HotelPostDTO hotel = await _hotelService.GetHotelById(hotelId);
+        return Ok(hotel);
     }
     
     [HttpGet]
-    public ActionResult<List<HotelDTO>> GetHotels()
+    public async Task<ActionResult<List<HotelDTO>>> GetHotels()
     {
-        return Ok(new List<HotelDTO>
-        {
-            new HotelDTO
-            {
-                Address = "123'3'2",
-                AllowsPets = false,
-                DressingTable = true,
-                HotelEmail = "test@testeado.com",
-                HotelID = Guid.NewGuid(),
-                HotelPhoneNumber = "123123123",
-                Name = "My Hotel",
-                Shower = false,
-                Stars = 3,
-                Toilet = false,
-                UserEmail = "user@testeado.com",
-                UserPhoneNumber = "+23456789",
-                UserCINumber = "1272012",
-                UserName = "Paco"
-            
-            }
-        });
+        List<HotelDTO> hotels = await _hotelService.GetHotels();
+        return Ok(hotels);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateHotel([FromBody] HotelDTO hotelDto)
+    public async Task<ActionResult<HotelPostDTO>> CreateHotel([FromBody] HotelPostDTO hotelDto)
     {
+        HotelPostDTO hotel = await _hotelService.CreateHotel(hotelDto);
         return Ok(true);
     }
     
     [HttpPut("{hotelId}")]
-    public ActionResult<bool> UpdateHotel(Guid hotelId, HotelDTO hotelDto)
+    public async Task<ActionResult<HotelPostDTO>> UpdateHotel(Guid hotelId, HotelPostDTO hotelDto)
     {
-        return Ok(true);
+        HotelPostDTO result = await _hotelService.UpdateHotel(hotelId, hotelDto);
+        return Ok(result);
     }
     
 }

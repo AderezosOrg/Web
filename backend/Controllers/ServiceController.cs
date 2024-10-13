@@ -1,4 +1,6 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,38 +9,38 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class ServiceController : ControllerBase
 {
-    [HttpGet("{serviceId}")]
-    public ActionResult<ServiceDTO> GetServiceById(Guid serviceId)
+    private readonly ServiceService _serviceService;
+
+    public ServiceController(ServiceService serviceService)
     {
-        return Ok(new ServiceDTO
-        {
-            ServiceID = Guid.NewGuid(),
-            Type = "Room Service"
-        });
+        _serviceService = serviceService;
+    }
+
+    [HttpGet("{serviceId}")]
+    public async Task<ActionResult<ServicePostDTO>> GetServiceById(Guid serviceId)
+    {
+        ServicePostDTO serviceById = await _serviceService.GetServiceById(serviceId);
+        return Ok(serviceById);
     }
     
     [HttpGet]
-    public ActionResult<List<ServiceDTO>> GetServices()
+    public async Task<ActionResult<List<ServiceDTO>>> GetServices()
     {
-        return Ok(new List<ServiceDTO>
-        {
-            new ServiceDTO
-            {
-                ServiceID = Guid.NewGuid(),
-                Type = "Room Service"
-            }
-        });
+        List<ServiceDTO> services = await _serviceService.GetServices();
+        return Ok(services);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateService([FromBody] ServiceDTO serviceDto)
+    public async Task<ActionResult<ServicePostDTO>> CreateService([FromBody] ServicePostDTO serviceDto)
     {
-        return Ok(true);
+        ServicePostDTO service = await _serviceService.CreateService(serviceDto);
+        return Ok(service);
     }
     
     [HttpPatch("{serviceId}")]
-    public ActionResult<bool> ChangeServiceType(Guid serviceId, string type)
+    public async Task<ActionResult<ServicePostDTO>> ChangeServiceType(Guid serviceId, ServicePostDTO type)
     {
-        return Ok(true);
+        ServicePostDTO service = await _serviceService.ChangeServiceType(serviceId, type);
+        return Ok(service);
     }
 }

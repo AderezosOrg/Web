@@ -1,4 +1,6 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -6,58 +8,45 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    [HttpGet("{userId}")]
-    public ActionResult<UserDTO> GetUserById(Guid userId)
+    private readonly UserService _userService;
+
+    public UserController(UserService userService)
     {
-        return Ok(new UserDTO
-        {
-            CINumber = "6879821",
-            Email = "user@email.com",
-            HotelList = new List<Guid>
-            {
-                Guid.NewGuid()
-            },
-            Name = "user",
-            PhoneNumber = "0123456789",
-            UserID = Guid.NewGuid()
-        });
+        _userService = userService;
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<UserPostDTO>> GetUserById(Guid userId)
+    {
+        UserPostDTO userPostDto = await _userService.GetUserById(userId);
+        return Ok(userPostDto);
     }
     
     [HttpGet]
-    public ActionResult<List<UserDTO>> GetUsers()
+    public async Task<ActionResult<List<UserDTO>>> GetUsers()
     {
-        return Ok(new List<UserDTO>
-        {
-            new UserDTO
-            {
-                CINumber = "6819821",
-                Email = "user2@email.com",
-                HotelList = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Name = "userq qwe",
-                PhoneNumber = "0023456789",
-                UserID = Guid.NewGuid()
-            }
-        });
+        List<UserDTO> userPostDto = await _userService.GetUsers();
+        return Ok(userPostDto);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateUser(UserDTO userDto)
+    public async Task<ActionResult<UserPostDTO>> CreateUser(UserPostDTO userDto)
     {
-        return Ok(true);
+        UserPostDTO userPostDto = await _userService.CreateUser(userDto);
+        return Ok(userPostDto);
     }
     
     [HttpDelete("{userId}")]
-    public ActionResult<bool> DeleteUserById(Guid userId)
+    public async Task<ActionResult<bool>> DeleteUserById(Guid userId)
     {
-        return Ok(true);
+        bool result = await _userService.DeleteUserById(userId);
+        return Ok(result);
     }
     
     [HttpPut("{userId}")]
-    public ActionResult<bool> EditUserById(Guid userId, UserDTO userDto)
+    public async Task<ActionResult<UserPostDTO>> EditUserById(Guid userId, UserPostDTO userDto)
     {
-        return Ok(true);
+        UserPostDTO userPostDto = await _userService.EditUserById(userId, userDto);
+        return Ok(userPostDto);
     }
 }

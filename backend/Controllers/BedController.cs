@@ -1,4 +1,6 @@
 using DTOs.WithId;
+using backend.Services;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,38 +9,31 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class BedController : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<List<BedDTO>> GetBeds()
+    private BedService _bedService;
+    public BedController(BedService bedService)
     {
-        return Ok(new List<BedDTO>
-        {
-            new BedDTO
-            {
-                BedID = Guid.NewGuid(),
-                BedQuantity = 2,
-                Capacity = "2",
-                Size = "king"
-            }
-        });
+        _bedService = bedService;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<BedDTO>>> GetBeds()
+    {
+        
+        var beds = await _bedService.GetBeds();
+        return Ok();
+        
     }
     
-    [HttpGet("{BedID}")]
-    public ActionResult<BedDTO> GetBedById(Guid BedID)
+    [HttpGet("{bedId}")]
+    public  async Task<ActionResult<BedDTO>> GetBedById(Guid bedId)
     {
-        return Ok(
-            new BedDTO
-            {
-                BedID = Guid.NewGuid(),
-                BedQuantity = 2,
-                Capacity = "1",
-                Size = "single"
-            });
+        return Ok(await new BedService().GetBedById(bedId));
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateBed(BedDTO bedDTO)
+    public async Task<ActionResult<BedPostDTO>> CreateBed(BedPostDTO bedDTO)
     {
-        return Ok(true);
+        return Ok(await new BedService().CreateBed(bedDTO));
     }
     
     [HttpPut("{BedID}")]

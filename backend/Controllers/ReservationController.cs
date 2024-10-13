@@ -1,4 +1,7 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -7,54 +10,38 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class ReservationController : ControllerBase
 {
-    [HttpGet("{reservationId}")]
-    public ActionResult<ReservationDTO> GetReservationById(Guid reservationId)
+    private readonly ReservationService _reservationService;
+
+    public ReservationController(ReservationService reservationService)
     {
-        return Ok(new ReservationDTO
-        {
-            Cancelled = true,
-            ContactID = Guid.NewGuid(),
-            ReservationDate = DateTime.Today,
-            RoomAvailable = false,
-            RoomCode = "wqe",
-            RoomFloorNumber = 2,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Now,
-            UserEmail = "test@test2.com",
-            UserPhoneNumber = "12345687"
-        });
+        _reservationService = reservationService;
+    }
+    [HttpGet("{reservationId}")]
+    public async Task<ActionResult<ReservationDTO>> GetReservationById(Guid reservationId)
+    {
+        ReservationDTO reservation = await _reservationService.GetReservationById(reservationId);
+        return Ok(reservation);
     }
     
     [HttpGet]
-    public ActionResult<List<ReservationDTO>> GetReservations()
+    public async Task<ActionResult<List<ReservationDTO>>> GetReservations()
     {
-        return Ok(new List<ReservationDTO>
-        {
-            new ReservationDTO
-            {
-                Cancelled = false,
-                ContactID = Guid.NewGuid(),
-                ReservationDate = DateTime.Now,
-                RoomID = Guid.NewGuid(),
-                RoomAvailable = true,
-                RoomCode = "10A",
-                RoomFloorNumber = 1,
-                UseDate = DateTime.Today,
-                UserEmail = "test@test.com",
-                UserPhoneNumber = "12345678"
-            }
-        });
+        List<ReservationDTO> reservations = await _reservationService.GetReservations();
+        return Ok(reservations);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateReservation(ReservationDTO reservationDto)
+    public async Task<ActionResult<ReservationDTO>> CreateReservation(ReservationDTO reservationDto)
     {
-        return Ok(true);
+        ReservationDTO reservation = await _reservationService.CreateReservation(reservationDto);
+        return Ok(reservation);
+        
     }
     
     [HttpPatch("{reservationId}")]
-    public ActionResult<bool> CancelReservation(Guid reservationId, bool Available)
+    public async Task<ActionResult<ReservationDTO>> CancelReservation(Guid reservationId)
     {
-        return Ok(true);
+        ReservationDTO reservation = await _reservationService.CancelReservation(reservationId);
+        return Ok(reservation);
     }
 }
