@@ -1,8 +1,7 @@
-namespace DTOs;
+namespace DTOs.WithoutId;
 
-public class UserDTO
+public class UserPostDTO
 {
-    public Guid UserID { get; set; }
     public string Name { get; set; }
     public string CINumber { get; set; }
     

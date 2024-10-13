@@ -1,4 +1,4 @@
-namespace DTOs;
+namespace DTOs.WithId;
 
 public class ReservationDTO
 {
@@ -16,5 +16,5 @@ public class ReservationDTO
     // Room properties (from FK)
     public string RoomCode { get; set; }
     public int RoomFloorNumber { get; set; }
-    public bool RoomAvailable { get; set; }
+    public decimal PricePerNight { get; set; }
 }

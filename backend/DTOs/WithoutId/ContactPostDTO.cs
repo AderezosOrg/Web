@@ -1,8 +1,7 @@
-namespace DTOs;
+namespace DTOs.WithoutId;
 
-public class ContactDTO
+public class ContactPostDTO
 {
-    public Guid ContactID { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public List<Guid> ReservationList { get; set; }

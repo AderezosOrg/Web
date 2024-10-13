@@ -1,10 +1,8 @@
-using DTOs;
+using DTOs.WithId;
 using Entities;
 using IConverters;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Converters
+namespace Converters.ToDTO
 {
     public class ContactConverter : IConverter1To2<Contact, List<Reservation>, ContactDTO>
     {

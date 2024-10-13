@@ -1,8 +1,8 @@
-using DTOs;
+using DTOs.WithId;
 using Entities;
 using IConverters;
 
-namespace Converters
+namespace Converters.ToDTO
 {
     public class HotelConverter : IConverter1To4<Hotel, User, Contact, Bathroom, HotelDTO>
     {

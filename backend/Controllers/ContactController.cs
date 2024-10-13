@@ -1,4 +1,4 @@
-using DTOs;
+using DTOs.WithId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;

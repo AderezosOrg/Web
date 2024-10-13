@@ -1,4 +1,4 @@
-namespace DTOs;
+namespace DTOs.WithId;
 
 public class BathroomDTO
 {
