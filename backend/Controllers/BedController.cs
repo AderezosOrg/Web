@@ -16,41 +16,39 @@ public class BedController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<BedDTO>>> GetBeds()
+    public async Task<ActionResult<List<BedInfoDTO>>> GetBeds()
     {
         
         var beds = await _bedService.GetBeds();
-        return Ok();
+        return Ok(beds);
         
     }
     
     [HttpGet("{bedId}")]
-    public  async Task<ActionResult<BedDTO>> GetBedById(Guid bedId)
+    public  async Task<ActionResult<BedPostDTO>> GetBedById(Guid bedId)
     {
-        return Ok(await new BedService().GetBedById(bedId));
+        var bed = await _bedService.GetBedById(bedId);
+        return Ok(bed);
     }
     
     [HttpPost]
     public async Task<ActionResult<BedPostDTO>> CreateBed(BedPostDTO bedDTO)
     {
-        return Ok(await new BedService().CreateBed(bedDTO));
+        var bed = await _bedService.CreateBed(bedDTO);
+        return Ok(bed);
     }
     
     [HttpPut("{BedID}")]
-    public ActionResult<BedDTO> EditBed(Guid BedID, BedDTO bedDTO)
+    public ActionResult<BedPostDTO> EditBed(Guid BedID, BedPostDTO bedDTO)
     {
-        return Ok(new BedDTO
-        {
-            BedID = Guid.NewGuid(),
-            BedQuantity = 1,
-            Capacity = "1",
-            Size = "queen"
-        });
+        var bed = _bedService.EditBed(BedID, bedDTO);
+        return Ok(bed);
     }
     
     [HttpDelete("{BedID}")]
     public ActionResult<bool> DeleteBed(Guid BedID)
     {
-        return Ok(true);
+        var confirm = _bedService.DeleteBed(BedID);
+        return Ok(confirm);
     }
 }

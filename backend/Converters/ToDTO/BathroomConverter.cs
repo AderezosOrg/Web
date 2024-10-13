@@ -4,7 +4,7 @@ using Entities;
 using IConverters;
 
 namespace Converters.ToDTO;
-public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, BathroomDTO>, IConverter1To2<BathroomPostDTO, Guid, BathroomDTO>
+public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, BathroomDTO>, IConverter1To2<BathroomPostDTO, Guid, BathroomDTO>, IConverter1To1<Bathroom, BathroomInfoDTO>
 {
     public BathroomDTO Convert(Bathroom bathroom, RoomBathInformation roomBathInformation)
     {
@@ -23,10 +23,20 @@ public class BathroomConverter : IConverter1To2<Bathroom, RoomBathInformation, B
         return new BathroomDTO()
         {
             BathRoomID = id,
-            BathroomQuantity = postDto.BathroomQuantity,
             DressingTable = postDto.DressingTable,
             Shower = postDto.Shower,
             Toilet = postDto.Toilet
+        };
+    }
+
+    public BathroomInfoDTO Convert(Bathroom input)
+    {
+        return new BathroomInfoDTO()
+        {
+            BathRoomID = input.BathRoomID,
+            DressingTable = input.DressingTable,
+            Shower = input.Shower,
+            Toilet = input.Toilet
         };
     }
 }

@@ -25,9 +25,9 @@ public class RoomController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<RoomDTO>>> GetRooms()
+    public async Task<ActionResult<List<RoomFullInfoDTO>>> GetRooms()
     {
-        List<RoomDTO> rooms = await _roomService.GetRooms();
+        List<RoomFullInfoDTO> rooms = await _roomService.GetRooms();
         return Ok(rooms);
     }
     
@@ -53,9 +53,9 @@ public class RoomController : ControllerBase
     }
     
     [HttpGet("available/{startDate}/{endDate}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
+    public async Task<ActionResult<List<RoomFullInfoDTO>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
     {
-        List<RoomDTO> roomDtos = await _roomService.GetAvailableRooms(startDate, endDate);
+        List<RoomFullInfoDTO> roomDtos = await _roomService.GetAvailableRooms(startDate, endDate);
         return Ok(roomDtos);
     }
     

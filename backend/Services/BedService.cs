@@ -47,13 +47,12 @@ public class BedService : AbstractBedService
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
 
-    public override async Task<List<BedDTO>> GetBeds()
+    public override async Task<List<BedInfoDTO>> GetBeds()
     {
         await Task.Delay(10);
-        List<BedDTO> result = _beds.Select(b =>
+        List<BedInfoDTO> result = _beds.Select(b =>
         {
-            var bedInfo = _bedInformations.FirstOrDefault(bi => bi.BedID == b.BedID);
-            return _bedConverter.Convert(b, bedInfo);
+            return _bedConverter.Convert(b);
         }).ToList();
 
         return result;
@@ -65,8 +64,7 @@ public class BedService : AbstractBedService
         var bed = _beds.FirstOrDefault(b => b.BedID == bedID);
         if (bed == null)
             throw new Exception("Bed not found");
-        var bedInfo = _bedInformations.FirstOrDefault(bi => bi.BedID == bed.BedID);
-        return _bedPostConverter.Convert(bed, bedInfo);
+        return _bedPostConverter.Convert(bed);
     }
 
     public override async Task<BedPostDTO> CreateBed(BedPostDTO bedPostDto)
@@ -83,14 +81,7 @@ public class BedService : AbstractBedService
             };
             _beds.Add(newBed);
             
-            var bedInfo = new BedInformation
-            {
-                BedID = newBed.BedID,
-                Quantity = bedPostDto.BedQuantity,
-                RoomTemplateID = Guid.NewGuid()
-            };
-            _bedInformations.Add(bedInfo);
-            if (_beds.Contains(newBed) && _bedInformations.Contains(bedInfo))
+            if (_beds.Contains(newBed))
                 return bedPostDto;
             else
                 throw new Exception("Bed not created");
@@ -128,22 +119,6 @@ public class BedService : AbstractBedService
         {
             existingBed.Capacity = bedDto.Capacity;
             existingBed.Size = bedDto.Size;
-            
-            var bedInfo = _bedInformations.FirstOrDefault(bi => bi.BedID == bedID);
-            if (bedInfo != null)
-            {
-                bedInfo.Quantity = bedDto.BedQuantity;
-            }
-            else
-            {
-                bedInfo = new BedInformation
-                {
-                    BedID = existingBed.BedID,
-                    Quantity = bedDto.BedQuantity,
-                    RoomTemplateID = Guid.NewGuid()
-                };
-                _bedInformations.Add(bedInfo);
-            }
 
             return bedDto;
         }

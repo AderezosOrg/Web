@@ -15,9 +15,9 @@ public class BathRoomController : ControllerBase
         _bathRoomServices = bathRoomService;
     }
     [HttpGet]
-    public async Task<ActionResult<List<BathroomDTO>>> GetBathRooms()
+    public async Task<ActionResult<List<BathroomInfoDTO>>> GetBathRooms()
     {
-        List<BathroomDTO> bathrooms = await _bathRoomServices.GetBathRooms(); 
+        List<BathroomInfoDTO> bathrooms = await _bathRoomServices.GetBathRooms(); 
         return Ok(bathrooms);
     }
     
