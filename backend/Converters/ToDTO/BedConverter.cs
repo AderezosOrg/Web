@@ -5,7 +5,7 @@ using IConverters;
 
 namespace Converters.ToDTO
 {
-    public class BedConverter : IConverter1To2<Bed, BedInformation, BedDTO>
+    public class BedConverter : IConverter1To2<Bed, BedInformation, BedDTO>, IConverter1To2<BedPostDTO, Guid, BedDTO>
     {
         public BedDTO Convert(Bed bed, BedInformation bedInformation)
         {
@@ -15,6 +15,18 @@ namespace Converters.ToDTO
                 Size = bed.Size,
                 Capacity = bed.Capacity,
                 BedQuantity = bedInformation.Quantity
+            };
+        }
+
+
+        public BedDTO Convert(BedPostDTO bedPostDto, Guid id)
+        {
+            return new BedDTO()
+            {
+                BedID = id,
+                BedQuantity = bedPostDto.BedQuantity,
+                Capacity = bedPostDto.Capacity,
+                Size = bedPostDto.Size
             };
         }
     }

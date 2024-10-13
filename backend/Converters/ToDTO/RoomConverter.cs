@@ -1,10 +1,11 @@
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Entities;
 using IConverters;
 
 namespace Converters.ToDTO
 {
-    public class RoomConverter : IConverter1To6<Room, RoomTemplate, Hotel, List<BedInformation>, List<RoomBathInformation>,List<RoomServices>,  RoomDTO>
+    public class RoomConverter : IConverter1To6<Room, RoomTemplate, Hotel, List<BedInformation>, List<RoomBathInformation>,List<RoomServices>,  RoomDTO>, IConverter1To2<RoomPostDTO, Guid, RoomDTO>
     {
         public RoomDTO Convert(Room room, RoomTemplate roomTemplate, Hotel hotel, List<BedInformation> bedInformations, List<RoomBathInformation> roomBathInformations, List<RoomServices> services)
         {
@@ -36,6 +37,24 @@ namespace Converters.ToDTO
                 Beds = bedList,
                 Bathrooms = bathList,
                 Services = serviceList
+            };
+        }
+
+        public RoomDTO Convert(RoomPostDTO roomPostDto, Guid id)
+        {
+            return new RoomDTO()
+            {
+                Bathrooms = roomPostDto.Bathrooms,
+                Beds = roomPostDto.Beds,
+                Code = roomPostDto.Code,
+                FloorNumber = roomPostDto.FloorNumber,
+                HotelName = roomPostDto.HotelName,
+                HotelAllowsPets = roomPostDto.HotelAllowsPets,
+                PricePerNight = roomPostDto.PricePerNight,
+                RoomTemplateSide = roomPostDto.RoomTemplateSide,
+                RoomTemplateWindows = roomPostDto.RoomTemplateWindows,
+                RoomID = id,
+                Services = roomPostDto.Services
             };
         }
     }

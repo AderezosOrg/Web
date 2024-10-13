@@ -16,11 +16,19 @@ public class ReservationController : ControllerBase
     {
         _reservationService = reservationService;
     }
-    [HttpGet("{reservationId}")]
-    public async Task<ActionResult<ReservationDTO>> GetReservationById(Guid reservationId)
+    
+    [HttpGet("contact/{contactId}")]
+    public async Task<ActionResult<List<ReservationDTO>>> GetReservationByContactId(Guid contactId)
     {
-        ReservationDTO reservation = await _reservationService.GetReservationById(reservationId);
-        return Ok(reservation);
+        List<ReservationDTO> reservations = await _reservationService.GetReservationsByContactId(contactId);
+        return Ok(reservations);
+    }
+    
+    [HttpGet("room/{roomId}")]
+    public async Task<ActionResult<List<ReservationDTO>>> GetReservationByRoomId(Guid roomId)
+    {
+        List<ReservationDTO> reservations = await _reservationService.GetReservationsByRoomId(roomId);
+        return Ok(reservations);
     }
     
     [HttpGet]
@@ -38,10 +46,10 @@ public class ReservationController : ControllerBase
         
     }
     
-    [HttpPatch("{reservationId}")]
-    public async Task<ActionResult<ReservationDTO>> CancelReservation(Guid reservationId)
+    [HttpPatch("cancel/{contactId}")]
+    public async Task<ActionResult<ReservationDTO>> CancelReservation(Guid contactId)
     {
-        ReservationDTO reservation = await _reservationService.CancelReservation(reservationId);
+        ReservationDTO reservation = await _reservationService.CancelReservation(contactId);
         return Ok(reservation);
     }
 }

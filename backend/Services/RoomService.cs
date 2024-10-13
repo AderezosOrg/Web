@@ -78,7 +78,9 @@ public class RoomService : AbstractRoomService
     
     private RoomConverter _roomConverter = new RoomConverter();
     private RoomPostDTOConvert _roomPostDtoConvert = new RoomPostDTOConvert();
-    private BedPostConverter _bedPostConverter = new BedPostConverter();
+    private BedConverter _bedConverter = new BedConverter();
+    private BathroomConverter _bathroomConverter = new BathroomConverter();
+    private ServiceConverter _serviceConverter = new ServiceConverter();
     
     private readonly BedService _bedService;
     private readonly BathRoomServices _bathRoomServices;
@@ -92,6 +94,13 @@ public class RoomService : AbstractRoomService
         _reservationService = reservationService;
         _bathRoomServices = bathRoomServices;
         _bedService = bedService;
+    }
+    public RoomService()
+    {
+        _serviceService = new ServiceService();
+        _reservationService = new ReservationService();
+        _bathRoomServices = new BathRoomServices();
+        _bedService = new BedService();
     }
     public override async Task<RoomPostDTO> GetRoomById(Guid roomId)
     {
@@ -183,7 +192,7 @@ public class RoomService : AbstractRoomService
         throw new Exception("Room not data found");
     }
 
-    public override async Task<List<BedPostDTO>> GetRoomBedsById(Guid roomId)
+    public override async Task<List<BedDTO>> GetRoomBedsById(Guid roomId)
     {
         await Task.Delay(10);
     
@@ -193,18 +202,18 @@ public class RoomService : AbstractRoomService
 
         var bedInformationList = _beds.Where(bi => bi.RoomTemplateID == room.RoomTemplateID).ToList();
         var bedList = _beds.Where(b => bedInformationList.Select(bi => bi.BedID).Contains(b.BedID)).ToList();
-        var bedPostDtoList = new List<BedPostDTO>();
+        var bedDtoList = new List<BedDTO>();
     
         foreach (var bed in bedList)
         {
-            var bedPostDTO = await _bedService.GetBedById(bed.BedID); 
-            bedPostDtoList.Add(bedPostDTO);
+            var bedPostDTO = await _bedService.GetBedById(bed.BedID);
+            bedDtoList.Add(_bedConverter.Convert(bedPostDTO, bed.BedID));
         }
 
-        return bedPostDtoList;
+        return bedDtoList;
     }
 
-    public override async Task<List<BathroomPostDTO>> GetRoomBathroomsById(Guid roomId)
+    public override async Task<List<BathroomDTO>> GetRoomBathroomsById(Guid roomId)
     {
         await Task.Delay(10);
     
@@ -214,33 +223,29 @@ public class RoomService : AbstractRoomService
 
         var bathInfomration = _roomBaths.Where(bi => bi.RoomTemplateID == room.RoomTemplateID).ToList();
         var bathList = _roomBaths.Where(b => bathInfomration.Select(bi => bi.BathRoomID).Contains(b.BathRoomID)).ToList();
-        var bathPostDTOList = new List<BathroomPostDTO>();
+        var bathDTOList = new List<BathroomDTO>();
     
         foreach (var bath in bathList)
         {
-            var bathroomPostDTO = await _bathRoomServices.GetBathRoomById(bath .BathRoomID); 
-            bathPostDTOList.Add(bathroomPostDTO);
+            var bathroomDTO = await _bathRoomServices.GetBathRoomById(bath .BathRoomID); 
+            bathDTOList.Add(_bathroomConverter.Convert(bathroomDTO, bath.BathRoomID));
         }
 
-        return bathPostDTOList;
+        return bathDTOList;
     }
 
     public override async Task<List<RoomDTO>> GetAvailableRooms(DateTime startDate, DateTime endDate)
     {
-        await Task.Delay(10);
-        var reservations = await _reservationService.GetReservations();
-        var reservedRooms = reservations.Where(r => !r.Cancelled && 
-                        ((r.UseDate >= startDate && r.UseDate <= endDate) && 
-                         (r.ReservationDate >= startDate && r.ReservationDate <= endDate)))
-            .Select(r => r.RoomID)
-            .ToList();
-        List<RoomDTO> availableRoomDTOs = new List<RoomDTO>();
-        foreach (var room in reservedRooms)
+        List<RoomDTO> rooms = new List<RoomDTO>();
+        foreach (Room room in _rooms)
         {
-            
+            if ( await IsAvailable(room.RoomID, startDate, endDate))
+            {
+                rooms.Add(_roomConverter.Convert( await GetRoomById(room.RoomID), room.RoomID));
+            }
         }
-        return availableRoomDTOs;
-    } //HYUGO LO TERMINA :3
+        return rooms;
+    }
 
     public override async Task<List<RoomDTO>> GetRoomsByFloor(int floorNumber)
     {
@@ -288,7 +293,7 @@ public class RoomService : AbstractRoomService
     }
 
 
-    public override async Task<List<ServicePostDTO>> GetRoomServicesById(Guid roomId)
+    public override async Task<List<ServiceDTO>> GetRoomServicesById(Guid roomId)
     {
         await Task.Delay(10);
     
@@ -298,14 +303,27 @@ public class RoomService : AbstractRoomService
 
         var serviceInformation = _services.Where(bi => bi.ServiceID == room.RoomID).ToList();
         var serviceList = _services.Where(b => serviceInformation.Select(bi => bi.ServiceID).Contains(b.ServiceID)).ToList();
-        var servicePostDTOList = new List<ServicePostDTO>();
+        var serviceDTOList = new List<ServiceDTO>();
     
         foreach (var service in serviceList)
         {
-            var servicePostDTO = await _serviceService.GetServiceById(service .ServiceID); 
-            servicePostDTOList.Add(servicePostDTO);
+            var servicePostDTO = await _serviceService.GetServiceById(service.ServiceID);
         }
 
-        return servicePostDTOList;
+        return serviceDTOList;
+    }
+
+    public override async Task<bool> IsAvailable(Guid roomId, DateTime startDate, DateTime endDate)
+    {
+        List<ReservationDTO> reservationDtos = await _reservationService.GetReservationsByRoomId(roomId);
+        foreach (ReservationDTO reservationDto in reservationDtos)
+        {
+            if (!(reservationDto.ReservationDate >= endDate || reservationDto.UseDate <= startDate) && !reservationDto.Cancelled)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

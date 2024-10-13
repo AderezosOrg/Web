@@ -41,46 +41,22 @@ public class RoomController : ControllerBase
     [HttpGet("beds/{roomId}")]
     public async Task<ActionResult<List<BedDTO>>> GetRoomBedsById(Guid roomId)
     {
-        List<BedPostDTO> beds = await _roomService.GetRoomBedsById(roomId);
+        List<BedDTO> beds = await _roomService.GetRoomBedsById(roomId);
         return Ok(beds);
     }
     
     [HttpGet("bathrooms/{roomId}")]
     public async Task<ActionResult<List<BathroomDTO>>> GetRoomBathRoomsById(Guid roomId)
     {
-        List<BathroomPostDTO> beds = await _roomService.GetRoomBathroomsById(roomId);
-        return Ok(beds);
+        List<BathroomDTO> bathrooms = await _roomService.GetRoomBathroomsById(roomId);
+        return Ok(bathrooms);
     }
     
-    [HttpGet("availalble")]
-    public ActionResult<List<RoomDTO>> GetAvailableRooms()
+    [HttpGet("available/{startDate}/{endDate}")]
+    public async Task<ActionResult<List<RoomDTO>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
     {
-        return Ok(new List<RoomDTO>
-        {
-            new RoomDTO
-            {
-                Bathrooms = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Beds = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                Code = "2m",
-                FloorNumber = 0,
-                HotelAllowsPets = false,
-                HotelName = "Hotel",
-                RoomID = Guid.NewGuid(),
-                RoomTemplateSide = "west",
-                RoomTemplateWindows = 3,
-                Services = new List<Guid>
-                {
-                    Guid.NewGuid()
-                },
-                PricePerNight = 23m
-            }
-        });
+        List<RoomDTO> roomDtos = await _roomService.GetAvailableRooms(startDate, endDate);
+        return Ok(roomDtos);
     }
     
     [HttpGet("floor/{floorNumber}")]
@@ -100,7 +76,7 @@ public class RoomController : ControllerBase
     [HttpGet("services/{roomId}")]
     public async Task<ActionResult<List<ServiceDTO>>> GetRoomServicesById(Guid roomId)
     {
-        List<ServicePostDTO> services = await _roomService.GetRoomServicesById(roomId);
+        List<ServiceDTO> services = await _roomService.GetRoomServicesById(roomId);
         return Ok(services);
         
     }
