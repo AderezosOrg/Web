@@ -39,16 +39,16 @@ public class BedController : ControllerBase
     }
     
     [HttpPut("{BedID}")]
-    public ActionResult<BedPostDTO> EditBed(Guid BedID, BedPostDTO bedDTO)
+    public async Task<ActionResult<BedPostDTO>> EditBed(Guid BedID, BedPostDTO bedDTO)
     {
-        var bed = _bedService.EditBed(BedID, bedDTO);
+        var bed = await _bedService.EditBed(BedID, bedDTO);
         return Ok(bed);
     }
     
     [HttpDelete("{BedID}")]
-    public ActionResult<bool> DeleteBed(Guid BedID)
+    public async Task<ActionResult<bool>> DeleteBed(Guid BedID)
     {
-        var confirm = _bedService.DeleteBed(BedID);
+        var confirm = await _bedService.DeleteBed(BedID);
         return Ok(confirm);
     }
 }
