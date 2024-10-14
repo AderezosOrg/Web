@@ -57,10 +57,7 @@ public class UserService : AbstractUserService
                 UserID = Guid.NewGuid(),
             };
             _singletonBd.AddUser(newUser);
-            if (_singletonBd.GetAllUsers().Contains(newUser))
-                return userPostDto;
-            else
-                throw new Exception("Contact not created");
+            return userPostDto;
         }
         throw new Exception("Contact not Data found");
 

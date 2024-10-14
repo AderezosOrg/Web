@@ -54,11 +54,8 @@ public class BathRoomServices : AbstractBathroomService
                 Toilet = bathroomPostDto.Toilet,
                 DressingTable = bathroomPostDto.DressingTable
             };
-            _singletonBd.AddBathroom(newBathroom);
-            if (_singletonBd.GetAllBathRooms().Contains(newBathroom))
-                return bathroomPostDto;
-            else
-                throw new Exception("Bathroom not created");
+            _singletonBd.AddBathroom(newBathroom); 
+            return bathroomPostDto;
         }
         throw new Exception("Bathroom not data found");
     }

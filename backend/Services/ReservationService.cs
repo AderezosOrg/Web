@@ -64,24 +64,21 @@ public class ReservationService : AbstractReservationService
         return result;
     }
 
-    public override async Task<ReservationDTO> CreateReservation(ReservationDTO reservationDto)
+    public override async Task<ReservationDTO> CreateReservation(ReservationPostDTO reservationPostDto)
     {
         await Task.Delay(100);
-        if (reservationDto != null)
+        if (reservationPostDto != null)
         {
             var newReservation = new Reservation
             {
-                ContactID = reservationDto.ContactID,
-                Cancelled = reservationDto.Cancelled,
-                ReservationDate = reservationDto.ReservationDate,
-                RoomID = reservationDto.RoomID,
-                UseDate = reservationDto.UseDate,
+                ContactID = reservationPostDto.ContactId,
+                Cancelled = reservationPostDto.Cancelled,
+                ReservationDate = reservationPostDto.ReservationDate,
+                RoomID = reservationPostDto.RoomId,
+                UseDate = reservationPostDto.UseDate,
             };
             _singletonBd.AddReservation(newReservation);
-            if(_singletonBd.GetAllReservations().Contains(newReservation))
-                return reservationDto;
-            else 
-                throw new Exception("Reservation not created");
+            return _reservationConverter.Convert(reservationPostDto, _singletonBd.GetContactById(reservationPostDto.ContactId), _singletonBd.GetRoomById(reservationPostDto.RoomId));
         }
 
         throw new Exception("Reservation data not found");

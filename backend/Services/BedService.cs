@@ -57,11 +57,7 @@ public class BedService : AbstractBedService
                 
             };
             _singletonBD.AddBed(newBed);
-            
-            if (_singletonBD.GetAllBeds().Contains(newBed))
-                return bedPostDto;
-            else
-                throw new Exception("Bed not created");
+            return bedPostDto;
         }
         throw new Exception("Bed not data found");
     }

@@ -65,10 +65,7 @@ public class HotelService : AbstractHotelService
             };
             _singletonBD.AddHotel(newHotel);
             
-            if (_singletonBD.GetAllHotels().Contains(newHotel))
-                return hotelPostDto;
-            else
-                throw new Exception("Hotel not created");
+            return hotelPostDto;
         }
         throw new Exception("Hotel not data found");
     }

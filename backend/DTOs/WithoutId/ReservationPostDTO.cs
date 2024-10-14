@@ -7,12 +7,6 @@ public class ReservationPostDTO
     public DateTime UseDate { get; set; }
     public bool Cancelled { get; set; }
 
-    // Contact properties (from FK) 
-    public string UserPhoneNumber { get; set; }
-    public string UserEmail { get; set; }
-
-    // Room properties (from FK)
-    public string RoomCode { get; set; }
-    public int RoomFloorNumber { get; set; }
-    public decimal PricePerNight { get; set; }
+    public Guid RoomId { get; set; }
+    public Guid ContactId { get; set; }
 }
