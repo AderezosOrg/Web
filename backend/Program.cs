@@ -1,4 +1,5 @@
 using backend.Services;
+using backend.Services.AbstractClass;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -9,6 +10,7 @@ builder.Services.AddScoped<BathRoomServices>();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<HotelService>();
 builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<RoomTemplateService>();
 builder.Services.AddScoped<ServiceService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<PriceService>();

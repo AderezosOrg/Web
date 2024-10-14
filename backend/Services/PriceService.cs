@@ -19,6 +19,13 @@ public class PriceService : AbstractPriceService
 
     public override async Task<decimal> GetReservationPrice(params ReservationPostDTO[] reservationsPostDtos)
     {
+        decimal taxedPrice = await GetReservationPriceByANight(reservationsPostDtos);
+        taxedPrice = taxedPrice * (reservationsPostDtos.First().UseDate - reservationsPostDtos.First().ReservationDate).Days;
+        return taxedPrice;
+    }
+    
+    private async Task<decimal> GetReservationPriceByANight(params ReservationPostDTO[] reservationsPostDtos)
+    {
         decimal taxedPrice = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
         {
