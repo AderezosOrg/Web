@@ -33,6 +33,7 @@ public class RoomPostDTOConvert : IConverter1To6<Room, RoomTemplate, Hotel, List
             RoomTemplateWindows = roomTemplate.Windows,
             HotelName = hotel.Name,
             HotelAllowsPets = hotel.AllowsPets,
+            Tax = hotel.Tax,
             Beds = bedList,
             Bathrooms = bathList,
             Services = serviceList

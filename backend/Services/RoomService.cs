@@ -100,6 +100,7 @@ public class RoomService : AbstractRoomService
                 PricePerNight = roomPostDto.PricePerNight,
                 RoomID = Guid.NewGuid(),
                 RoomTemplateID = roomPostDto.RoomTemplateId
+                
             };
             _singletonBd.AddRoom(room);
             var roomTemplate = _singletonBd.GetRoomTemplateById(room.RoomTemplateID);

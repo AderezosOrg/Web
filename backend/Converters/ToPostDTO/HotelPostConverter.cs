@@ -21,7 +21,8 @@ public class HotelPostConverter : IConverter1To4<Hotel, User, Contact, Bathroom,
             HotelEmail = contact.Email,
             Shower = bathroom.Shower,
             Toilet = bathroom.Toilet,
-            DressingTable = bathroom.DressingTable
+            DressingTable = bathroom.DressingTable,
+            Tax = hotel.Tax
         };
     }
 }
