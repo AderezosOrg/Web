@@ -5,16 +5,15 @@ using IConverters;
 
 namespace backend.Converters.ToPostDTO;
 
-public class BathroomPostConverter : IConverter1To2<Bathroom, RoomBathInformation, BathroomPostDTO>
+public class BathroomPostConverter : IConverter1To1<Bathroom, BathroomPostDTO>
 {
-    public BathroomPostDTO Convert(Bathroom bathroom, RoomBathInformation roomBathInformation)
+    public BathroomPostDTO Convert(Bathroom bathroom)
     {
         return new BathroomPostDTO()
         {
             Shower = bathroom.Shower,
             Toilet = bathroom.Toilet,
             DressingTable = bathroom.DressingTable,
-            BathroomQuantity = roomBathInformation.Quantity
         };
     }
 }

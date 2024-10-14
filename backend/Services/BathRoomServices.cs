@@ -46,13 +46,12 @@ public class BathRoomServices : AbstractBathroomService
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
     
-    public override async Task<List<BathroomDTO>> GetBathRooms()
+    public override async Task<List<BathroomInfoDTO>> GetBathRooms()
     {
         await Task.Delay(10);
-        List<BathroomDTO> result = _bathroom.Select(b =>
+        List<BathroomInfoDTO> result = _bathroom.Select(b =>
         {
-            var roomBathInfo = _roomBathInformation.FirstOrDefault(info => info.BathRoomID == b.BathRoomID);
-            return _bathroomConverter.Convert(b, roomBathInfo);
+            return _bathroomConverter.Convert(b);
         }).ToList();
 
         return result;
@@ -66,8 +65,7 @@ public class BathRoomServices : AbstractBathroomService
         {
             throw new Exception("Bathroom not found");
         }
-        var roomBathInfo = _roomBathInformation.FirstOrDefault(info => info.BathRoomID == bathroom.BathRoomID);
-        return _bathroomPostConverter.Convert(bathroom, roomBathInfo);
+        return _bathroomPostConverter.Convert(bathroom);
     }
 
     public override async Task<BathroomPostDTO> CreateBathRoom(BathroomPostDTO bathroomPostDto)
@@ -83,15 +81,7 @@ public class BathRoomServices : AbstractBathroomService
                 DressingTable = bathroomPostDto.DressingTable
             };
             _bathroom.Add(newBathroom);
-            
-            var roomBathInfo = new RoomBathInformation
-            {
-                BathRoomID = newBathroom.BathRoomID,
-                Quantity = bathroomPostDto.BathroomQuantity,
-                RoomTemplateID = Guid.NewGuid()
-            };
-            _roomBathInformation.Add(roomBathInfo);
-            if (_bathroom.Contains(newBathroom) && _roomBathInformation.Contains(roomBathInfo))
+            if (_bathroom.Contains(newBathroom))
                 return bathroomPostDto;
             else
                 throw new Exception("Bathroom not created");
@@ -109,21 +99,6 @@ public class BathRoomServices : AbstractBathroomService
             existingBathroom.DressingTable = bathroomDto.DressingTable;
             existingBathroom.Toilet = bathroomDto.Toilet;
             
-            var roomBathInfo = _roomBathInformation.FirstOrDefault(info => info.BathRoomID == bathroomID);
-            if (roomBathInfo != null)
-            {
-                roomBathInfo.Quantity = bathroomDto.BathroomQuantity; 
-            }
-            else
-            {
-                roomBathInfo = new RoomBathInformation
-                {
-                    BathRoomID = existingBathroom.BathRoomID,
-                    Quantity = bathroomDto.BathroomQuantity,
-                    RoomTemplateID = Guid.NewGuid() 
-                };
-                _roomBathInformation.Add(roomBathInfo);
-            }
             return bathroomDto;
         }
         throw new Exception("Bathroom not found");

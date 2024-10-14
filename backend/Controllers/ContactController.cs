@@ -1,4 +1,6 @@
+using backend.Services;
 using DTOs.WithId;
+using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -6,48 +8,36 @@ namespace Controllers;
 [Route("api/[controller]")]
 public class ContactController : ControllerBase
 {
-    [HttpGet("{contactId}")]
-    public ActionResult<ContactDTO> GetContactById(Guid contactId)
+    private readonly ContactService _contactService;
+    public ContactController(ContactService contactService)
     {
-        return Ok(new ContactDTO
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "email@email.com",
-            PhoneNumber = "+35912345678",
-            ReservationList = new List<Guid>
-            {
-                Guid.NewGuid()
-            }
-        });
+        _contactService = contactService;
+    }
+    [HttpGet("{contactId}")]
+    public async Task<ActionResult<ContactPostDTO>> GetContactById(Guid contactId)
+    {
+        ContactPostDTO contact = await _contactService.GetContactById(contactId);
+        return Ok(contact);
     }
     
     [HttpGet]
-    public ActionResult<List<ContactDTO>> GetContacts()
+    public async Task<ActionResult<List<ContactDTO>>> GetContacts()
     {
-        return Ok(new List<ContactDTO>
-        {
-            new ContactDTO
-            {
-                ContactID = Guid.NewGuid(),
-                Email = "email@email.com",
-                PhoneNumber = "+35912345678",
-                ReservationList = new List<Guid>
-                {
-                    Guid.NewGuid()
-                }
-            }
-        });
+        List<ContactDTO> contacts = await _contactService.GetContacts();
+        return Ok(contacts);
     }
     
     [HttpPost]
-    public ActionResult<bool> CreateContact([FromBody] ContactDTO contactDto)
+    public async Task<ActionResult<ContactPostDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
     {
-        return Ok(true);
+        ContactPostDTO contact = await _contactService.CreateContact(contactDto);
+        return Ok(contact);
     }
     
     [HttpPut("{contactId}")]
-    public ActionResult<bool> ChangeContact(Guid contactId, ContactDTO contactDto)
+    public async Task<ActionResult<ContactPostDTO>> ChangeContact(Guid contactId, ContactPostDTO contactDto)
     {
-        return Ok(true);
+        ContactPostDTO contact = await _contactService.ChangeContact(contactId, contactDto);
+        return Ok(contact);
     }
 }

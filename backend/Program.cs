@@ -1,6 +1,15 @@
+using backend.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<BedService>();
+builder.Services.AddScoped<BathRoomServices>();
+builder.Services.AddScoped<ContactService>();
+builder.Services.AddScoped<HotelService>();
+builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<ServiceService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();

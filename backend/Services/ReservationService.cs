@@ -68,17 +68,37 @@ public class ReservationService : AbstractReservationService
     };
     
     private ReservationConverter _reservationPostConverter = new ReservationConverter();
-    public override async Task<ReservationDTO> GetReservationById(Guid reservationId)
+
+
+    public override async Task<List<ReservationDTO>> GetReservationsByContactId(Guid contactId)
     {
-        await Task.Delay(10);
-        var reservation = _reservations.FirstOrDefault(x => x.ContactID == reservationId);
-        if (reservation == null)
+        await Task.Delay(20);
+        var reservations = _reservations.Where(r => r.ContactID == contactId).ToList();
+        
+        var reservationDTOs = new List<ReservationDTO>();
+        foreach (var reservation in reservations)
         {
-            throw new Exception("Reservation not found");
+            var contact = _contacts.FirstOrDefault(c => c.ContactID == reservation.ContactID);
+            var room = _rooms.FirstOrDefault(r => r.RoomID == reservation.RoomID);
+            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
         }
-        var contact = _contacts.FirstOrDefault(x => x.ContactID == reservation.ContactID);
-        var room = _rooms.FirstOrDefault(x => x.RoomID == reservation.RoomID);
-        return _reservationPostConverter.Convert(reservation, contact, room);
+        return reservationDTOs;
+
+    }
+
+    public override async Task<List<ReservationDTO>> GetReservationsByRoomId(Guid roomId)
+    {
+        await Task.Delay(20);
+        var reservations = _reservations.Where(r => r.RoomID == roomId).ToList();
+        
+        var reservationDTOs = new List<ReservationDTO>();
+        foreach (var reservation in reservations)
+        {
+            var contact = _contacts.FirstOrDefault(c => c.ContactID == reservation.ContactID);
+            var room = _rooms.FirstOrDefault(r => r.RoomID == reservation.RoomID);
+            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
+        }
+        return reservationDTOs;
     }
 
     public override async Task<List<ReservationDTO>> GetReservations()
@@ -135,10 +155,10 @@ public class ReservationService : AbstractReservationService
         throw new Exception("Reservation data not found");
     }
 
-    public override async Task<ReservationDTO> CancelReservation(Guid reservationId)
+    public override async Task<ReservationDTO> CancelReservation(Guid contactId)
     {
         await Task.Delay(10);
-        var reservation = _reservations.FirstOrDefault(x => x.ContactID == reservationId);
+        var reservation = _reservations.FirstOrDefault(x => x.ContactID == contactId);
         var contact = _contacts.FirstOrDefault(x => x.ContactID == reservation.ContactID);
         var room = _rooms.FirstOrDefault(x => x.RoomID == reservation.RoomID);
         if (reservation != null)
