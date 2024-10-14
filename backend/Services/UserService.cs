@@ -4,75 +4,32 @@ using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 
 namespace backend.Services;
 
 public class UserService : AbstractUserService
 {
-    private static List<User> _users = new List<User>()
-    {
-        new User()
-        {
-            UserID = Guid.NewGuid(),
-            Name = "user1",
-            CINumber = "6879821",
-        },
-        new User()
-        {
-            UserID = Guid.NewGuid(),
-            Name = "user2",
-            CINumber = "12345678",
-        }
-    };
-
-    private List<Contact> _contacts = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "user1@gmail.com",
-            PhoneNumber = "12345678",
-        },
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "user2@gmail.com",
-            PhoneNumber = "122345678",
-        }
-    };
-
-    private List<Hotel> _hotels = new List<Hotel>()
-    {
-        new Hotel()
-        {
-            HotelID = Guid.NewGuid(),
-            AllowsPets = true,
-            Address = "address",
-            BathRoomID = Guid.NewGuid(),
-            ContactID = Guid.NewGuid(),
-            Name = "hotel1",
-            Stars = 1,
-            UserID = Guid.NewGuid(),
-        },
-        new Hotel()
-        {
-            HotelID = Guid.NewGuid(),
-            AllowsPets = false,
-            Address = "address2",
-            BathRoomID = Guid.NewGuid(),
-            ContactID = Guid.NewGuid(),
-            Name = "hotel2",
-            Stars = 5,
-            UserID = Guid.NewGuid(),
-        }
-    };
+    private SingletonBD _singletonBd;
+    private List<User> _users = new List<User>();
+    
+    private List<Contact> _contacts = new List<Contact>();
+    private List<Hotel> _hotels = new List<Hotel>();
     
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
+
+    public UserService()
+    {
+        _singletonBd = SingletonBD.Instance;
+        _users = _singletonBd.GetAllUsers();
+        _contacts = _singletonBd.GetAllContacts();
+        _hotels = _singletonBd.GetAllHotels();
+    }
     public override async Task<UserPostDTO> GetUserById(Guid userId)
     {
         await Task.Delay(10);
-        var user = _users.FirstOrDefault(u => u.UserID == userId);
+        var user = _singletonBd.GetUserById(userId);
         if (user == null)
             throw new Exception("User not found");
         var contact = _contacts.FirstOrDefault(c => c.ContactID == user.ContactID);
@@ -83,6 +40,7 @@ public class UserService : AbstractUserService
     public override async Task<List<UserDTO>> GetUsers()
     {
         await Task.Delay(10);
+        _users = _singletonBd.GetAllUsers();
         List<UserDTO> result = _users.Select(x =>
         {
             var contact = _contacts.FirstOrDefault(c => c.ContactID == x.ContactID);
@@ -105,18 +63,8 @@ public class UserService : AbstractUserService
                 ContactID = Guid.NewGuid(),
                 UserID = Guid.NewGuid(),
             };
-            _users.Add(newUser);
-
-            var newContact = new Contact
-            {
-                ContactID = Guid.NewGuid(),
-                Email = userPostDto.Email,
-                PhoneNumber = userPostDto.PhoneNumber,
-            };
-            _contacts.Add(newContact);
-            
-            var relatedHotels = _hotels.Where(h => h.ContactID == newContact.ContactID).ToList();
-            if (_users.Contains(newUser) && _contacts.Contains(newContact) && relatedHotels.Any())
+            _singletonBd.AddUser(newUser);
+            if (_singletonBd.GetAllUsers().Contains(newUser))
                 return userPostDto;
             else
                 throw new Exception("Contact not created");
@@ -128,52 +76,33 @@ public class UserService : AbstractUserService
     public override async Task<bool> DeleteUserById(Guid userId)
     {
         await Task.Delay(10);
-
-        var user = _users.FirstOrDefault(u => u.UserID == userId);
-        if (user != null)
-        {
-            _users.Remove(user);
-
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == user.ContactID);
-            if (contact != null)
-            {
-                _contacts.Remove(contact);
-            }
-
-            var relatedHotels = _hotels.Where(h => h.ContactID == user.ContactID).ToList();
-            foreach (var hotel in relatedHotels)
-            {
-                _hotels.Remove(hotel);
-            }
-
-            return true; 
-        }
-
-        throw new Exception("User not found");
+        return _singletonBd.DeleteUser(userId);
     }
 
     public override async Task<UserPostDTO> EditUserById(Guid userId, UserPostDTO userPostDto)
     {
         await Task.Delay(10);
-        var existingUser = _users.FirstOrDefault(u => u.UserID == userId);
-        if (existingUser != null)
+    
+        var existingUser = _singletonBd.GetUserById(userId);
+        if (existingUser == null)
+            throw new Exception("User not found");
+
+        existingUser.Name = userPostDto.Name;
+        existingUser.CINumber = userPostDto.CINumber;
+
+        var contact = _singletonBd.GetContactById(existingUser.ContactID);
+        if (contact != null)
         {
-            existingUser.Name = userPostDto.Name;
-            existingUser.CINumber = userPostDto.CINumber;
-
-            var existingContact = _contacts.FirstOrDefault(c => c.ContactID == existingUser.ContactID);
-            if (existingContact != null)
-            {
-                existingContact.Email = userPostDto.Email;
-                existingContact.PhoneNumber = userPostDto.PhoneNumber;
-            }
-
-            var relatedHotels = _hotels.Where(h => h.ContactID == existingUser.ContactID).ToList();
-
-            var userPostConverter = new UserPostConverter();
-            return userPostConverter.Convert(existingUser, existingContact, relatedHotels);
+            contact.PhoneNumber = userPostDto.PhoneNumber; 
+            contact.Email = userPostDto.Email;
+            _singletonBd.UpdateContact(contact); 
         }
 
-        throw new Exception("User not found");
+        _singletonBd.UpdateUser(existingUser);
+    
+        var relatedHotels = _singletonBd.GetAllHotels().Where(h => h.UserID == userId).ToList();
+    
+        return _userPostConverter.Convert(existingUser, contact, relatedHotels);
     }
+
 }
