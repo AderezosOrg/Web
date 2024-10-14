@@ -135,7 +135,7 @@ public class SingletonBD
         return _bathrooms.FirstOrDefault(b => b.BathRoomID == entity.BathRoomID);
     }
 
-    public Bathroom UpdateBed(Bathroom entity)
+    public Bathroom UpdateBathroom(Bathroom entity)
     {
         ReloadDatabase();
         _bathrooms.Remove(_bathrooms.FirstOrDefault(b => b.BathRoomID == entity.BathRoomID));

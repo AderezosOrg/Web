@@ -4,51 +4,32 @@ using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 
 namespace backend.Services;
 
 public class BathRoomServices : AbstractBathroomService
 {
-    private static List<Bathroom> _bathroom = new List<Bathroom>()
-    {
-        new Bathroom()
-        {
-            BathRoomID = Guid.NewGuid(),
-            Shower = true,
-            Toilet = true,
-            DressingTable = true
-        },
-        new Bathroom()
-        {
-            BathRoomID = Guid.NewGuid(),
-            Shower = false,
-            DressingTable = true,
-            Toilet = false
-        }
-    };
+    
 
-    private List<RoomBathInformation> _roomBathInformation = new List<RoomBathInformation>()
-    {
-        new RoomBathInformation()
-        {
-            BathRoomID = _bathroom[0].BathRoomID, 
-            Quantity = 3,
-            RoomTemplateID = Guid.NewGuid(),
-        },
-        new RoomBathInformation()
-        {
-            BathRoomID = _bathroom[1].BathRoomID,
-            Quantity = 2,
-            RoomTemplateID = Guid.NewGuid(),
-        }
-    };
+    private SingletonBD _singletonBd;
+    private List<Bathroom> _bathroom = new List<Bathroom>();
+
+    private List<RoomBathInformation> _roomBathInformation = new List<RoomBathInformation>();
     
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
     
+    public BathRoomServices()
+    {
+        _singletonBd = SingletonBD.Instance;
+        _bathroom = _singletonBd.GetAllBathRooms();
+        _roomBathInformation = _singletonBd.GetAllBathroomInformation();
+    }
     public override async Task<List<BathroomInfoDTO>> GetBathRooms()
     {
         await Task.Delay(10);
+        _bathroom = _singletonBd.GetAllBathRooms();
         List<BathroomInfoDTO> result = _bathroom.Select(b =>
         {
             return _bathroomConverter.Convert(b);
@@ -59,8 +40,8 @@ public class BathRoomServices : AbstractBathroomService
 
     public override async Task<BathroomPostDTO> GetBathRoomById(Guid bathroomID)
     {
-        await Task.Delay(10); 
-        var bathroom = _bathroom.FirstOrDefault(b => b.BathRoomID == bathroomID);
+        await Task.Delay(10);
+        var bathroom = _singletonBd.GetBathRoomById(bathroomID);
         if (bathroom == null)
         {
             throw new Exception("Bathroom not found");
@@ -80,8 +61,8 @@ public class BathRoomServices : AbstractBathroomService
                 Toilet = bathroomPostDto.Toilet,
                 DressingTable = bathroomPostDto.DressingTable
             };
-            _bathroom.Add(newBathroom);
-            if (_bathroom.Contains(newBathroom))
+            _singletonBd.AddBathroom(newBathroom);
+            if (_singletonBd.GetAllBathRooms().Contains(newBathroom))
                 return bathroomPostDto;
             else
                 throw new Exception("Bathroom not created");
@@ -92,31 +73,18 @@ public class BathRoomServices : AbstractBathroomService
     public override async Task<BathroomPostDTO> EditBathRoom(Guid bathroomID, BathroomPostDTO bathroomDto)
     {
         await Task.Delay(100);
-        var existingBathroom = _bathroom.FirstOrDefault(b => b.BathRoomID == bathroomID);
-        if (existingBathroom != null)
+        return _bathroomPostConverter.Convert(_singletonBd.UpdateBathroom(new Bathroom()
         {
-            existingBathroom.Shower = bathroomDto.Shower;
-            existingBathroom.DressingTable = bathroomDto.DressingTable;
-            existingBathroom.Toilet = bathroomDto.Toilet;
-            
-            return bathroomDto;
-        }
-        throw new Exception("Bathroom not found");
+            BathRoomID = bathroomID,
+            DressingTable = bathroomDto.DressingTable,
+            Shower = bathroomDto.Shower,
+            Toilet = bathroomDto.Toilet
+        }));
     }
 
     public override async Task<bool> DeleteBathRoom(Guid bathroomID)
     {
         await Task.Delay(100);
-        var bathroom = _bathroom.FirstOrDefault(b => b.BathRoomID == bathroomID);
-        if (bathroom != null)
-        {
-            _bathroom.Remove(bathroom);
-            if (!_bathroom.Contains(bathroom))
-                return true;
-            else
-                throw new Exception("Bathroom not deleted");
-        }
-        else 
-            throw new Exception("Bathroom not found");
+        return _singletonBd.DeleteBathroom(bathroomID);
     }
 }
