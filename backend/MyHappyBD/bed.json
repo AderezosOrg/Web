@@ -1,0 +1,27 @@
+[
+  {
+    "BedID": "a4f50bb3-7f12-4e9d-a111-7c96f8e1d53a",
+    "Size": "Queen",
+    "Capacity": "2"
+  },
+  {
+    "BedID": "b613d8ff-1f23-4710-bbbb-2580c1ef56e9",
+    "Size": "King",
+    "Capacity": "2"
+  },
+  {
+    "BedID": "fa123ca3-3245-4a1e-a5d8-03e59c78f824",
+    "Size": "Single",
+    "Capacity": "1"
+  },
+  {
+    "BedID": "ea3b9d75-14f4-4d1c-85e1-d824f59a0872",
+    "Size": "Double",
+    "Capacity": "2"
+  },
+  {
+    "BedID": "ff58c07c-e2f7-4b24-9093-76974e64e6e9",
+    "Size": "Twin",
+    "Capacity": "1"
+  }
+]
