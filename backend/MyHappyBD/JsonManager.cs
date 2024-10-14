@@ -2,10 +2,10 @@ using System.Text.Json;
 
 namespace backend.MyHappyBD;
 
-public class JsonManager
+public static class JsonManager
 {
     
-    public async Task<T> ReadJsonAsync<T>(string filePath)
+    public static async Task<T> ReadJsonAsync<T>(string filePath)
     {
         try
         {
@@ -20,7 +20,7 @@ public class JsonManager
         }
     }
 
-    public async Task WriteJsonAsync<T>(string filePath, T obj)
+    public static async Task WriteJsonAsync<T>(string filePath, T obj)
     {
         try
         {
