@@ -4,7 +4,7 @@ namespace backend.Services.AbstractClass;
 
 public abstract class AbstractRoomService
 {
-    public abstract Task<RoomPostDTO> GetRoomById(Guid roomId);
+    public abstract Task<RoomFullInfoDTO> GetRoomById(Guid roomId);
     public abstract Task<List<RoomFullInfoDTO>> GetRooms();
     public abstract Task<RoomPostDTO> CreateRoom(RoomNewPostDTO roomDto);
     public abstract Task<List<BedDTO>> GetRoomBedsById(Guid roomId);
