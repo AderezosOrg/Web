@@ -11,7 +11,6 @@ namespace backend.Services;
 public class ServiceService : AbstractServiceService
 {
     private SingletonBD _singletonBd;
-    private List<Service> _services = new List<Service>();
     
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
@@ -19,7 +18,6 @@ public class ServiceService : AbstractServiceService
     public ServiceService()
     {
         _singletonBd = SingletonBD.Instance;
-        _services = _singletonBd.GetAllServices();
     }
     
     public override async Task<ServicePostDTO> GetServiceById(Guid serviceId)
@@ -34,8 +32,8 @@ public class ServiceService : AbstractServiceService
     public override async Task<List<ServiceDTO>> GetServices()
     {
         await Task.Delay(10);
-        _services = _singletonBd.GetAllServices();
-        List<ServiceDTO> result = _services.Select(s =>
+        
+        List<ServiceDTO> result = _singletonBd.GetAllServices().Select(s =>
         {
             return _serviceConverter.Convert(s);
         }).ToList();

@@ -11,9 +11,7 @@ namespace backend.Services;
 public class BathRoomServices : AbstractBathroomService
 {
     private SingletonBD _singletonBd;
-    private List<Bathroom> _bathroom = new List<Bathroom>();
 
-    private List<RoomBathInformation> _roomBathInformation = new List<RoomBathInformation>();
     
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
@@ -21,14 +19,11 @@ public class BathRoomServices : AbstractBathroomService
     public BathRoomServices()
     {
         _singletonBd = SingletonBD.Instance;
-        _bathroom = _singletonBd.GetAllBathRooms();
-        _roomBathInformation = _singletonBd.GetAllBathroomInformation();
     }
     public override async Task<List<BathroomInfoDTO>> GetBathRooms()
     {
         await Task.Delay(10);
-        _bathroom = _singletonBd.GetAllBathRooms();
-        List<BathroomInfoDTO> result = _bathroom.Select(b =>
+        List<BathroomInfoDTO> result = _singletonBd.GetAllBathRooms().Select(b =>
         {
             return _bathroomConverter.Convert(b);
         }).ToList();

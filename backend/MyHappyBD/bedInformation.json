@@ -1,27 +1,27 @@
 [
   {
     "RoomTemplateID": "0a7f4561-1b8b-4f5f-9bbf-563ad9e4a2d6",
-    "BedID": "b1a7f2c0-2bcd-412a-8f37-0b6b1f362e5c",
+    "BedID": "a4f50bb3-7f12-4e9d-a111-7c96f8e1d53a",
     "Quantity": 2
   },
   {
     "RoomTemplateID": "1c3e456f-57b1-4627-b8c2-37e5e1e5b123",
-    "BedID": "5e1d9d8e-4f34-45e3-bb64-53c59e14a8d3",
+    "BedID": "b613d8ff-1f23-4710-bbbb-2580c1ef56e9",
     "Quantity": 1
   },
   {
     "RoomTemplateID": "2d6e47e9-9d62-46db-bbe9-1f7d91f80765",
-    "BedID": "8c2fbb5f-58d1-4e74-a8f4-ef2028e9e3a7",
+    "BedID": "fa123ca3-3245-4a1e-a5d8-03e59c78f824",
     "Quantity": 3
   },
   {
     "RoomTemplateID": "3f8c48a7-9b94-48fd-961f-347e7f5f6db4",
-    "BedID": "2d4c35b3-3488-4a6a-a8df-b216e8a5a42c",
+    "BedID": "ea3b9d75-14f4-4d1c-85e1-d824f59a0872",
     "Quantity": 1
   },
   {
     "RoomTemplateID": "4b7d49e3-8c12-437f-b7df-27f7e8b01a44",
-    "BedID": "a3fcaf8e-fb18-44a3-8d1c-f3d469879d2e",
+    "BedID": "ff58c07c-e2f7-4b24-9093-76974e64e6e9",
     "Quantity": 2
   }
 ]

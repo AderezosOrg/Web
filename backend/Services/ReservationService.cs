@@ -12,7 +12,7 @@ public class ReservationService : AbstractReservationService
 {
     private SingletonBD _singletonBd;
     
-    private ReservationConverter _reservationPostConverter = new ReservationConverter();
+    private ReservationConverter _reservationConverter = new ReservationConverter();
 
 
     public ReservationService()
@@ -30,7 +30,7 @@ public class ReservationService : AbstractReservationService
         {
             var contact = _singletonBd.GetContactById(reservation.ContactID);
             var room = _singletonBd.GetRoomById(reservation.RoomID);
-            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
+            reservationDTOs.Add(_reservationConverter.Convert(reservation, contact, room));
         }
         return reservationDTOs;
 
@@ -46,7 +46,7 @@ public class ReservationService : AbstractReservationService
         {
             var contact = _singletonBd.GetContactById(reservation.ContactID);
             var room = _singletonBd.GetRoomById(reservation.RoomID);
-            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
+            reservationDTOs.Add(_reservationConverter.Convert(reservation, contact, room));
         }
         return reservationDTOs;
     }
@@ -58,7 +58,7 @@ public class ReservationService : AbstractReservationService
         {
             var contact = _singletonBd.GetContactById(r.ContactID);
             var room = _singletonBd.GetRoomById(r.RoomID);
-            return _reservationPostConverter.Convert(r, contact, room);
+            return _reservationConverter.Convert(r, contact, room);
         }).ToList();
         
         return result;
@@ -98,7 +98,7 @@ public class ReservationService : AbstractReservationService
             reservation.Cancelled = false;
             _singletonBd.UpdateReservation(reservation);
             if (reservation.Cancelled == false)
-                return _reservationPostConverter.Convert(reservation, contact, room);
+                return _reservationConverter.Convert(reservation, contact, room);
             else
                 throw new Exception("Reservation not cancelled");
 

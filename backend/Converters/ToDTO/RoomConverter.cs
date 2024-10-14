@@ -62,8 +62,8 @@ namespace Converters.ToDTO
         {
             return new RoomFullInfoDTO()
             {
-                Bathrooms = input2,
-                Beds = input3,
+                Bathrooms = input2.ToList(),
+                Beds = input3.ToList(),
                 Code = input1.Code,
                 FloorNumber = input1.FloorNumber,
                 HotelName = input1.HotelName,
@@ -72,7 +72,7 @@ namespace Converters.ToDTO
                 RoomTemplateSide = input1.RoomTemplateSide,
                 RoomTemplateWindows = input1.RoomTemplateWindows,
                 RoomID = input1.RoomID,
-                Services = input4
+                Services = input4.ToList()
             };
         }
     }

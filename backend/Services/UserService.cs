@@ -11,10 +11,6 @@ namespace backend.Services;
 public class UserService : AbstractUserService
 {
     private SingletonBD _singletonBd;
-    private List<User> _users = new List<User>();
-    
-    private List<Contact> _contacts = new List<Contact>();
-    private List<Hotel> _hotels = new List<Hotel>();
     
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
@@ -22,9 +18,6 @@ public class UserService : AbstractUserService
     public UserService()
     {
         _singletonBd = SingletonBD.Instance;
-        _users = _singletonBd.GetAllUsers();
-        _contacts = _singletonBd.GetAllContacts();
-        _hotels = _singletonBd.GetAllHotels();
     }
     public override async Task<UserPostDTO> GetUserById(Guid userId)
     {
@@ -32,19 +25,19 @@ public class UserService : AbstractUserService
         var user = _singletonBd.GetUserById(userId);
         if (user == null)
             throw new Exception("User not found");
-        var contact = _contacts.FirstOrDefault(c => c.ContactID == user.ContactID);
-        var hotel = _hotels.Where(h => h.UserID == user.UserID).ToList();
+        var contact = _singletonBd.GetContactById(user.ContactID);
+        var hotel = _singletonBd.GetHotelByUserId(user.UserID);
         return _userPostConverter.Convert(user,contact, hotel);
     }
 
     public override async Task<List<UserDTO>> GetUsers()
     {
         await Task.Delay(10);
-        _users = _singletonBd.GetAllUsers();
-        List<UserDTO> result = _users.Select(x =>
+        
+        List<UserDTO> result = _singletonBd.GetAllUsers().Select(x =>
         {
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == x.ContactID);
-            var hotel = _hotels.Where(h => h.UserID == x.UserID).ToList();
+            var contact = _singletonBd.GetContactById(x.ContactID);
+            var hotel = _singletonBd.GetHotelByUserId(x.UserID);
             return _userConverter.Convert(x, contact, hotel);
         }).ToList();
         
