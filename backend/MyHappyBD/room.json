@@ -1,0 +1,42 @@
+[
+  {
+    "RoomID": "9b89dc3f-6d7a-45e7-b76b-9ff2e1a85a0a",
+    "Code": "A101",
+    "FloorNumber": 1,
+    "PricePerNight": 150.00,
+    "RoomTemplateID": "0a7f4561-1b8b-4f5f-9bbf-563ad9e4a2d6",
+    "HotelID": "c98b1e1d-b8b7-4d2f-8155-f2eb4d087c9a"
+  },
+  {
+    "RoomID": "42c9b707-b5ed-4b58-a3d7-3c3f3dff76e2",
+    "Code": "B202",
+    "FloorNumber": 2,
+    "PricePerNight": 200.00,
+    "RoomTemplateID": "1c3e456f-57b1-4627-b8c2-37e5e1e5b123",
+    "HotelID": "e276fbc7-35e7-4ec2-bd92-1b89d3187b1c"
+  },
+  {
+    "RoomID": "f3b01abf-9219-4d44-bb7f-2e6e53e5a72c",
+    "Code": "C303",
+    "FloorNumber": 3,
+    "PricePerNight": 180.50,
+    "RoomTemplateID": "2d6e47e9-9d62-46db-bbe9-1f7d91f80765",
+    "HotelID": "f14da1b5-62f8-471a-b5fe-e3cb4e2ad828"
+  },
+  {
+    "RoomID": "ba56d0f3-854d-44d1-8c45-5f29d7bc09e5",
+    "Code": "D404",
+    "FloorNumber": 4,
+    "PricePerNight": 250.00,
+    "RoomTemplateID": "3f8c48a7-9b94-48fd-961f-347e7f5f6db4",
+    "HotelID": "b36d8ec8-d5ec-4a2b-8d43-72e9bf0d4079"
+  },
+  {
+    "RoomID": "cb34dc8d-bf7a-467d-a5df-47c04b8f3277",
+    "Code": "E505",
+    "FloorNumber": 5,
+    "PricePerNight": 300.75,
+    "RoomTemplateID": "4b7d49e3-8c12-437f-b7df-27f7e8b01a44",
+    "HotelID": "e24f8cf1-4dbf-418f-a7ba-81d1bfa6749b"
+  }
+]

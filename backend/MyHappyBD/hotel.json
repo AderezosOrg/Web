@@ -1,0 +1,52 @@
+[
+  {
+    "HotelID": "c98b1e1d-b8b7-4d2f-8155-f2eb4d087c9a",
+    "Stars": 5,
+    "Name": "Grand Palace Hotel",
+    "AllowsPets": true,
+    "Address": "123 Main Street, Cityville",
+    "UserID": "a7b3d3ef-2451-48e9-98c9-bd963e5167d7",
+    "ContactID": "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
+    "BathRoomID": "a3c05e54-12cd-4d34-b8c2-6826b1c47f0a"
+  },
+  {
+    "HotelID": "e276fbc7-35e7-4ec2-bd92-1b89d3187b1c",
+    "Stars": 4,
+    "Name": "Seaside Resort",
+    "AllowsPets": false,
+    "Address": "456 Ocean Drive, Seaview",
+    "UserID": "b2e65aef-3b7f-41d8-9a79-b7fbe6f4b872",
+    "ContactID": "f32960cb-0b73-4e4c-85fc-2c4085cb4a77",
+    "BathRoomID": "b65f18e9-ef85-4d98-aedc-9f0b8a6cfc60"
+  },
+  {
+    "HotelID": "f14da1b5-62f8-471a-b5fe-e3cb4e2ad828",
+    "Stars": 3,
+    "Name": "Mountain Lodge",
+    "AllowsPets": true,
+    "Address": "789 Hilltop Road, Mountainview",
+    "UserID": "fae2c84f-4d83-4204-a3f9-4d6295be0c34",
+    "ContactID": "ab3c56de-32f9-4121-914e-6d7ed99d3a4d",
+    "BathRoomID": "c1f0a6b7-5f53-4c34-9d85-8f4d8e8d44fc"
+  },
+  {
+    "HotelID": "b36d8ec8-d5ec-4a2b-8d43-72e9bf0d4079",
+    "Stars": 5,
+    "Name": "City Center Hotel",
+    "AllowsPets": false,
+    "Address": "101 Central Ave, Metropolis",
+    "UserID": "db85b28b-e149-44eb-95a0-f6d86b571a26",
+    "ContactID": "e67f3b6a-8760-4c0b-88cd-19253f7bfb2b",
+    "BathRoomID": "d9d309e3-1b58-46ed-84c1-6e2fd634e2b8"
+  },
+  {
+    "HotelID": "e24f8cf1-4dbf-418f-a7ba-81d1bfa6749b",
+    "Stars": 4,
+    "Name": "Lakeside Inn",
+    "AllowsPets": true,
+    "Address": "202 Lakeshore Blvd, Rivertown",
+    "UserID": "f36a5e5d-4913-4d7c-9d35-68a9df7c8899",
+    "ContactID": "b2f6e2f4-f9d1-45e5-9ef2-473fbfb5e3e6",
+    "BathRoomID": "e3ac4e88-2e79-4a2a-80fa-2f8d0b7e1b8e"
+  }
+]

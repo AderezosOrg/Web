@@ -1,0 +1,27 @@
+[
+  {
+    "RoomTemplateID": "0a7f4561-1b8b-4f5f-9bbf-563ad9e4a2d6",
+    "BathRoomID": "a3c05e54-12cd-4d34-b8c2-6826b1c47f0a",
+    "Quantity": 1
+  },
+  {
+    "RoomTemplateID": "1c3e456f-57b1-4627-b8c2-37e5e1e5b123",
+    "BathRoomID": "b65f18e9-ef85-4d98-aedc-9f0b8a6cfc60",
+    "Quantity": 2
+  },
+  {
+    "RoomTemplateID": "2d6e47e9-9d62-46db-bbe9-1f7d91f80765",
+    "BathRoomID": "c1f0a6b7-5f53-4c34-9d85-8f4d8e8d44fc",
+    "Quantity": 1
+  },
+  {
+    "RoomTemplateID": "3f8c48a7-9b94-48fd-961f-347e7f5f6db4",
+    "BathRoomID": "d9d309e3-1b58-46ed-84c1-6e2fd634e2b8",
+    "Quantity": 2
+  },
+  {
+    "RoomTemplateID": "4b7d49e3-8c12-437f-b7df-27f7e8b01a44",
+    "BathRoomID": "e3ac4e88-2e79-4a2a-80fa-2f8d0b7e1b8e",
+    "Quantity": 1
+  }
+]
