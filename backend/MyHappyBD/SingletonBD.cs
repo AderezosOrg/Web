@@ -371,10 +371,23 @@ public class SingletonBD
         return _roomBathInformations.FirstOrDefault(b => b.BathRoomID == entity.BathRoomID && b.RoomTemplateID == entity.RoomTemplateID);
     }
 
-    public bool DeleteBathroomInformation(Guid id)
+    public bool DeleteBathroomInformationByRoomTemplateId(Guid id)
     {
         ReloadDatabase();
-        if (_roomBathInformations.Remove(_roomBathInformations.FirstOrDefault(b => b.BathRoomID == id && b.RoomTemplateID == id)))
+        _roomBathInformations.RemoveAll(b => b.RoomTemplateID == id);
+        if (!_roomBathInformations.Exists(b => b.RoomTemplateID == id))
+        {
+            JsonManager.WriteJsonAsync<List<RoomBathInformation>>("roomBathInformation.json", _roomBathInformations);
+            return true;
+        }
+        return false;
+    }
+    
+    public bool DeleteBathroomInformationByBathroomId(Guid id)
+    {
+        ReloadDatabase();
+        _roomBathInformations.RemoveAll(b => b.BathRoomID == id);
+        if (!_roomBathInformations.Exists(b => b.BathRoomID == id))
         {
             JsonManager.WriteJsonAsync<List<RoomBathInformation>>("roomBathInformation.json", _roomBathInformations);
             return true;
@@ -507,10 +520,23 @@ public class SingletonBD
         return _bedInformations.FirstOrDefault(bi => bi.BedID == entity.BedID && bi.RoomTemplateID == entity.RoomTemplateID);
     }
 
-    public bool DeleteBedInformation(Guid bedId, Guid roomTemplateId)
+    public bool DeleteBedByRoomTemplateIdInformation(Guid roomTemplateId)
     {
         ReloadDatabase();
-        if (_bedInformations.Remove(_bedInformations.FirstOrDefault(bi => bi.BedID == bedId && bi.RoomTemplateID == roomTemplateId)))
+        _bedInformations.RemoveAll(b => b.RoomTemplateID == roomTemplateId);
+        if (!_bedInformations.Exists(b => b.RoomTemplateID == roomTemplateId))
+        {
+            JsonManager.WriteJsonAsync<List<BedInformation>>("bedInformation.json", _bedInformations);
+            return true;
+        }
+        return false;
+    }
+    
+    public bool DeleteBedByBedIdInformation(Guid bedId)
+    {
+        ReloadDatabase();
+        _bedInformations.RemoveAll(b => b.BedID == bedId);
+        if (!_bedInformations.Exists(b => b.BedID == bedId))
         {
             JsonManager.WriteJsonAsync<List<BedInformation>>("bedInformation.json", _bedInformations);
             return true;

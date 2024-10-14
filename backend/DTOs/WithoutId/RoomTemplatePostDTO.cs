@@ -1,8 +1,9 @@
-namespace DTOs.WithId;
+using DTOs.WithId;
+
+namespace DTOs.WithoutId;
 
 public class RoomTemplatePostDTO
 {
-    public Guid RoomTemplateID { get; set; }
     public string Side { get; set; }
     public int Windows { get; set; }
     public List<BedAddToTemplateDTO> Beds { get; set; }

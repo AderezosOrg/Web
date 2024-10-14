@@ -9,6 +9,6 @@ public class RoomTemplateDTO
     public Guid RoomTemplateID { get; set; }
     public string Side { get; set; }
     public int Windows { get; set; }
-    public List<BathroomPostDTO> Beds { get; set; }
-    public List<BedDTO> Bathrooms { get; set; }
+    public List<BedDTO> Beds { get; set; }
+    public List<BathroomDTO> Bathrooms { get; set; }
 }
