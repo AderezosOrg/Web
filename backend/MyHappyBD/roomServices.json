@@ -1,0 +1,22 @@
+[
+  {
+    "RoomID": "9b89dc3f-6d7a-45e7-b76b-9ff2e1a85a0a",
+    "ServiceID": "4b3c9a1b-8dfb-40ae-91cc-3e5b6a99c637"
+  },
+  {
+    "RoomID": "42c9b707-b5ed-4b58-a3d7-3c3f3dff76e2",
+    "ServiceID": "f1e0b4c5-75c3-4d8f-8e07-d41b84efae0b"
+  },
+  {
+    "RoomID": "f3b01abf-9219-4d44-bb7f-2e6e53e5a72c",
+    "ServiceID": "a7e23a45-73da-45ec-a2a5-2e6a67134a5e"
+  },
+  {
+    "RoomID": "ba56d0f3-854d-44d1-8c45-5f29d7bc09e5",
+    "ServiceID": "2f9c7c0b-e3ee-4b68-9517-82a3a2dfc1f9"
+  },
+  {
+    "RoomID": "cb34dc8d-bf7a-467d-a5df-47c04b8f3277",
+    "ServiceID": "7b82a5c9-bd8b-4b9f-bcb0-8c0275a44079"
+  }
+]

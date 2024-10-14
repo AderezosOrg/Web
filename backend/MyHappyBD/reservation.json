@@ -1,0 +1,37 @@
+[
+  {
+    "ContactID": "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
+    "RoomID": "9b89dc3f-6d7a-45e7-b76b-9ff2e1a85a0a",
+    "ReservationDate": "2024-10-10T14:00:00",
+    "UseDate": "2024-10-12T14:00:00",
+    "Cancelled": false
+  },
+  {
+    "ContactID": "f32960cb-0b73-4e4c-85fc-2c4085cb4a77",
+    "RoomID": "42c9b707-b5ed-4b58-a3d7-3c3f3dff76e2",
+    "ReservationDate": "2024-10-11T10:00:00",
+    "UseDate": "2024-10-15T14:00:00",
+    "Cancelled": false
+  },
+  {
+    "ContactID": "ab3c56de-32f9-4121-914e-6d7ed99d3a4d",
+    "RoomID": "f3b01abf-9219-4d44-bb7f-2e6e53e5a72c",
+    "ReservationDate": "2024-10-12T09:00:00",
+    "UseDate": "2024-10-20T14:00:00",
+    "Cancelled": true
+  },
+  {
+    "ContactID": "b2f6e2f4-f9d1-45e5-9ef2-473fbfb5e3e6",
+    "RoomID": "ba56d0f3-854d-44d1-8c45-5f29d7bc09e5",
+    "ReservationDate": "2024-10-13T11:30:00",
+    "UseDate": "2024-10-18T14:00:00",
+    "Cancelled": false
+  },
+  {
+    "ContactID": "d59e45aa-9f62-487f-a1eb-b4c785e8a5bc",
+    "RoomID": "cb34dc8d-bf7a-467d-a5df-47c04b8f3277",
+    "ReservationDate": "2024-10-14T16:45:00",
+    "UseDate": "2024-10-22T14:00:00",
+    "Cancelled": false
+  }
+]
