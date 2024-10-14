@@ -10,8 +10,6 @@ namespace backend.Services;
 
 public class BathRoomServices : AbstractBathroomService
 {
-    
-
     private SingletonBD _singletonBd;
     private List<Bathroom> _bathroom = new List<Bathroom>();
 

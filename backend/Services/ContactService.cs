@@ -2,6 +2,7 @@ using DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 using backend.Services.AbstractClass;
 using Converters.ToDTO;
 using DTOs.WithId;
@@ -12,48 +13,24 @@ namespace backend.Services;
 
 public class ContactService : AbstractContactService
 {
-    private static List<Contact> _contact = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "email@email.com",
-            PhoneNumber = "+35912345678",
-        },
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "LEONARDO@email.com",
-            PhoneNumber = "+59174365698",
-        }
-    };
-
-    private List<Reservation> _reservations = new List<Reservation>()
-    {
-        new Reservation()
-        {
-            Cancelled = false,
-            ContactID = _contact[0].ContactID,
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today
-        },
-        new Reservation()
-        {
-            Cancelled = true,
-            ContactID = _contact[1].ContactID,
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today
-        }
-    };
+    private SingletonBD _singletonBd;
+    private List<Contact> _contact = new List<Contact>();
+    
+    private List<Reservation> _reservations = new List<Reservation>();
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
+
+    public ContactService()
+    {
+        _singletonBd = SingletonBD.Instance;
+        _contact = _singletonBd.GetAllContacts();
+        _reservations = _singletonBd.GetAllReservations();
+    }
     public override async Task<ContactPostDTO> GetContactById(Guid contactID)
     {
         await Task.Delay(10);
-        var contact = _contact.FirstOrDefault(x => x.ContactID == contactID);
+        var contact = _singletonBd.GetContactById(contactID);
         if (contact == null)
             throw new Exception("Contact not found");
         var reservation = _reservations.Where(x => x.ContactID == contact.ContactID).ToList();
@@ -63,6 +40,7 @@ public class ContactService : AbstractContactService
     public override async Task<List<ContactDTO>> GetContacts()
     {
         await Task.Delay(10);
+        _contact = _singletonBd.GetAllContacts();
         List<ContactDTO> result = _contact.Select(x =>
         {
             var reservation = _reservations.Where(x => x.ContactID == x.ContactID).ToList();
@@ -83,18 +61,8 @@ public class ContactService : AbstractContactService
                 Email = contactPostDtoDto.Email,
                 PhoneNumber = contactPostDtoDto.PhoneNumber
             };
-            _contact.Add(newContact);
-
-            var reservations = new Reservation
-            {
-                Cancelled = false,
-                ContactID = newContact.ContactID,
-                ReservationDate = DateTime.Now,
-                RoomID = Guid.NewGuid(),
-                UseDate = DateTime.Today
-            };
-            _reservations.Add(reservations);
-            if(_contact.Contains(newContact) && _reservations.Contains(reservations))
+            _singletonBd.AddContact(newContact);
+            if(_singletonBd.GetAllContacts().Contains(newContact))
                 return contactPostDtoDto;
             else
                 throw new Exception("Contact not created");
@@ -105,13 +73,12 @@ public class ContactService : AbstractContactService
     public override async Task<ContactPostDTO> ChangeContact(Guid contactID, ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
-        var existingContact = _contact.FirstOrDefault(x => x.ContactID == contactID);
-        if (existingContact != null)
+        var reservation = _singletonBd.GetAllReservations();
+        return _contactPostConverter.Convert(_singletonBd.UpdateContact(new Contact()
         {
-            existingContact.Email = contactPostDtoDto.Email;
-            existingContact.PhoneNumber = contactPostDtoDto.PhoneNumber;
-            return contactPostDtoDto;
-        }
-        throw new Exception("Contact not found");
+            ContactID = contactID,
+            Email = contactPostDtoDto.Email,
+            PhoneNumber = contactPostDtoDto.PhoneNumber
+        }), reservation);
     }
 }
