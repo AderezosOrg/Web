@@ -30,7 +30,6 @@ namespace Converters.ToDTO
         {
             return new ReservationDTO()
             {
-                Cancelled = input1.Cancelled,
                 ContactID = input1.ContactId,
                 PricePerNight = input3.PricePerNight,
                 ReservationDate = input1.ReservationDate,

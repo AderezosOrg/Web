@@ -9,21 +9,31 @@ namespace backend.Services;
 public class PriceService : AbstractPriceService
 {
     private SingletonBD _singletonBd;
-    private ReservationConverter _reservationConverter;
 
     public PriceService()
     {
         _singletonBd = SingletonBD.Instance;
-        _reservationConverter = new ReservationConverter();
     }
 
+    
     public override async Task<decimal> GetReservationPrice(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal taxedPrice = await GetReservationPriceByANight(reservationsPostDtos);
-        taxedPrice = taxedPrice * (reservationsPostDtos.First().UseDate - reservationsPostDtos.First().ReservationDate).Days;
+        taxedPrice *= (reservationsPostDtos.First().UseDate - reservationsPostDtos.First().ReservationDate).Days;
         return taxedPrice;
     }
-    
+
+    public override async Task<decimal> GetReservationPartialPrice(params ReservationPostDTO[] reservationsPostDtos)
+    {
+        decimal partialPrice = 0;
+        foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
+        {
+            var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
+            partialPrice += room.PricePerNight * (reservationsPostDto.UseDate - reservationsPostDto.ReservationDate).Days;
+        }
+        return partialPrice;
+    }
+
     private async Task<decimal> GetReservationPriceByANight(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal taxedPrice = 0;
