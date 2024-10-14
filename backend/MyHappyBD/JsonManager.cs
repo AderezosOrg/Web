@@ -9,7 +9,7 @@ public static class JsonManager
     {
         try
         {
-            string jsonString = await File.ReadAllTextAsync(filePath);
+            string jsonString = await File.ReadAllTextAsync("MyHappyBD/" + filePath);
             T obj = JsonSerializer.Deserialize<T>(jsonString);
             return obj;
         }
@@ -25,7 +25,7 @@ public static class JsonManager
         try
         {
             string jsonString = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(filePath, jsonString);
+            await File.WriteAllTextAsync("MyHappyBD/" + filePath, jsonString);
         }
         catch (Exception ex)
         {

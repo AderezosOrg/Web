@@ -8,7 +8,9 @@ namespace Converters.ToDTO
     {
         public ReservationDTO Convert(Reservation reservation, Contact contact, Room room)
         {
-            return new ReservationDTO
+            Console.WriteLine(contact.PhoneNumber);
+            Console.WriteLine(room.Code);
+            return new ReservationDTO()
             {
                 ContactID = reservation.ContactID,
                 RoomID = reservation.RoomID,
@@ -19,6 +21,7 @@ namespace Converters.ToDTO
                 RoomCode = room.Code,
                 RoomFloorNumber = room.FloorNumber,
                 PricePerNight = room.PricePerNight,
+                Cancelled = reservation.Cancelled
             };
         }
     }

@@ -14,22 +14,12 @@ namespace backend.Services;
 public class HotelService : AbstractHotelService
 {
     private SingletonBD _singletonBD;
-    private List<Hotel> _hotels = new List<Hotel>();
-    
-    private List<User> _users = new List<User>();
-    private List<Contact> _contacts = new List<Contact>();
-    private List<Bathroom> _bathrooms = new List<Bathroom>();
-    
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
     private HotelConverter _hotelConverter = new HotelConverter();
 
     public HotelService()
     {
         _singletonBD = SingletonBD.Instance;
-        _hotels = _singletonBD.GetAllHotels();
-        _users = _singletonBD.GetAllUsers();
-        _contacts = _singletonBD.GetAllContacts();
-        _bathrooms = _singletonBD.GetAllBathRooms();      
     }
     public override async Task<HotelPostDTO> GetHotelById(Guid hotelID)
     {
@@ -47,8 +37,7 @@ public class HotelService : AbstractHotelService
     public override async Task<List<HotelDTO>> GetHotels()
     {
         await Task.Delay(10);
-        _hotels = _singletonBD.GetAllHotels();
-        List<HotelDTO> result = _hotels.Select(h =>
+        List<HotelDTO> result = _singletonBD.GetAllHotels().Select(h =>
         {
             var user = _singletonBD.GetAllUsers().FirstOrDefault(u => u.UserID == h.UserID);
             var contact = _singletonBD.GetAllContacts().FirstOrDefault(c => c.ContactID == h.ContactID);

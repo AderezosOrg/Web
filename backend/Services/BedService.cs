@@ -14,9 +14,7 @@ using System.Linq;
 public class BedService : AbstractBedService
 {
     private SingletonBD _singletonBD;
-    private List<Bed> _beds = new List<Bed>();
     
-    private List<BedInformation> _bedInformations = new List<BedInformation>();
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
@@ -24,14 +22,11 @@ public class BedService : AbstractBedService
     public BedService()
     {
         _singletonBD = SingletonBD.Instance;
-        _beds = _singletonBD.GetAllBeds();
-        _bedInformations = _singletonBD.GetAllBedInformation();
     }
     public override async Task<List<BedInfoDTO>> GetBeds()
     {
         await Task.Delay(10);
-        _beds = _singletonBD.GetAllBeds();
-        List<BedInfoDTO> result = _beds.Select(b =>
+        List<BedInfoDTO> result = _singletonBD.GetAllBeds().Select(b =>
         {
             return _bedConverter.Convert(b);
         }).ToList();
@@ -45,6 +40,7 @@ public class BedService : AbstractBedService
         var bed = _singletonBD.GetBedById(bedID);
         if (bed == null)
             throw new Exception("Bed not found");
+        Console.WriteLine(bed.Capacity);
         return _bedPostConverter.Convert(bed);
     }
 

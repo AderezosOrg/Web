@@ -15,6 +15,7 @@ public class RoomService : AbstractRoomService
     private RoomPostDTOConvert _roomPostDtoConvert = new RoomPostDTOConvert();
     private BedConverter _bedConverter = new BedConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
+    private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
     
     private readonly BedService _bedService;
@@ -50,11 +51,11 @@ public class RoomService : AbstractRoomService
         await Task.Delay(10);
         List<RoomDTO> roomDtos = _singletonBd.GetAllRooms().Select(r =>
         {
-            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(r => r.RoomTemplateID == r.RoomTemplateID);
+            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
             var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformation = _singletonBd.GetAllBedInformation().Where(b => b.RoomTemplateID == r.RoomTemplateID).ToList();
-            var bathInformation = _singletonBd.GetAllBathroomInformation().Where(b => b.RoomTemplateID == r.RoomTemplateID).ToList();
-            var serviceInformation = _singletonBd.GetAllRoomServices().Where(s => s.RoomID == r.RoomID).ToList();
+            var bedInformation = _singletonBd.GetBedInformationByRoomTemplateId(r.RoomTemplateID);
+            var bathInformation = _singletonBd.GetBathRoomInformationByRoomTemplateId(r.RoomTemplateID);
+            var serviceInformation = _singletonBd.GetRoomServicesByRoomId(r.RoomID);
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation);
         }).ToList();
         
@@ -67,7 +68,8 @@ public class RoomService : AbstractRoomService
         {
             foreach (var bathroomId in room.Bathrooms)
             {
-                bathrooms.Add( await _bathRoomServices.GetBathRoomById(bathroomId));
+                
+                bathrooms.Add(_bathroomPostConverter.Convert(_singletonBd.GetBathRoomById(bathroomId)));
             }
             foreach (var bedId in room.Beds)
             {

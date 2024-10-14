@@ -14,9 +14,6 @@ namespace backend.Services;
 public class ContactService : AbstractContactService
 {
     private SingletonBD _singletonBd;
-    private List<Contact> _contact = new List<Contact>();
-    
-    private List<Reservation> _reservations = new List<Reservation>();
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
@@ -24,8 +21,6 @@ public class ContactService : AbstractContactService
     public ContactService()
     {
         _singletonBd = SingletonBD.Instance;
-        _contact = _singletonBd.GetAllContacts();
-        _reservations = _singletonBd.GetAllReservations();
     }
     public override async Task<ContactPostDTO> GetContactById(Guid contactID)
     {
@@ -33,17 +28,16 @@ public class ContactService : AbstractContactService
         var contact = _singletonBd.GetContactById(contactID);
         if (contact == null)
             throw new Exception("Contact not found");
-        var reservation = _reservations.Where(x => x.ContactID == contact.ContactID).ToList();
+        var reservation = _singletonBd.GetReservationByContactId(contactID);
         return _contactPostConverter.Convert(contact, reservation);
     }
 
     public override async Task<List<ContactDTO>> GetContacts()
     {
         await Task.Delay(10);
-        _contact = _singletonBd.GetAllContacts();
-        List<ContactDTO> result = _contact.Select(x =>
+        List<ContactDTO> result = _singletonBd.GetAllContacts().Select(x =>
         {
-            var reservation = _reservations.Where(x => x.ContactID == x.ContactID).ToList();
+            var reservation = _singletonBd.GetReservationByContactId(x.ContactID);
             return _contactConverter.Convert(x, reservation);
         }).ToList();
         

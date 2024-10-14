@@ -61,10 +61,6 @@ public class SingletonBD
         _roomBathInformations = JsonManager.ReadJsonAsync<List<RoomBathInformation>>("roomBathInformation.json").Result;
         _roomTemplates = JsonManager.ReadJsonAsync<List<RoomTemplate>>("roomTemplate.json").Result;
     }
-    public void DoSomething()
-    {
-        Console.WriteLine("Doing something...");
-    }
 
     //Beds
     public List<Bed> GetAllBeds()
@@ -115,6 +111,7 @@ public class SingletonBD
     public List<Bathroom> GetAllBathRooms()
     {
         ReloadDatabase();
+        
         return _bathrooms;
     }
 
@@ -254,6 +251,12 @@ public class SingletonBD
         ReloadDatabase();
         return _hotels.FirstOrDefault(h => h.HotelID == id);
     }
+    
+    public List<Hotel> GetHotelByUserId(Guid id)
+    {
+        ReloadDatabase();
+        return _hotels.Where(h => h.UserID == id).ToList();
+    }
 
     public Hotel AddHotel(Hotel entity)
     {
@@ -346,7 +349,7 @@ public class SingletonBD
     public List<RoomBathInformation> GetBathRoomInformationByRoomTemplateId(Guid id)
     {
         ReloadDatabase();
-        return _roomBathInformations.Where(b => b.BathRoomID == id).ToList();
+        return _roomBathInformations.Where(b => b.RoomTemplateID == id).ToList();
     }
 
     public RoomBathInformation AddBathroomInformation(RoomBathInformation entity)
