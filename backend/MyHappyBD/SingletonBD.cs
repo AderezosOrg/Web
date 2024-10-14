@@ -337,16 +337,16 @@ public class SingletonBD
 
     
 
-    public RoomBathInformation GetBathRoomInformationByBathroomId(Guid id)
+    public List<RoomBathInformation> GetBathRoomInformationByBathroomId(Guid id)
     {
         ReloadDatabase();
-        return _roomBathInformations.FirstOrDefault(b => b.BathRoomID == id);
+        return _roomBathInformations.Where(b => b.BathRoomID == id).ToList();
     }
     
-    public RoomBathInformation GetBathRoomInformationByRoomTemplateId(Guid id)
+    public List<RoomBathInformation> GetBathRoomInformationByRoomTemplateId(Guid id)
     {
         ReloadDatabase();
-        return _roomBathInformations.FirstOrDefault(b => b.RoomTemplateID == id);
+        return _roomBathInformations.Where(b => b.BathRoomID == id).ToList();
     }
 
     public RoomBathInformation AddBathroomInformation(RoomBathInformation entity)
@@ -473,16 +473,16 @@ public class SingletonBD
         return _bedInformations;
     }
 
-    public BedInformation GetBedInformationByBedId(Guid id)
+    public List<BedInformation> GetBedInformationByBedId(Guid id)
     {
         ReloadDatabase();
-        return _bedInformations.FirstOrDefault(bi => bi.BedID == id);
+        return _bedInformations.Where(bi => bi.BedID == id).ToList();
     }
 
-    public BedInformation GetBedInformationByRoomTemplateId(Guid id)
+    public List<BedInformation> GetBedInformationByRoomTemplateId(Guid id)
     {
         ReloadDatabase();
-        return _bedInformations.FirstOrDefault(bi => bi.RoomTemplateID == id);
+        return _bedInformations.Where(bi => bi.RoomTemplateID == id).ToList();
     }
 
     public BedInformation AddBedInformation(BedInformation entity)
@@ -522,16 +522,16 @@ public class SingletonBD
         return _roomServices;
     }
 
-    public RoomServices GetRoomServicesByRoomId(Guid roomId)
+    public List<RoomServices> GetRoomServicesByRoomId(Guid roomId)
     {
         ReloadDatabase();
-        return _roomServices.FirstOrDefault(rs => rs.RoomID == roomId);
+        return _roomServices.Where(rs => rs.RoomID == roomId).ToList();
     }
 
-    public RoomServices GetRoomServicesByServiceId(Guid serviceId)
+    public List<RoomServices> GetRoomServicesByServiceId(Guid serviceId)
     {
         ReloadDatabase();
-        return _roomServices.FirstOrDefault(rs => rs.ServiceID == serviceId);
+        return _roomServices.Where(rs => rs.ServiceID == serviceId).ToList();
     }
 
     public RoomServices AddRoomServices(RoomServices entity)
@@ -572,16 +572,16 @@ public class SingletonBD
     }
     
     
-    public Reservation GetReservationByContactId(Guid id)
+    public List<Reservation> GetReservationByContactId(Guid id)
     {
         ReloadDatabase();
-        return _reservations.FirstOrDefault(r => r.ContactID == id);
+        return _reservations.Where(r => r.ContactID == id).ToList();
     }
 
-    public Reservation GetReservationByRoomId(Guid id)
+    public List<Reservation> GetReservationByRoomId(Guid id)
     {
         ReloadDatabase();
-        return _reservations.FirstOrDefault(r => r.RoomID == id);
+        return _reservations.Where(r => r.RoomID == id).ToList();
     }
 
     public Reservation AddReservation(Reservation entity)
