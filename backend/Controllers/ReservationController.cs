@@ -39,7 +39,7 @@ public class ReservationController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<ReservationDTO>> CreateReservation(ReservationDTO reservationDto)
+    public async Task<ActionResult<ReservationDTO>> CreateReservation(ReservationPostDTO reservationDto)
     {
         ReservationDTO reservation = await _reservationService.CreateReservation(reservationDto);
         return Ok(reservation);

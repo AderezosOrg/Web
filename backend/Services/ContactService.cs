@@ -56,10 +56,8 @@ public class ContactService : AbstractContactService
                 PhoneNumber = contactPostDtoDto.PhoneNumber
             };
             _singletonBd.AddContact(newContact);
-            if(_singletonBd.GetAllContacts().Contains(newContact))
-                return contactPostDtoDto;
-            else
-                throw new Exception("Contact not created");
+             
+            return contactPostDtoDto;
         }
         throw new Exception("Contact not data found");
     }

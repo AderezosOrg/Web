@@ -52,10 +52,7 @@ public class ServiceService : AbstractServiceService
                 Type = servicePostDto.Type,
             };
             _singletonBd.AddService(newService);
-            if(_singletonBd.GetAllServices().Contains(newService))
-                return servicePostDto;
-            else
-                throw new Exception("Service not created");
+            return servicePostDto;
         }
         throw new Exception("Service not data found");
     }

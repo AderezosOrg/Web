@@ -593,7 +593,7 @@ public class SingletonBD
         _reservations.Add(entity);
         JsonManager.WriteJsonAsync<List<Reservation>>("reservation.json", _reservations);
         ReloadDatabase();
-        return _reservations.FirstOrDefault(r => r.ContactID == entity.ContactID && r.RoomID == entity.RoomID);
+        return _reservations.Find(reservation => reservation == entity);
     }
 
     public Reservation UpdateReservation(Reservation entity)
