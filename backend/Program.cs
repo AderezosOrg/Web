@@ -11,6 +11,7 @@ builder.Services.AddScoped<HotelService>();
 builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<ServiceService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PriceService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();

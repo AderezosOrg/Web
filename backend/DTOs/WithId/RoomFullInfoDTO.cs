@@ -21,4 +21,5 @@ public class RoomFullInfoDTO
     // Hotel properties (from FK)
     public string HotelName { get; set; }
     public bool HotelAllowsPets { get; set; }
+    public decimal Tax { get; set; }
 }

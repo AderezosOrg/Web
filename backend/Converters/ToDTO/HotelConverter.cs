@@ -21,7 +21,8 @@ namespace Converters.ToDTO
                 HotelEmail = contact.Email,
                 Shower = bathroom.Shower,
                 Toilet = bathroom.Toilet,
-                DressingTable = bathroom.DressingTable
+                DressingTable = bathroom.DressingTable,
+                Tax = hotel.Tax,
             };
         }
     }

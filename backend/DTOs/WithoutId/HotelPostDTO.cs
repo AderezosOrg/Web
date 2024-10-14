@@ -7,6 +7,7 @@ public class HotelPostDTO
     public string Name { get; set; }
     public bool AllowsPets { get; set; }
     public string Address { get; set; }
+    public decimal Tax { get; set; }
 
     // User properties (from FK)
     public string UserName { get; set; }

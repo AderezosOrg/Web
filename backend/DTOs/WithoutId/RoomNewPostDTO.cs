@@ -9,10 +9,6 @@ public class RoomNewPostDTO
 
     // RoomTemplate properties (from FK)
     public Guid RoomTemplateId { get; set; }
-    
-    public List<Guid> Beds { get; set; }
-    public List<Guid> Bathrooms { get; set; }
-    public List<Guid> Services { get; set; }
 
     // Hotel properties (from FK)
     public Guid HotelId { get; set; }
