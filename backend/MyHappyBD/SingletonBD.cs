@@ -155,4 +155,263 @@ public class SingletonBD
         }
         return false;
     }
+    
+    // Contacts
+    public List<Contact> GetAllContacts()
+    {
+        ReloadDatabase();
+        return _contacts;
+    }
+
+    public Contact GetContactById(Guid id)
+    {
+        ReloadDatabase();
+        return _contacts.FirstOrDefault(c => c.ContactID == id);
+    }
+
+    public Contact AddContact(Contact entity)
+    {
+        ReloadDatabase();
+        _contacts.Add(entity);
+        JsonManager.WriteJsonAsync<List<Contact>>("contact.json", _contacts);
+        ReloadDatabase();
+        return _contacts.FirstOrDefault(c => c.ContactID == entity.ContactID);
+    }
+
+    public Contact UpdateContact(Contact entity)
+    {
+        ReloadDatabase();
+        _contacts.Remove(_contacts.FirstOrDefault(c => c.ContactID == entity.ContactID));
+        _contacts.Add(entity);
+        JsonManager.WriteJsonAsync<List<Contact>>("contact.json", _contacts);
+        ReloadDatabase();
+        return _contacts.FirstOrDefault(c => c.ContactID == entity.ContactID);
+    }
+
+    public bool DeleteContact(Guid id)
+    {
+        ReloadDatabase();
+        if (_contacts.Remove(_contacts.FirstOrDefault(c => c.ContactID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<Contact>>("contact.json", _contacts);
+            return true;
+        }
+        return false;
+    }
+    
+    // Users
+    public List<User> GetAllUsers()
+    {
+        ReloadDatabase();
+        return _users;
+    }
+
+    public User GetUserById(Guid id)
+    {
+        ReloadDatabase();
+        return _users.FirstOrDefault(u => u.UserID == id);
+    }
+
+    public User AddUser(User entity)
+    {
+        ReloadDatabase();
+        _users.Add(entity);
+        JsonManager.WriteJsonAsync<List<User>>("user.json", _users);
+        ReloadDatabase();
+        return _users.FirstOrDefault(u => u.UserID == entity.UserID);
+    }
+
+    public User UpdateUser(User entity)
+    {
+        ReloadDatabase();
+        _users.Remove(_users.FirstOrDefault(u => u.UserID == entity.UserID));
+        _users.Add(entity);
+        JsonManager.WriteJsonAsync<List<User>>("user.json", _users);
+        ReloadDatabase();
+        return _users.FirstOrDefault(u => u.UserID == entity.UserID);
+    }
+
+    public bool DeleteUser(Guid id)
+    {
+        ReloadDatabase();
+        if (_users.Remove(_users.FirstOrDefault(u => u.UserID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<User>>("user.json", _users);
+            return true;
+        }
+        return false;
+    }
+    
+    // Hotels
+    public List<Hotel> GetAllHotels()
+    {
+        ReloadDatabase();
+        return _hotels;
+    }
+
+    public Hotel GetHotelById(Guid id)
+    {
+        ReloadDatabase();
+        return _hotels.FirstOrDefault(h => h.HotelID == id);
+    }
+
+    public Hotel AddHotel(Hotel entity)
+    {
+        ReloadDatabase();
+        _hotels.Add(entity);
+        JsonManager.WriteJsonAsync<List<Hotel>>("hotel.json", _hotels);
+        ReloadDatabase();
+        return _hotels.FirstOrDefault(h => h.HotelID == entity.HotelID);
+    }
+
+    public Hotel UpdateHotel(Hotel entity)
+    {
+        ReloadDatabase();
+        _hotels.Remove(_hotels.FirstOrDefault(h => h.HotelID == entity.HotelID));
+        _hotels.Add(entity);
+        JsonManager.WriteJsonAsync<List<Hotel>>("hotel.json", _hotels);
+        ReloadDatabase();
+        return _hotels.FirstOrDefault(h => h.HotelID == entity.HotelID);
+    }
+
+    public bool DeleteHotel(Guid id)
+    {
+        ReloadDatabase();
+        if (_hotels.Remove(_hotels.FirstOrDefault(h => h.HotelID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<Hotel>>("hotel.json", _hotels);
+            return true;
+        }
+        return false;
+    }
+    
+    // Rooms
+    public List<Room> GetAllRooms()
+    {
+        ReloadDatabase();
+        return _rooms;
+    }
+
+    public Room GetRoomById(Guid id)
+    {
+        ReloadDatabase();
+        return _rooms.FirstOrDefault(r => r.RoomID == id);
+    }
+
+    public Room AddRoom(Room entity)
+    {
+        ReloadDatabase();
+        _rooms.Add(entity);
+        JsonManager.WriteJsonAsync<List<Room>>("room.json", _rooms);
+        ReloadDatabase();
+        return _rooms.FirstOrDefault(r => r.RoomID == entity.RoomID);
+    }
+
+    public Room UpdateRoom(Room entity)
+    {
+        ReloadDatabase();
+        _rooms.Remove(_rooms.FirstOrDefault(r => r.RoomID == entity.RoomID));
+        _rooms.Add(entity);
+        JsonManager.WriteJsonAsync<List<Room>>("room.json", _rooms);
+        ReloadDatabase();
+        return _rooms.FirstOrDefault(r => r.RoomID == entity.RoomID);
+    }
+
+    public bool DeleteRoom(Guid id)
+    {
+        ReloadDatabase();
+        if (_rooms.Remove(_rooms.FirstOrDefault(r => r.RoomID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<Room>>("room.json", _rooms);
+            return true;
+        }
+        return false;
+    }
+    
+    // RoomTemplates
+    public List<RoomTemplate> GetAllRoomTemplates()
+    {
+        ReloadDatabase();
+        return _roomTemplates;
+    }
+
+    public RoomTemplate GetRoomTemplateById(Guid id)
+    {
+        ReloadDatabase();
+        return _roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == id);
+    }
+
+    public RoomTemplate AddRoomTemplate(RoomTemplate entity)
+    {
+        ReloadDatabase();
+        _roomTemplates.Add(entity);
+        JsonManager.WriteJsonAsync<List<RoomTemplate>>("roomTemplate.json", _roomTemplates);
+        ReloadDatabase();
+        return _roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == entity.RoomTemplateID);
+    }
+
+    public RoomTemplate UpdateRoomTemplate(RoomTemplate entity)
+    {
+        ReloadDatabase();
+        _roomTemplates.Remove(_roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == entity.RoomTemplateID));
+        _roomTemplates.Add(entity);
+        JsonManager.WriteJsonAsync<List<RoomTemplate>>("roomTemplate.json", _roomTemplates);
+        ReloadDatabase();
+        return _roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == entity.RoomTemplateID);
+    }
+
+    public bool DeleteRoomTemplate(Guid id)
+    {
+        ReloadDatabase();
+        if (_roomTemplates.Remove(_roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<RoomTemplate>>("roomTemplate.json", _roomTemplates);
+            return true;
+        }
+        return false;
+    }
+
+    // Services
+    public List<Service> GetAllServices()
+    {
+        ReloadDatabase();
+        return _services;
+    }
+
+    public Service GetServiceById(Guid id)
+    {
+        ReloadDatabase();
+        return _services.FirstOrDefault(s => s.ServiceID == id);
+    }
+
+    public Service AddService(Service entity)
+    {
+        ReloadDatabase();
+        _services.Add(entity);
+        JsonManager.WriteJsonAsync<List<Service>>("service.json", _services);
+        ReloadDatabase();
+        return _services.FirstOrDefault(s => s.ServiceID == entity.ServiceID);
+    }
+
+    public Service UpdateService(Service entity)
+    {
+        ReloadDatabase();
+        _services.Remove(_services.FirstOrDefault(s => s.ServiceID == entity.ServiceID));
+        _services.Add(entity);
+        JsonManager.WriteJsonAsync<List<Service>>("service.json", _services);
+        ReloadDatabase();
+        return _services.FirstOrDefault(s => s.ServiceID == entity.ServiceID);
+    }
+
+    public bool DeleteService(Guid id)
+    {
+        ReloadDatabase();
+        if (_services.Remove(_services.FirstOrDefault(s => s.ServiceID == id)))
+        {
+            JsonManager.WriteJsonAsync<List<Service>>("service.json", _services);
+            return true;
+        }
+        return false;
+    }
+
 }
