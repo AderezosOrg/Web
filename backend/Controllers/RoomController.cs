@@ -32,7 +32,7 @@ public class RoomController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomPostDTO roomDto)
+    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomNewPostDTO roomDto)
     {
         RoomPostDTO room = await _roomService.CreateRoom(roomDto);
         return Ok(room);
