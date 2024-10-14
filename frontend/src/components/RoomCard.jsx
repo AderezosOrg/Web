@@ -4,7 +4,7 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import Button from './Button';
 
-export default function RoomCard({bed, capacity, price, floor, code, services})
+export default function RoomCard({bed, capacity, price, floor, code, services, onClick})
 {
   const [details, setDetails] = useState(false);
 
@@ -47,7 +47,7 @@ export default function RoomCard({bed, capacity, price, floor, code, services})
             ))}
           </div>
         <div className='flex justify-end items-end h-full' >
-          <Button type={'common'} className={'h-[40px]'}>Seleccionar</Button>
+          <Button onClick={onClick} type={'common'} className={'h-[40px]'}>Seleccionar</Button>
         </div>
       </div> : <></>}
     </div>
@@ -61,5 +61,6 @@ RoomCard.propTypes = {
   price: PropTypes.number.isRequired,
   floor: PropTypes.number.isRequired,
   code: PropTypes.string.isRequired,
-  services: PropTypes.array.isRequired
+  services: PropTypes.array.isRequired,
+  onClick: PropTypes.func.isRequired
 }
