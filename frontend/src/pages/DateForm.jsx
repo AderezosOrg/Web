@@ -32,12 +32,11 @@ function DateForm() {
           validationSchema={validationSchema}
           onSubmit={(values) => {
             setFormStatus({success: true})
-            navigate('/confirmation', {
+            navigate('/select-room', {
               state: {
                 checkInDate: values.checkInDate,
                 checkOutDate: values.checkOutDate,
                 numPeople: values.numPeople,
-                roomPrice: 100
               }
             });
           }}
