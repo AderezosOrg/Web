@@ -15,10 +15,17 @@ public class PriceController : ControllerBase
         _priceService = new PriceService();
     }
 
-    [HttpPost]
+    [HttpPost("/total")]
     public async Task<ActionResult<decimal>> GetReservationsTotalPrice(ReservationPostDTO[] reservationPostDtos)
     {
         var totalPrice = await _priceService.GetReservationPrice(reservationPostDtos);
         return Ok(totalPrice);
+    }
+    
+    [HttpPost("/partial")]
+    public async Task<ActionResult<decimal>> GetReservationsPartialPrice(ReservationPostDTO[] reservationPostDtos)
+    {
+        var partialPrice = await _priceService.GetReservationPartialPrice(reservationPostDtos);
+        return Ok(partialPrice);
     }
 }

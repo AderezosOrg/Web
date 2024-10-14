@@ -75,7 +75,7 @@ public class ReservationService : AbstractReservationService
                 var newReservation = new Reservation
                 {
                     ContactID = postDto.ContactId,
-                    Cancelled = postDto.Cancelled,
+                    Cancelled = false,
                     ReservationDate = postDto.ReservationDate,
                     RoomID = postDto.RoomId,
                     UseDate = postDto.UseDate,
