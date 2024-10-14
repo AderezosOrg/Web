@@ -12,4 +12,7 @@ public class RoomNewPostDTO
 
     // Hotel properties (from FK)
     public Guid HotelId { get; set; }
+    
+    //Room Services
+    public List<Guid> RoomServices { get; set; }
 }
