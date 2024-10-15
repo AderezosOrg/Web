@@ -18,9 +18,9 @@ public class RoomController : ControllerBase
     }
 
     [HttpGet("{roomId}")]
-    public async Task<ActionResult<RoomPostDTO>> GetRoomById(Guid roomId)
+    public async Task<ActionResult<RoomFullInfoDTO>> GetRoomById(Guid roomId)
     {
-        RoomPostDTO room = await _roomService.GetRoomById(roomId);
+        RoomFullInfoDTO room = await _roomService.GetRoomById(roomId);
         return Ok(room);
     }
     

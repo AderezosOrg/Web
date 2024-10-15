@@ -7,6 +7,7 @@ public class Hotel
     public string Name { get; set; }
     public bool AllowsPets { get; set; }
     public string Address { get; set; }
+    public decimal Tax { get; set; }
     
     // Foreign keys
     public Guid UserID { get; set; }

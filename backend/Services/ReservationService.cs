@@ -64,24 +64,31 @@ public class ReservationService : AbstractReservationService
         return result;
     }
 
-    public override async Task<ReservationDTO> CreateReservation(ReservationPostDTO reservationPostDto)
+    public override async Task<List<ReservationDTO>> CreateReservation(ReservationPostDTO[] reservationPostDto)
     {
         await Task.Delay(100);
-        if (reservationPostDto != null)
+        List<ReservationDTO> newReservations = new List<ReservationDTO>(); 
+        foreach (ReservationPostDTO postDto in reservationPostDto)
         {
-            var newReservation = new Reservation
+            if (reservationPostDto != null)
             {
-                ContactID = reservationPostDto.ContactId,
-                Cancelled = reservationPostDto.Cancelled,
-                ReservationDate = reservationPostDto.ReservationDate,
-                RoomID = reservationPostDto.RoomId,
-                UseDate = reservationPostDto.UseDate,
-            };
-            _singletonBd.AddReservation(newReservation);
-            return _reservationConverter.Convert(reservationPostDto, _singletonBd.GetContactById(reservationPostDto.ContactId), _singletonBd.GetRoomById(reservationPostDto.RoomId));
+                var newReservation = new Reservation
+                {
+                    ContactID = postDto.ContactId,
+                    Cancelled = false,
+                    ReservationDate = postDto.ReservationDate,
+                    RoomID = postDto.RoomId,
+                    UseDate = postDto.UseDate,
+                };
+                _singletonBd.AddReservation(newReservation);
+                newReservations.Add(_reservationConverter.Convert(postDto, _singletonBd.GetContactById(postDto.ContactId), _singletonBd.GetRoomById(postDto.RoomId)));
+            }
+
+            throw new Exception("Reservation data not found");    
         }
 
-        throw new Exception("Reservation data not found");
+        return newReservations;
+
     }
 
     public override async Task<ReservationDTO> CancelReservation(Guid contactId) //check later
