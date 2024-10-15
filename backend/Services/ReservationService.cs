@@ -70,7 +70,7 @@ public class ReservationService : AbstractReservationService
         List<ReservationDTO> newReservations = new List<ReservationDTO>(); 
         foreach (ReservationPostDTO postDto in reservationPostDto)
         {
-            if (reservationPostDto != null)
+            if (postDto != null)
             {
                 var newReservation = new Reservation
                 {
@@ -83,8 +83,6 @@ public class ReservationService : AbstractReservationService
                 _singletonBd.AddReservation(newReservation);
                 newReservations.Add(_reservationConverter.Convert(postDto, _singletonBd.GetContactById(postDto.ContactId), _singletonBd.GetRoomById(postDto.RoomId)));
             }
-
-            throw new Exception("Reservation data not found");    
         }
 
         return newReservations;
