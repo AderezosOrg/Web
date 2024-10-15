@@ -43,7 +43,7 @@ export default function RoomCard({bed, capacity, price, floor, code, services, o
         <div className='items-center text-center'>
             <p className='text-[20px] font-bold'>Servicios:</p>
             {services.map((item, index) => (
-              <p key={index} className='text-[20px]'>{item}</p>
+              <p key={index} className='text-[20px]'>{item.type}</p>
             ))}
           </div>
         <div className='flex justify-end items-end h-full' >
