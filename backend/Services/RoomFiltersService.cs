@@ -92,12 +92,12 @@ public class RoomFiltersService: IRoomFiltersService
     }
 
 
-    public async Task<List<RoomDTO>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
+    public async Task<List<RoomDTO>> GetRoomsByPriceRange(PriceRangeRequestDTO priceRangeRequest)
     {
         await Task.Delay(10);
 
         var roomsInPriceRange = _singletonBd.GetAllRooms()
-            .Where(r => r.PricePerNight >= minPrice && r.PricePerNight <= maxPrice)
+            .Where(r => r.PricePerNight >= priceRangeRequest.MinPrice && r.PricePerNight <= priceRangeRequest.MaxPrice)
             .ToList();
 
         var roomDTOs = roomsInPriceRange.Select(r =>

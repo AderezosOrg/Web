@@ -30,10 +30,10 @@ public class RoomFiltersController : ControllerBase
         return Ok(rooms);
     }
     
-    [HttpGet("prices/{minPrice}/{maxPrice}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
+    [HttpPost("priceRange")]
+    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByPriceRange(PriceRangeRequestDTO priceRangeRequestDto)
     {
-        List<RoomDTO> rooms = await _roomFiltersService.GetRoomsByPriceRange(minPrice, maxPrice);
+        List<RoomDTO> rooms = await _roomFiltersService.GetRoomsByPriceRange(priceRangeRequestDto);
         return Ok(rooms);
     }
 

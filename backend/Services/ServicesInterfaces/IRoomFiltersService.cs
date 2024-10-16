@@ -8,6 +8,6 @@ public interface IRoomFiltersService
 {
     public Task<List<RoomFullInfoDTO>> GetAvailableRooms(AvailabilityRequestDTO availabilityRequest);
     public Task<List<RoomDTO>> GetRoomsByFloor(int floorNumber);
-    public Task<List<RoomDTO>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice);
+    public Task<List<RoomDTO>> GetRoomsByPriceRange(PriceRangeRequestDTO priceRangeRequest);
     public Task<bool> IsAvailable(Room roomId,AvailabilityRequestDTO availabilityRequest);
 }
