@@ -36,14 +36,14 @@ export default function RoomCard({bed, capacity, price, floor, code, services, o
             <p className='text-[20px] px-1'>{floor}</p>
           </div>
           <div className='flex flex-row px-3 py-2'>
-            <p className='text-[20px] font-bold'>Numero de Habitación:</p>
+            <p className='text-[20px] font-bold'>Habitación:</p>
             <p className='text-[20px] px-1'>{code}</p>
           </div>
         </div>
         <div className='items-center text-center'>
             <p className='text-[20px] font-bold'>Servicios:</p>
             {services.map((item, index) => (
-              <p key={index} className='text-[20px]'>{item}</p>
+              <p key={index} className='text-[20px]'>{item.type}</p>
             ))}
           </div>
         <div className='flex justify-end items-end h-full' >
