@@ -34,12 +34,12 @@ export default function SelectRoom() {
       {rooms.map((item, index) => (
           <RoomCard
               key={index}
-              bed={item?.beds?.[0]?.size || "Unknown Bed"}  // Asegúrate de que item.beds[0].size existe
-              capacity={item?.beds?.[0]?.capacity || "Unknown Capacity"}  // Asegúrate de que item.beds[0].capacity existe
-              price={item?.pricePerNight || 0}  // Valor por defecto si pricePerNight es undefined
-              floor={item?.floorNumber || "Unknown Floor"}  // Valor por defecto si floorNumber es undefined
-              code={item?.code || "Unknown Code"}  // Valor por defecto si code es undefined
-              services={item?.services || []}  // Asegúrate de que item.services es un array
+              bed={item?.beds?.[0]?.size || "Unknown Bed"} 
+              capacity={item?.beds?.[0]?.capacity || "Unknown Capacity"}
+              price={item?.pricePerNight || 0}
+              floor={item?.floorNumber || "Unknown Floor"}
+              code={item?.code || "Unknown Code"}
+              services={item?.services || []}
               onClick={() => {
                 navigate('/confirmation', {
                   state: {
