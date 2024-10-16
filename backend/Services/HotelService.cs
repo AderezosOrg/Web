@@ -11,7 +11,11 @@ using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class HotelService : AbstractHotelService
+public class HotelService : 
+    IGetAllElementsService<HotelDTO>,
+    IGetElementById<HotelPostDTO>,
+    ICreateSingleElement<HotelPostDTO, HotelPostDTO>,
+    IUpdateElementByID<HotelPostDTO, HotelPostDTO>
 {
     private SingletonBD _singletonBD;
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
@@ -21,7 +25,7 @@ public class HotelService : AbstractHotelService
     {
         _singletonBD = SingletonBD.Instance;
     }
-    public override async Task<HotelPostDTO> GetHotelById(Guid hotelID)
+    public async Task<HotelPostDTO> GetElementById(Guid hotelID)
     {
         await Task.Delay(10);
         var hotel = _singletonBD.GetHotelById(hotelID);
@@ -34,7 +38,7 @@ public class HotelService : AbstractHotelService
         return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
-    public override async Task<List<HotelDTO>> GetHotels()
+    public async Task<List<HotelDTO>> GetAllElements()
     {
         await Task.Delay(10);
         List<HotelDTO> result = _singletonBD.GetAllHotels().Select(h =>
@@ -48,7 +52,7 @@ public class HotelService : AbstractHotelService
         return result;
     }
 
-    public override async Task<HotelPostDTO> CreateHotel(HotelPostDTO hotelPostDto)
+    public async Task<HotelPostDTO> CreateSingleElement(HotelPostDTO hotelPostDto)
     {
         await Task.Delay(10);
         if (hotelPostDto != null)
@@ -70,7 +74,7 @@ public class HotelService : AbstractHotelService
         throw new Exception("Hotel not data found");
     }
 
-    public override async Task<HotelPostDTO> UpdateHotel(Guid hotelID, HotelPostDTO hotelPostDto)
+    public async Task<HotelPostDTO> UpdateElementById(Guid hotelID, HotelPostDTO hotelPostDto)
     {
         await Task.Delay(10);
 

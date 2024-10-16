@@ -6,7 +6,11 @@ using Entities;
 
 namespace backend.Services.AbstractClass;
 
-public class RoomTemplateService : AbstractRoomTemplateService
+public class RoomTemplateService : 
+    IGetAllElementsService<RoomTemplateDTO>,
+    IGetElementById<RoomTemplateDTO>,
+    ICreateSingleElement<RoomTemplatePostDTO, RoomTemplatePostDTO>,
+    IUpdateElementByID<RoomTemplatePostDTO, RoomTemplatePostDTO>
 {
     private SingletonBD _singletonBd;
     private RoomTemplateConverter _roomTemplateConverter;
@@ -17,7 +21,7 @@ public class RoomTemplateService : AbstractRoomTemplateService
         _roomTemplateConverter = new RoomTemplateConverter();
     }
 
-    public override async Task<RoomTemplateDTO> GetRoomTemplateById(Guid roomTemplateId)
+    public async Task<RoomTemplateDTO> GetElementById(Guid roomTemplateId)
     {
         var roomTemplate = _singletonBd.GetRoomTemplateById(roomTemplateId);
         return _roomTemplateConverter.Convert(
@@ -28,7 +32,7 @@ public class RoomTemplateService : AbstractRoomTemplateService
             _singletonBd.GetAllBeds());
     }
 
-    public override async Task<List<RoomTemplateDTO>> GetRoomTemplates()
+    public async Task<List<RoomTemplateDTO>> GetAllElements()
     {
         var roomTemplates = _singletonBd.GetAllRoomTemplates();
         List<RoomTemplateDTO> roomTemplateDTOs = roomTemplates.Select(rt =>
@@ -42,7 +46,7 @@ public class RoomTemplateService : AbstractRoomTemplateService
         return roomTemplateDTOs;
     }
 
-    public override async Task<RoomTemplatePostDTO> CreateRoomTemplate(RoomTemplatePostDTO roomTemplatePostDto)
+    public async Task<RoomTemplatePostDTO> CreateSingleElement(RoomTemplatePostDTO roomTemplatePostDto)
     {
         var guid = Guid.NewGuid();
         _singletonBd.AddRoomTemplate(new RoomTemplate()
@@ -73,7 +77,7 @@ public class RoomTemplateService : AbstractRoomTemplateService
         return roomTemplatePostDto;
     }
 
-    public override async Task<RoomTemplatePostDTO> ChangeRoomTemplate(Guid roomTemplateId, RoomTemplatePostDTO roomTemplatePostDto)
+    public async Task<RoomTemplatePostDTO> UpdateElementById(Guid roomTemplateId, RoomTemplatePostDTO roomTemplatePostDto)
     {
         _singletonBd.UpdateRoomTemplate(new RoomTemplate()
         {

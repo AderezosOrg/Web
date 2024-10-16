@@ -20,28 +20,28 @@ public class RoomTemplateController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<RoomTemplateDTO>>> GetAllRoomTemplates()
     {
-        var roomTemplates = await _roomTemplateService.GetRoomTemplates();
+        var roomTemplates = await _roomTemplateService.GetAllElements();
         return Ok(roomTemplates);
     }
     
     [HttpGet("{templateid}")]
     public async Task<ActionResult<RoomTemplateDTO>> GetRoomTemplateById(Guid templateid)
     {
-        var roomTemplate = await _roomTemplateService.GetRoomTemplateById(templateid);
+        var roomTemplate = await _roomTemplateService.GetElementById(templateid);
         return Ok(roomTemplate);
     }
     
     [HttpPost]
     public async Task<ActionResult<List<RoomTemplateDTO>>> PostRoomTemplate([FromBody] RoomTemplatePostDTO roomTemplatePostDto)
     {
-        var roomTemplate = await _roomTemplateService.CreateRoomTemplate(roomTemplatePostDto);
+        var roomTemplate = await _roomTemplateService.CreateSingleElement(roomTemplatePostDto);
         return Ok(roomTemplate);
     }
     
     [HttpPut("{roomTemplateid}")]
     public async Task<ActionResult<List<RoomTemplateDTO>>> EditRoomTemplate(Guid roomTemplateId, [FromBody] RoomTemplatePostDTO roomTemplatePostDto)
     {
-        var roomTemplate = await _roomTemplateService.ChangeRoomTemplate(roomTemplateId, roomTemplatePostDto);
+        var roomTemplate = await _roomTemplateService.UpdateElementById(roomTemplateId, roomTemplatePostDto);
         return Ok(roomTemplate);
     }
 }

@@ -20,21 +20,21 @@ public class RoomController : ControllerBase
     [HttpGet("{roomId}")]
     public async Task<ActionResult<RoomFullInfoDTO>> GetRoomById(Guid roomId)
     {
-        RoomFullInfoDTO room = await _roomService.GetRoomById(roomId);
+        RoomFullInfoDTO room = await _roomService.GetElementById(roomId);
         return Ok(room);
     }
     
     [HttpGet]
     public async Task<ActionResult<List<RoomFullInfoDTO>>> GetRooms()
     {
-        List<RoomFullInfoDTO> rooms = await _roomService.GetRooms();
+        List<RoomFullInfoDTO> rooms = await _roomService.GetAllElements();
         return Ok(rooms);
     }
     
     [HttpPost]
     public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomNewPostDTO roomDto)
     {
-        RoomPostDTO room = await _roomService.CreateRoom(roomDto);
+        RoomPostDTO room = await _roomService.CreateSingleElement(roomDto);
         return Ok(room);
     }
     
@@ -52,27 +52,6 @@ public class RoomController : ControllerBase
         return Ok(bathrooms);
     }
     
-    [HttpGet("available/{startDate}/{endDate}")]
-    public async Task<ActionResult<List<RoomFullInfoDTO>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
-    {
-        List<RoomFullInfoDTO> roomDtos = await _roomService.GetAvailableRooms(startDate, endDate);
-        return Ok(roomDtos);
-    }
-    
-    [HttpGet("floor/{floorNumber}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByFloor(int floorNumber)
-    {
-        List<RoomDTO> rooms = await _roomService.GetRoomsByFloor(floorNumber);
-        return Ok(rooms);
-    }
-    
-    [HttpGet("prices/{minPrice}/{maxPrice}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
-    {
-        List<RoomDTO> rooms = await _roomService.GetRoomsByPriceRange(minPrice, maxPrice);
-        return Ok(rooms);
-    }
-
     [HttpGet("services/{roomId}")]
     public async Task<ActionResult<List<ServiceDTO>>> GetRoomServicesById(Guid roomId)
     {

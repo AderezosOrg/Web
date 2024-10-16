@@ -19,28 +19,28 @@ public class HotelController : ControllerBase
     [HttpGet("{hotelId}")]
     public async Task<ActionResult<HotelPostDTO>> GetHotelById(Guid hotelId)
     {
-        HotelPostDTO hotel = await _hotelService.GetHotelById(hotelId);
+        HotelPostDTO hotel = await _hotelService.GetElementById(hotelId);
         return Ok(hotel);
     }
     
     [HttpGet]
     public async Task<ActionResult<List<HotelDTO>>> GetHotels()
     {
-        List<HotelDTO> hotels = await _hotelService.GetHotels();
+        List<HotelDTO> hotels = await _hotelService.GetAllElements();
         return Ok(hotels);
     }
     
     [HttpPost]
     public async Task<ActionResult<HotelPostDTO>> CreateHotel([FromBody] HotelPostDTO hotelDto)
     {
-        HotelPostDTO hotel = await _hotelService.CreateHotel(hotelDto);
+        HotelPostDTO hotel = await _hotelService.CreateSingleElement(hotelDto);
         return Ok(true);
     }
     
     [HttpPut("{hotelId}")]
     public async Task<ActionResult<HotelPostDTO>> UpdateHotel(Guid hotelId, HotelPostDTO hotelDto)
     {
-        HotelPostDTO result = await _hotelService.UpdateHotel(hotelId, hotelDto);
+        HotelPostDTO result = await _hotelService.UpdateElementById(hotelId, hotelDto);
         return Ok(result);
     }
     

@@ -4,7 +4,7 @@ public class BedDTO
 {
     public Guid BedID { get; set; }
     public string Size { get; set; }
-    public string Capacity { get; set; }
+    public int Capacity { get; set; }
     
     // BedInformation properties (from FK) 
     

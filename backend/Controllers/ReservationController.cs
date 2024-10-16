@@ -33,7 +33,7 @@ public class ReservationController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ReservationDTO>>> GetReservations()
     {
-        List<ReservationDTO> reservations = await _reservationService.GetReservations();
+        List<ReservationDTO> reservations = await _reservationService.GetAllElements();
         return Ok(reservations);
     }
     

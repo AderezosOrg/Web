@@ -16,28 +16,28 @@ public class ContactController : ControllerBase
     [HttpGet("{contactId}")]
     public async Task<ActionResult<ContactPostDTO>> GetContactById(Guid contactId)
     {
-        ContactPostDTO contact = await _contactService.GetContactById(contactId);
+        ContactPostDTO contact = await _contactService.GetElementById(contactId);
         return Ok(contact);
     }
     
     [HttpGet]
     public async Task<ActionResult<List<ContactDTO>>> GetContacts()
     {
-        List<ContactDTO> contacts = await _contactService.GetContacts();
+        List<ContactDTO> contacts = await _contactService.GetAllElements();
         return Ok(contacts);
     }
     
     [HttpPost]
     public async Task<ActionResult<ContactPostDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
     {
-        ContactPostDTO contact = await _contactService.CreateContact(contactDto);
+        ContactPostDTO contact = await _contactService.CreateSingleElement(contactDto);
         return Ok(contact);
     }
     
     [HttpPut("{contactId}")]
     public async Task<ActionResult<ContactPostDTO>> ChangeContact(Guid contactId, ContactPostDTO contactDto)
     {
-        ContactPostDTO contact = await _contactService.ChangeContact(contactId, contactDto);
+        ContactPostDTO contact = await _contactService.UpdateElementById(contactId, contactDto);
         return Ok(contact);
     }
 }

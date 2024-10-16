@@ -8,7 +8,12 @@ using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class BathRoomServices : AbstractBathroomService
+public class BathRoomServices : 
+    IDeleteService,
+    IGetAllElementsService<BathroomInfoDTO>,
+    IGetElementById<BathroomPostDTO>,
+    ICreateSingleElement<BathroomPostDTO, BathroomPostDTO>,
+    IUpdateElementByID<BathroomPostDTO, BathroomPostDTO>
 {
     private SingletonBD _singletonBd;
 
@@ -20,7 +25,7 @@ public class BathRoomServices : AbstractBathroomService
     {
         _singletonBd = SingletonBD.Instance;
     }
-    public override async Task<List<BathroomInfoDTO>> GetBathRooms()
+    public async Task<List<BathroomInfoDTO>> GetAllElements()
     {
         await Task.Delay(10);
         List<BathroomInfoDTO> result = _singletonBd.GetAllBathRooms().Select(b =>
@@ -31,7 +36,7 @@ public class BathRoomServices : AbstractBathroomService
         return result;
     }
 
-    public override async Task<BathroomPostDTO> GetBathRoomById(Guid bathroomID)
+    public async Task<BathroomPostDTO> GetElementById(Guid bathroomID)
     {
         await Task.Delay(10);
         var bathroom = _singletonBd.GetBathRoomById(bathroomID);
@@ -42,7 +47,7 @@ public class BathRoomServices : AbstractBathroomService
         return _bathroomPostConverter.Convert(bathroom);
     }
 
-    public override async Task<BathroomPostDTO> CreateBathRoom(BathroomPostDTO bathroomPostDto)
+    public async Task<BathroomPostDTO> CreateSingleElement(BathroomPostDTO bathroomPostDto)
     {
         await Task.Delay(100);
         if (bathroomPostDto != null)
@@ -60,7 +65,7 @@ public class BathRoomServices : AbstractBathroomService
         throw new Exception("Bathroom not data found");
     }
     
-    public override async Task<BathroomPostDTO> EditBathRoom(Guid bathroomID, BathroomPostDTO bathroomDto)
+    public async Task<BathroomPostDTO> UpdateElementById(Guid bathroomID, BathroomPostDTO bathroomDto)
     {
         await Task.Delay(100);
         return _bathroomPostConverter.Convert(_singletonBd.UpdateBathroom(new Bathroom()
@@ -71,10 +76,10 @@ public class BathRoomServices : AbstractBathroomService
             Toilet = bathroomDto.Toilet
         }));
     }
-
-    public override async Task<bool> DeleteBathRoom(Guid bathroomID)
+    
+    public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(100);
-        return _singletonBd.DeleteBathroom(bathroomID);
+        return _singletonBd.DeleteBathroom(elementId);
     }
 }

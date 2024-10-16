@@ -11,7 +11,12 @@ using backend.Services.AbstractClass;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BedService : AbstractBedService
+public class BedService :
+    IDeleteService,
+    IGetAllElementsService<BedInfoDTO>,
+    IGetElementById<BedPostDTO>,
+    ICreateSingleElement<BedPostDTO, BedPostDTO>,
+    IUpdateElementByID<BedPostDTO, BedPostDTO>
 {
     private SingletonBD _singletonBD;
     
@@ -23,7 +28,7 @@ public class BedService : AbstractBedService
     {
         _singletonBD = SingletonBD.Instance;
     }
-    public override async Task<List<BedInfoDTO>> GetBeds()
+    public async Task<List<BedInfoDTO>> GetAllElements()
     {
         await Task.Delay(10);
         List<BedInfoDTO> result = _singletonBD.GetAllBeds().Select(b =>
@@ -34,7 +39,7 @@ public class BedService : AbstractBedService
         return result;
     }
 
-    public override async Task<BedPostDTO> GetBedById(Guid bedID)
+    public async Task<BedPostDTO> GetElementById(Guid bedID)
     {
         await Task.Delay(10);
         var bed = _singletonBD.GetBedById(bedID);
@@ -44,7 +49,7 @@ public class BedService : AbstractBedService
         return _bedPostConverter.Convert(bed);
     }
 
-    public override async Task<BedPostDTO> CreateBed(BedPostDTO bedPostDto)
+    public async Task<BedPostDTO> CreateSingleElement(BedPostDTO bedPostDto)
     {
         await Task.Delay(100);
         if (bedPostDto != null)
@@ -62,7 +67,7 @@ public class BedService : AbstractBedService
         throw new Exception("Bed not data found");
     }
     
-    public override async Task<BedPostDTO> CreateOnlyBed(BedPostDTO bedPostDto)
+    public async Task<BedPostDTO> CreateOnlyBed(BedPostDTO bedPostDto)
     {
         await Task.Delay(100);
         if (bedPostDto != null)
@@ -84,7 +89,7 @@ public class BedService : AbstractBedService
         throw new Exception("Bed not data found");
     }
 
-    public override async Task<BedPostDTO> EditBed(Guid bedID, BedPostDTO bedDto)
+    public async Task<BedPostDTO> UpdateElementById(Guid bedID, BedPostDTO bedDto)
     {
         await Task.Delay(100);
         return _bedPostConverter.Convert(_singletonBD.UpdateBed(new Bed()
@@ -95,10 +100,10 @@ public class BedService : AbstractBedService
         }));
     }
 
-    public override async Task<bool> DeleteBed(Guid bedID)
+    public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(100); 
-        return _singletonBD.DeleteBed(bedID);
+        return _singletonBD.DeleteBed(elementId);
     }
 }
 

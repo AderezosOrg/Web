@@ -6,7 +6,7 @@ using Entities;
 
 namespace backend.Services;
 
-public class PriceService : AbstractPriceService
+public class PriceService : IPriceService
 {
     private SingletonBD _singletonBd;
 
@@ -16,14 +16,14 @@ public class PriceService : AbstractPriceService
     }
 
     
-    public override async Task<decimal> GetReservationPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationPrice(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal taxedPrice = await GetReservationPriceByANight(reservationsPostDtos);
         taxedPrice *= (reservationsPostDtos.First().UseDate - reservationsPostDtos.First().ReservationDate).Days;
         return taxedPrice;
     }
 
-    public override async Task<decimal> GetReservationPartialPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationPartialPrice(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal partialPrice = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
@@ -34,7 +34,7 @@ public class PriceService : AbstractPriceService
         return partialPrice;
     }
 
-    public override async Task<decimal> GetReservationTaxPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationTaxPrice(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal taxes = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)

@@ -10,6 +10,7 @@ builder.Services.AddScoped<BathRoomServices>();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<HotelService>();
 builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<RoomFiltersService>();
 builder.Services.AddScoped<RoomTemplateService>();
 builder.Services.AddScoped<ServiceService>();
 builder.Services.AddScoped<UserService>();
