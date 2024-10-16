@@ -32,7 +32,7 @@ public class PriceController : ControllerBase
     [HttpPost("/tax")]
     public async Task<ActionResult<decimal>> GetReservationsTaxPrice(ReservationPostDTO[] reservationPostDtos)
     {
-        var partialPrice = await _priceService.GetReservationTaxPrice(reservationPostDtos);
-        return Ok(partialPrice);
+        var taxPrice = await _priceService.GetReservationTaxPrice(reservationPostDtos);
+        return Ok(taxPrice);
     }
 }
