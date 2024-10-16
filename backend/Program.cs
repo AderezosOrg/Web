@@ -12,9 +12,10 @@ DbUtils.InjectData();
 
 Guid id = Guid.NewGuid();
 
+IDAO<Bathroom> simpleDao = new BathroomDAO();
 // Create
 Console.WriteLine("Create");
-BathroomTableOperator.Create(new Bathroom{
+simpleDao.Create(new Bathroom{
     BathRoomID = id,
     Shower = true,
     Toilet = true,
@@ -23,7 +24,7 @@ BathroomTableOperator.Create(new Bathroom{
 
 //Read Created
 Console.WriteLine("Read Created");
-var b2  = BathroomTableOperator.Read(id);
+var b2  = simpleDao.Read(id);
 Console.WriteLine(b2.BathRoomID);
 Console.WriteLine(b2.Shower);
 Console.WriteLine(b2.Toilet);
@@ -32,7 +33,7 @@ Console.WriteLine(b2.DressingTable);
 
 // Update
 Console.WriteLine("Update");
-int rowsUpdated = BathroomTableOperator.Update(
+int rowsUpdated = simpleDao.Update(
     new Bathroom{
         BathRoomID = id,
         Shower = false,
@@ -43,7 +44,7 @@ int rowsUpdated = BathroomTableOperator.Update(
 
 //Read Updated
 Console.WriteLine("Read Updated");
-b2  = BathroomTableOperator.Read(id);
+b2  = simpleDao.Read(id);
 Console.WriteLine(b2.BathRoomID);
 Console.WriteLine(b2.Shower);
 Console.WriteLine(b2.Toilet);
@@ -51,11 +52,11 @@ Console.WriteLine(b2.DressingTable);
 
 //Delete
 Console.WriteLine("Delete");
-BathroomTableOperator.Delete(id);
+simpleDao.Delete(id);
 
 //Read Deleted?
 Console.WriteLine("Read Deleted?");
-b2  = BathroomTableOperator.Read(id);
+b2  = simpleDao.Read(id);
 Console.WriteLine(b2 is null);
 
 var builder = WebApplication.CreateBuilder(args);

@@ -6,9 +6,9 @@ using Entities;
 
 namespace Db;
 
-public static class BathroomTableOperator
+public class BathroomDAO : IDAO<Bathroom>
 {
-    public static int Create(Bathroom b)
+    public int Create(Bathroom b)
     {
         string IdC = b.BathRoomID.ToString();
         string showerC = ObjectMapper.MapBoolean(b.Shower);
@@ -29,7 +29,7 @@ public static class BathroomTableOperator
         return com.ExecuteNonQuery();
     }
 
-    public static Bathroom? Read(Guid Id)
+    public Bathroom? Read(Guid Id)
     {
         string IdC = Id.ToString();
 
@@ -54,7 +54,7 @@ public static class BathroomTableOperator
         return toReturn;
     }
 
-    public static int Update(Bathroom b)
+    public int Update(Bathroom b)
     {
         string IdC = b.BathRoomID.ToString();
         string showerC = ObjectMapper.MapBoolean(b.Shower);
@@ -78,7 +78,7 @@ public static class BathroomTableOperator
         return toReturn;
     }
 
-    public static bool Delete(Guid Id)
+    public bool Delete(Guid Id)
     {
         string IdC = Id.ToString();
 
