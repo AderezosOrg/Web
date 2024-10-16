@@ -54,6 +54,26 @@ public class BathroomDAO : IDAO<Bathroom>
         return toReturn;
     }
 
+    public List<Bathroom>? ReadAll()
+    {
+        MySqlCommand com = new MySqlCommand();
+        com.Connection = DbUtils.GetConnection();
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append("SELECT * FROM Bathroom").Append(";");
+
+        com.CommandText = sb.ToString();
+        var reader = com.ExecuteReader();
+        if (!reader.HasRows) return null;
+        reader.Read();
+        
+        List<Bathroom> toReturn = new List<Bathroom>() {
+            //TODO: devolver lista lista
+        };
+        reader.Close();
+        return toReturn;
+    }
+
     public int Update(Bathroom b)
     {
         string IdC = b.BathRoomID.ToString();
