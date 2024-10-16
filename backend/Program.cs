@@ -13,6 +13,7 @@ DbUtils.InjectData();
 Guid id = Guid.NewGuid();
 
 IDAO<Bathroom> simpleDao = new BathroomDAO();
+
 // Create
 Console.WriteLine("Create");
 simpleDao.Create(new Bathroom{
@@ -58,6 +59,15 @@ simpleDao.Delete(id);
 Console.WriteLine("Read Deleted?");
 b2  = simpleDao.Read(id);
 Console.WriteLine(b2 is null);
+
+
+// Read All
+Console.WriteLine("Read All Ids");
+List<Bathroom> list = simpleDao.ReadAll();
+foreach (Bathroom b in list)
+{
+    Console.WriteLine(b.BathRoomID);
+}
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();

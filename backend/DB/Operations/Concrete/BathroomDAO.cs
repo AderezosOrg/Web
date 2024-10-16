@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using Entities;
@@ -41,7 +42,11 @@ public class BathroomDAO : IDAO<Bathroom>
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
-        if (!reader.HasRows) return null;
+        if (!reader.HasRows) 
+        {
+            reader.Close();
+            return null;
+        }
         reader.Read();
         
         Bathroom toReturn = new Bathroom {
@@ -54,22 +59,32 @@ public class BathroomDAO : IDAO<Bathroom>
         return toReturn;
     }
 
-    public List<Bathroom>? ReadAll()
+    public List<Bathroom> ReadAll()
     {
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("SELECT * FROM Bathroom").Append(";");
+        sb.Append("Bathroom");
 
         com.CommandText = sb.ToString();
+        com.CommandType = CommandType.TableDirect;
+
+        Bathroom toAppend;
+
         var reader = com.ExecuteReader();
-        if (!reader.HasRows) return null;
-        reader.Read();
-        
-        List<Bathroom> toReturn = new List<Bathroom>() {
-            //TODO: devolver lista lista
-        };
+        List<Bathroom> toReturn = new List<Bathroom>();
+        while (reader.Read())
+        {
+            toAppend = new Bathroom {
+                BathRoomID = Guid.Parse(reader.GetString(0)),
+                Shower = reader.GetBoolean(1),
+                Toilet = reader.GetBoolean(2),
+                DressingTable = reader.GetBoolean(3)
+            };
+
+            toReturn.Add(toAppend);
+        }
         reader.Close();
         return toReturn;
     }
