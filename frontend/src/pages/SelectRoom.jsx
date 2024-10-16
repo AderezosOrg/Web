@@ -39,7 +39,7 @@ export default function SelectRoom() {
   
 return(
     <div className="flex flex-col space-y-[28px] items-center">
-      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 3</h1>
+      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 3 de 4</h1>
       <div className='space-y-[28px] w-2/3'>
         {rooms.map((item, index) => (
           <RoomCard

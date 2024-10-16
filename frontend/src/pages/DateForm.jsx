@@ -25,7 +25,7 @@ function DateForm() {
 
   return (
     <div className='flex flex-col w-screen items-center justify-center'>
-      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 1 de 3</h1>
+      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 4</h1>
       <FormContainer>
         <Formik
           initialValues={{ checkInDate: '', checkOutDate: '', numPeople: '' }}
