@@ -9,8 +9,6 @@ namespace Converters.ToDTO
     {
         public ReservationDTO Convert(Reservation reservation, Contact contact, Room room)
         {
-            Console.WriteLine(contact.PhoneNumber);
-            Console.WriteLine(room.Code);
             return new ReservationDTO()
             {
                 ContactID = reservation.ContactID,

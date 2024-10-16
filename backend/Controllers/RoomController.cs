@@ -38,26 +38,4 @@ public class RoomController : ControllerBase
         return Ok(room);
     }
     
-    [HttpGet("beds/{roomId}")]
-    public async Task<ActionResult<List<BedDTO>>> GetRoomBedsById(Guid roomId)
-    {
-        List<BedDTO> beds = await _roomService.GetRoomBedsById(roomId);
-        return Ok(beds);
-    }
-    
-    [HttpGet("bathrooms/{roomId}")]
-    public async Task<ActionResult<List<BathroomDTO>>> GetRoomBathRoomsById(Guid roomId)
-    {
-        List<BathroomDTO> bathrooms = await _roomService.GetRoomBathroomsById(roomId);
-        return Ok(bathrooms);
-    }
-    
-    [HttpGet("services/{roomId}")]
-    public async Task<ActionResult<List<ServiceDTO>>> GetRoomServicesById(Guid roomId)
-    {
-        List<ServiceDTO> services = await _roomService.GetRoomServicesById(roomId);
-        return Ok(services);
-        
-    }
-    
 }

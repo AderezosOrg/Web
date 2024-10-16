@@ -45,7 +45,6 @@ public class BedService :
         var bed = _singletonBD.GetBedById(bedID);
         if (bed == null)
             throw new Exception("Bed not found");
-        Console.WriteLine(bed.Capacity);
         return _bedPostConverter.Convert(bed);
     }
 

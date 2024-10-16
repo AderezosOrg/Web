@@ -16,26 +16,18 @@ public class RoomService :
     private SingletonBD _singletonBd;
     private RoomConverter _roomConverter = new RoomConverter();
     private RoomPostDTOConvert _roomPostDtoConvert = new RoomPostDTOConvert();
-    private BedConverter _bedConverter = new BedConverter();
     private BedPostConverter _bedPostConverter = new BedPostConverter();
-    private BathroomConverter _bathroomConverter = new BathroomConverter();
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
-    private ServiceConverter _serviceConverter = new ServiceConverter();
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     
     private readonly BedService _bedService;
-    private readonly BathRoomServices _bathRoomServices;
-    private readonly ReservationService _reservationService;
     private readonly ServiceService _serviceService;
     
     public RoomService()
     {
         _serviceService = new ServiceService();
-        _reservationService = new ReservationService();
-        _bathRoomServices = new BathRoomServices();
         _bedService = new BedService();
         _singletonBd = SingletonBD.Instance;
-
     }
     public async Task<RoomFullInfoDTO> GetElementById(Guid roomId)
     {
@@ -142,82 +134,5 @@ public class RoomService :
         throw new Exception("Room not data found");
     }
 
-    public async Task<List<BedDTO>> GetRoomBedsById(Guid roomId)
-    {
-        await Task.Delay(10);
-
-        var room = _singletonBd.GetRoomById(roomId);
-        if (room == null)
-            throw new Exception("Room not found");
-
-        var bedInformationList = _singletonBd.GetBedInformationByRoomTemplateId(room.RoomTemplateID);
-        var bedList = new List<Bed>();
-        foreach (BedInformation bedInformation in bedInformationList)
-        {
-            bedList.Add(_singletonBd.GetBedById(bedInformation.BedID));
-        }
-        var bedDtoList = new List<BedDTO>();
     
-        foreach (var bed in bedList)
-        {
-            var bedPostDTO = await _bedService.GetElementById(bed.BedID);
-            bedDtoList.Add(_bedConverter.Convert(bedPostDTO, bed.BedID));
-        }
-
-        return bedDtoList;
-    }
-
-    public async Task<List<BathroomDTO>> GetRoomBathroomsById(Guid roomId)
-    {
-        await Task.Delay(10);
-
-        var room = _singletonBd.GetRoomById(roomId);
-        if (room == null)
-            throw new Exception("Room not found");
-
-        var bathRoomInfo = _singletonBd.GetBathRoomInformationByRoomTemplateId(room.RoomTemplateID);
-        var baths = new List<Bathroom>();
-        foreach (RoomBathInformation bathInformation in bathRoomInfo)
-        {
-            baths.Add(_singletonBd.GetBathRoomById(bathInformation.BathRoomID));
-        }
-        var bathroomDto = new List<BathroomDTO>();
-    
-        foreach (var bath in baths)
-        {
-            var bathPostDto = await _bathRoomServices.GetElementById(bath.BathRoomID);
-            bathroomDto.Add(_bathroomConverter.Convert(bathPostDto, bath.BathRoomID));
-        }
-
-        return bathroomDto;
-    }
-
-    
-    public async Task<List<ServiceDTO>> GetRoomServicesById(Guid roomId)
-    {
-        
-        await Task.Delay(10);
-
-        var room = _singletonBd.GetRoomById(roomId);
-        if (room == null)
-            throw new Exception("Room not found");
-
-        var roomServicesList = _singletonBd.GetRoomServicesByRoomId(room.RoomID);
-        var services = new List<Service>();
-        foreach (RoomServices roomServices in roomServicesList)
-        {
-            services.Add(_singletonBd.GetServiceById(roomServices.ServiceID));
-        }
-        var serviceDtos = new List<ServiceDTO>();
-    
-        foreach (var service in services)
-        {
-            var servicePostDto = await _serviceService.GetElementById(service.ServiceID);
-            serviceDtos.Add(_serviceConverter.Convert(servicePostDto, service.ServiceID));
-        }
-
-        return serviceDtos;
-    }
-
-
 }
