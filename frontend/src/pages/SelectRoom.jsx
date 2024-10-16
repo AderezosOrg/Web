@@ -26,8 +26,17 @@ export default function SelectRoom() {
   }, [checkInDate, checkOutDate]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className='flex justify-center items-center h-full'>
+      <p className="text-[28px] font-roboto font-bold">Loading. . .</p>
+    </div>;
   }
+  
+  if ((rooms.length <= 0)) {
+    return <div className='flex justify-center items-center h-full'>
+        <p className="text-[28px] font-roboto font-bold">Rooms not found. . .</p>
+      </div>;
+  }
+  
   return(
     <div className="flex flex-col mr-80 ml-80 space-y-[28px] items-center">
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 3</h1>
