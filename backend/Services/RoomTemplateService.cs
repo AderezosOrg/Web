@@ -3,8 +3,9 @@ using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
+using backend.Services.ServicesInterfaces;
 
-namespace backend.Services.AbstractClass;
+namespace backend.Services;
 
 public class RoomTemplateService : 
     IGetAllElementsService<RoomTemplateDTO>,

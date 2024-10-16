@@ -2,7 +2,7 @@ using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 
-namespace backend.Services.AbstractClass;
+namespace backend.Services.ServicesInterfaces;
 
 public interface IRoomFiltersService
 {

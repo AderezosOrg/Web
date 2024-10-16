@@ -1,4 +1,4 @@
-namespace backend.Services.AbstractClass;
+namespace backend.Services.ServicesInterfaces;
 
 public interface IUpdateElementByID<Tin, Tout>
 {

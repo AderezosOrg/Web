@@ -2,7 +2,7 @@ using backend.Services;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

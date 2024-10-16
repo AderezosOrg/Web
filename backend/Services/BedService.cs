@@ -7,7 +7,7 @@ using Entities;
 
 namespace backend.Services;
 
-using backend.Services.AbstractClass;
+using ServicesInterfaces;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -3,7 +3,7 @@ using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase

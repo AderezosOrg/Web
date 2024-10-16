@@ -1,6 +1,6 @@
 using DTOs.WithoutId;
 
-namespace backend.Services.AbstractClass;
+namespace backend.Services.ServicesInterfaces;
 
 public interface IPriceService
 {

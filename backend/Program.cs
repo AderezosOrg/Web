@@ -1,12 +1,11 @@
 using backend.Services;
-using backend.Services.AbstractClass;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Scan(scan => scan
     .FromAssemblyOf<RoomService>()
-    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")  && type.Namespace == "backend.Services"))
     .AsSelf()
     .AsImplementedInterfaces()
     .WithScopedLifetime());
