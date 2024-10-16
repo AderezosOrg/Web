@@ -34,6 +34,18 @@ public class PriceService : AbstractPriceService
         return partialPrice;
     }
 
+    public override async Task<decimal> GetReservationTaxPrice(params ReservationPostDTO[] reservationsPostDtos)
+    {
+        decimal taxes = 0;
+        foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
+        {
+            var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
+            var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
+            taxes += room.PricePerNight * hotelTax;
+        }
+        return taxes;
+    }
+
     private async Task<decimal> GetReservationPriceByANight(params ReservationPostDTO[] reservationsPostDtos)
     {
         decimal taxedPrice = 0;
