@@ -5,6 +5,15 @@ import * as Yup from 'yup';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
 import FormContainer from '../components/FormContainer';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
+const validatePhoneNumber = (phone) => {
+  const phoneNumber = parsePhoneNumberFromString(phone);
+  if (!phoneNumber) {
+    return false;
+  }
+  return phoneNumber.isValid();
+};
 
 function PersonalInfoForm() {
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
@@ -18,9 +27,8 @@ function PersonalInfoForm() {
       .email('Debe ser un email válido')
       .required('El email es obligatorio'),
     phone: Yup.string()
-      .matches(/^[0-9]+$/, 'El celular debe contener solo números')
-      .min(10, 'El celular debe tener al menos 10 dígitos')
       .required('El celular es obligatorio')
+      .test('isValidPhone', 'Número de teléfono no válido', (value) => validatePhoneNumber(value)),
   });
 
   return (
