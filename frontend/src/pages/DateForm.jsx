@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { Form as FormFormik, Formik } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,9 @@ import FormContainer from '../components/FormContainer';
 function DateForm() {
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const { name, email, phone } = location.state;
 
   const validationSchema = Yup.object().shape({
     checkInDate: Yup.date()
@@ -25,7 +29,7 @@ function DateForm() {
 
   return (
     <div className='flex flex-col w-screen items-center justify-center'>
-      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 1 de 3</h1>
+      <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 4</h1>
       <FormContainer>
         <Formik
           initialValues={{ checkInDate: '', checkOutDate: '', numPeople: '' }}
@@ -34,9 +38,10 @@ function DateForm() {
             setFormStatus({success: true})
             navigate('/select-room', {
               state: {
-                checkInDate: values.checkInDate,
-                checkOutDate: values.checkOutDate,
-                numPeople: values.numPeople,
+                ...values,
+                name,
+                email,
+                phone,
               }
             });
           }}
