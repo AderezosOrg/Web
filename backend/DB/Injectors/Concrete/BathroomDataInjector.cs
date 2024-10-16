@@ -7,8 +7,7 @@ public sealed class BathrommDataInjector : DataInjector
 {
     public BathrommDataInjector()
     {
-        var config = GetProjectConfiguration();
-        _injectionCommand = "LOAD DATA INFILE '/var/lib/mysql-files/bathroom.csv'" +  
+        _injectionCommand = @"LOAD DATA INFILE '/var/lib/mysql-files/bathroom.csv'" +  
                         " INTO TABLE Bathroom" +
                         " FIELDS TERMINATED BY ','" +
                         " IGNORE 1 LINES" +

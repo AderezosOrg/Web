@@ -1,72 +1,62 @@
 using backend.Services;
 using backend.Services.AbstractClass;
-//
 using Db;
-using MySql.Data;
-using MySql.Data.MySqlClient;
+using Entities;
+
+DbUtils.OpenConnection();
+
+// Delete to conserve persistency.
+DbUtils.TruncateAllTables();
+
+DbUtils.InjectData();
+
+Guid id = Guid.NewGuid();
+
+// Create
+Console.WriteLine("Create");
+BathroomTableOperator.Create(new Bathroom{
+    BathRoomID = id,
+    Shower = true,
+    Toilet = true,
+    DressingTable = true
+});
+
+//Read Created
+Console.WriteLine("Read Created");
+var b2  = BathroomTableOperator.Read(id);
+Console.WriteLine(b2.BathRoomID);
+Console.WriteLine(b2.Shower);
+Console.WriteLine(b2.Toilet);
+Console.WriteLine(b2.DressingTable);
 
 
-MySqlConnection conn;
-string myConnectionString;
+// Update
+Console.WriteLine("Update");
+int rowsUpdated = BathroomTableOperator.Update(
+    new Bathroom{
+        BathRoomID = id,
+        Shower = false,
+        Toilet = false,
+        DressingTable = false
+    }
+);
 
-myConnectionString = "server=localhost;port=3307;uid=root;" +
-"pwd=DFAE824F33EA9ED3BB445CFA5C1BFA305F47BF4A;database=dbaderezosweb;Allow User Variables=True";
+//Read Updated
+Console.WriteLine("Read Updated");
+b2  = BathroomTableOperator.Read(id);
+Console.WriteLine(b2.BathRoomID);
+Console.WriteLine(b2.Shower);
+Console.WriteLine(b2.Toilet);
+Console.WriteLine(b2.DressingTable);
 
-       
-conn = new MySqlConnection(myConnectionString);
+//Delete
+Console.WriteLine("Delete");
+BathroomTableOperator.Delete(id);
 
-
-conn.Open();
-
-        
-IDataInjector injector = new BathrommDataInjector();
-int result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new BedDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new ContactDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new ServiceDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new RoomTemplateDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new UserDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new HotelDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new RoomDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new RoomServicesDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new ReservationDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new BedInformationDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-
-injector = new RoombathDataInjector();
-result = injector.InjectData(conn);
-Console.WriteLine(result);
-//
+//Read Deleted?
+Console.WriteLine("Read Deleted?");
+b2  = BathroomTableOperator.Read(id);
+Console.WriteLine(b2 is null);
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();

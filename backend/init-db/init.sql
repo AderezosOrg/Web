@@ -99,6 +99,27 @@ CREATE TABLE IF NOT EXISTS RoomServices(
   FOREIGN KEY (ServiceId) REFERENCES Service(Id)
 );
 
+DELIMITER //
+CREATE PROCEDURE TruncateAllTables()
+BEGIN
+    SET FOREIGN_KEY_CHECKS = 0;
+
+    TRUNCATE TABLE Bathroom;
+    TRUNCATE TABLE Bed;
+    TRUNCATE TABLE BedInformation;
+    TRUNCATE TABLE Contact;
+    TRUNCATE TABLE Hotel;
+    TRUNCATE TABLE Reservation;
+    TRUNCATE TABLE Room;
+    TRUNCATE TABLE RoomBathInformation;
+    TRUNCATE TABLE RoomServices;
+    TRUNCATE TABLE RoomTemplate;
+    TRUNCATE TABLE Service;
+    TRUNCATE TABLE User;
+    SET FOREIGN_KEY_CHECKS = 1;
+END //
+DELIMITER ;
+
 
 DELIMITER //
 

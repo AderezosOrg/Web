@@ -18,6 +18,7 @@ public abstract class DataInjector : IDataInjector
         }
         catch (MySql.Data.MySqlClient.MySqlException ex)
         {
+            Console.WriteLine(ex);
             injectionResult = ex.Number;
         }
         return injectionResult;
