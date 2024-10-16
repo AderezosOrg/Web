@@ -11,7 +11,7 @@ public class RoomFiltersService: IRoomFiltersService
     private SingletonBD _singletonBd;
     private ReservationService _reservationService;
     private RoomConverter _roomConverter = new RoomConverter();
-    private BathRoomServices _bathRoomServices;
+    private BathRoomService _bathRoomService;
     private ServiceService _serviceService;
     private BedService _bedService;
     private RoomService _roomService;
@@ -20,7 +20,7 @@ public class RoomFiltersService: IRoomFiltersService
     {
         _serviceService = new ServiceService();
         _reservationService = new ReservationService();
-        _bathRoomServices = new BathRoomServices();
+        _bathRoomService = new BathRoomService();
         _bedService = new BedService();
         _roomService = new RoomService();
         _singletonBd = SingletonBD.Instance;
@@ -50,7 +50,7 @@ public class RoomFiltersService: IRoomFiltersService
         {
             foreach (var bathroomId in room.Bathrooms)
             {
-                bathrooms.Add( await _bathRoomServices.GetElementById(bathroomId));
+                bathrooms.Add( await _bathRoomService.GetElementById(bathroomId));
             }
             foreach (var bedId in room.Beds)
             {

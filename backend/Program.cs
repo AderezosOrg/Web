@@ -4,18 +4,12 @@ using backend.Services.AbstractClass;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ReservationService>();
-builder.Services.AddScoped<BedService>();
-builder.Services.AddScoped<BathRoomServices>();
-builder.Services.AddScoped<ContactService>();
-builder.Services.AddScoped<HotelService>();
-builder.Services.AddScoped<RoomService>();
-builder.Services.AddScoped<RoomFiltersService>();
-builder.Services.AddScoped<RoomInfoServices>();
-builder.Services.AddScoped<RoomTemplateService>();
-builder.Services.AddScoped<ServiceService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<PriceService>();
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<RoomService>()
+    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+    .AsSelf()
+    .AsImplementedInterfaces()
+    .WithScopedLifetime());
 builder.Services.AddControllers();
 
 

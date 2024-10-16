@@ -8,7 +8,7 @@ using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class BathRoomServices : 
+public class BathRoomService : 
     IDeleteService,
     IGetAllElementsService<BathroomInfoDTO>,
     IGetElementById<BathroomPostDTO>,
@@ -21,7 +21,7 @@ public class BathRoomServices :
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
     
-    public BathRoomServices()
+    public BathRoomService()
     {
         _singletonBd = SingletonBD.Instance;
     }

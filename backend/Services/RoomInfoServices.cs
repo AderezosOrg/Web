@@ -10,7 +10,7 @@ public class RoomInfoServices : IRoomService
 {
     private SingletonBD _singletonBd;
     private BedService _bedService  = new BedService();
-    private BathRoomServices _bathRoomServices  = new BathRoomServices();
+    private BathRoomService _bathRoomService  = new BathRoomService();
     private ServiceService _serviceService = new ServiceService();
     private BedConverter _bedConverter;
     private BathroomConverter _bathroomConverter;
@@ -66,7 +66,7 @@ public class RoomInfoServices : IRoomService
     
         foreach (var bath in baths)
         {
-            var bathPostDto = await _bathRoomServices.GetElementById(bath.BathRoomID);
+            var bathPostDto = await _bathRoomService.GetElementById(bath.BathRoomID);
             bathroomDto.Add(_bathroomConverter.Convert(bathPostDto, bath.BathRoomID));
         }
 
