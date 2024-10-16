@@ -37,30 +37,33 @@ export default function SelectRoom() {
       </div>;
   }
   
-  return(
-    <div className="flex flex-col mr-80 ml-80 space-y-[28px] items-center">
+return(
+    <div className="flex flex-col space-y-[28px] items-center">
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 3</h1>
-      {rooms.map((item, index) => (
+      <div className='space-y-[28px] w-2/3'>
+        {rooms.map((item, index) => (
           <RoomCard
-              key={index}
-              bed={item?.beds?.[0]?.size || "Unknown Bed"} 
-              capacity={item?.beds?.[0]?.capacity || "Unknown Capacity"}
-              price={item?.pricePerNight || 0}
-              floor={item?.floorNumber || "Unknown Floor"}
-              code={item?.code || "Unknown Code"}
-              services={item?.services || []}
-              onClick={() => {
-                navigate('/confirmation', {
-                  state: {
-                    checkInDate: checkInDate,
-                    checkOutDate: checkOutDate,
-                    numPeople: numPeople,
-                    roomPrice: item.pricePerNight
-                  }
-                });
-              }}
+            className
+            key={index}
+            bed={item?.beds?.[0]?.size || "Unknown Bed"} 
+            capacity={item?.beds?.[0]?.capacity || "Unknown Capacity"}
+            price={item?.pricePerNight || 0}
+            floor={item?.floorNumber || "Unknown Floor"}
+            code={item?.code || "Unknown Code"}
+            services={item?.services || []}
+            onClick={() => {
+              navigate('/confirmation', {
+                state: {
+                  checkInDate: checkInDate,
+                  checkOutDate: checkOutDate,
+                  numPeople: numPeople,
+                  roomPrice: item.pricePerNight
+                }
+              });
+            }}
           />
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
