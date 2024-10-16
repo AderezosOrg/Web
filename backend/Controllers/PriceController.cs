@@ -16,23 +16,23 @@ public class PriceController : ControllerBase
     }
 
     [HttpPost("/total")]
-    public async Task<ActionResult<decimal>> GetReservationsTotalPrice(ReservationPostDTO[] reservationPostDtos)
+    public async Task<ActionResult<decimal>> GetReservationsTotalPrice(PriceRequestsDTO reservations)
     {
-        var totalPrice = await _priceService.GetReservationPrice(reservationPostDtos);
+        var totalPrice = await _priceService.GetReservationPrice(reservations);
         return Ok(totalPrice);
     }
     
     [HttpPost("/partial")]
-    public async Task<ActionResult<decimal>> GetReservationsPartialPrice(ReservationPostDTO[] reservationPostDtos)
+    public async Task<ActionResult<decimal>> GetReservationsPartialPrice(PriceRequestsDTO reservations)
     {
-        var partialPrice = await _priceService.GetReservationPartialPrice(reservationPostDtos);
+        var partialPrice = await _priceService.GetReservationPartialPrice(reservations);
         return Ok(partialPrice);
     }
     
     [HttpPost("/tax")]
-    public async Task<ActionResult<decimal>> GetReservationsTaxPrice(ReservationPostDTO[] reservationPostDtos)
+    public async Task<ActionResult<decimal>> GetReservationsTaxPrice(PriceRequestsDTO reservations)
     {
-        var taxPrice = await _priceService.GetReservationTaxPrice(reservationPostDtos);
+        var taxPrice = await _priceService.GetReservationTaxPrice(reservations);
         return Ok(taxPrice);
     }
 }

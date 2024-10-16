@@ -16,17 +16,17 @@ public class PriceService : IPriceService
     }
 
     
-    public async Task<decimal> GetReservationPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationPrice(PriceRequestsDTO reservations)
     {
-        decimal taxedPrice = await GetReservationPriceByANight(reservationsPostDtos);
-        taxedPrice *= (reservationsPostDtos.First().UseDate - reservationsPostDtos.First().ReservationDate).Days;
+        decimal taxedPrice = await GetReservationPriceByANight(reservations);
+        taxedPrice *= (reservations.Reservations.First().UseDate - reservations.Reservations.First().ReservationDate).Days;
         return taxedPrice;
     }
 
-    public async Task<decimal> GetReservationPartialPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationPartialPrice(PriceRequestsDTO reservations)
     {
         decimal partialPrice = 0;
-        foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
+        foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
             var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
             partialPrice += room.PricePerNight * (reservationsPostDto.UseDate - reservationsPostDto.ReservationDate).Days;
@@ -34,10 +34,10 @@ public class PriceService : IPriceService
         return partialPrice;
     }
 
-    public async Task<decimal> GetReservationTaxPrice(params ReservationPostDTO[] reservationsPostDtos)
+    public async Task<decimal> GetReservationTaxPrice(PriceRequestsDTO reservations)
     {
         decimal taxes = 0;
-        foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
+        foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
             var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
             var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
@@ -46,10 +46,10 @@ public class PriceService : IPriceService
         return taxes;
     }
 
-    private async Task<decimal> GetReservationPriceByANight(params ReservationPostDTO[] reservationsPostDtos)
+    private async Task<decimal> GetReservationPriceByANight(PriceRequestsDTO reservations)
     {
         decimal taxedPrice = 0;
-        foreach (ReservationPostDTO reservationsPostDto in reservationsPostDtos)
+        foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
             var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
             var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
