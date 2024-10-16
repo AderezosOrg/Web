@@ -4,83 +4,33 @@ using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 
 namespace backend.Services;
 
 public class ReservationService : AbstractReservationService
 {
-    private static List<Reservation> _reservations = new List<Reservation>()
-    {
-        new Reservation()
-        {
-            Cancelled = false,
-            ContactID = Guid.NewGuid(),
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today,
-        },
-        new Reservation()
-        {
-            Cancelled = true,
-            ContactID = Guid.NewGuid(),
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today,
-        }
-    };
-
-    private List<Contact> _contacts = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = _reservations[0].ContactID,
-            Email = "test@test.com",
-            PhoneNumber = "123456",
-        },
-        new Contact()
-        {
-            ContactID = _reservations[1].ContactID,
-            Email = "not@test.com",
-            PhoneNumber = "657394",
-        }
-    };
-
-    private List<Room> _rooms = new List<Room>()
-    {
-        new Room()
-        {
-            RoomID = _reservations[0].RoomID,
-            Code = "A1",
-            FloorNumber = 123,
-            HotelID = Guid.NewGuid(),
-            PricePerNight = 8m,
-            RoomTemplateID = Guid.NewGuid(),
-        },
-        new Room()
-        {
-            RoomID = _reservations[1].RoomID,
-            Code = "A2",
-            FloorNumber = 124,
-            HotelID = Guid.NewGuid(),
-            PricePerNight = 9m,
-            RoomTemplateID = Guid.NewGuid(),
-        }
-    };
+    private SingletonBD _singletonBd;
     
-    private ReservationConverter _reservationPostConverter = new ReservationConverter();
+    private ReservationConverter _reservationConverter = new ReservationConverter();
 
+
+    public ReservationService()
+    {
+        _singletonBd = SingletonBD.Instance;
+    }
 
     public override async Task<List<ReservationDTO>> GetReservationsByContactId(Guid contactId)
     {
         await Task.Delay(20);
-        var reservations = _reservations.Where(r => r.ContactID == contactId).ToList();
+        var reservations = _singletonBd.GetReservationByContactId(contactId);
         
         var reservationDTOs = new List<ReservationDTO>();
         foreach (var reservation in reservations)
         {
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == reservation.ContactID);
-            var room = _rooms.FirstOrDefault(r => r.RoomID == reservation.RoomID);
-            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
+            var contact = _singletonBd.GetContactById(reservation.ContactID);
+            var room = _singletonBd.GetRoomById(reservation.RoomID);
+            reservationDTOs.Add(_reservationConverter.Convert(reservation, contact, room));
         }
         return reservationDTOs;
 
@@ -89,14 +39,14 @@ public class ReservationService : AbstractReservationService
     public override async Task<List<ReservationDTO>> GetReservationsByRoomId(Guid roomId)
     {
         await Task.Delay(20);
-        var reservations = _reservations.Where(r => r.RoomID == roomId).ToList();
+        var reservations = _singletonBd.GetReservationByRoomId(roomId);
         
         var reservationDTOs = new List<ReservationDTO>();
         foreach (var reservation in reservations)
         {
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == reservation.ContactID);
-            var room = _rooms.FirstOrDefault(r => r.RoomID == reservation.RoomID);
-            reservationDTOs.Add(_reservationPostConverter.Convert(reservation, contact, room));
+            var contact = _singletonBd.GetContactById(reservation.ContactID);
+            var room = _singletonBd.GetRoomById(reservation.RoomID);
+            reservationDTOs.Add(_reservationConverter.Convert(reservation, contact, room));
         }
         return reservationDTOs;
     }
@@ -104,68 +54,53 @@ public class ReservationService : AbstractReservationService
     public override async Task<List<ReservationDTO>> GetReservations()
     {
         await Task.Delay(10);
-        List<ReservationDTO> result = _reservations.Select(r =>
+        List<ReservationDTO> result = _singletonBd.GetAllReservations().Select(r =>
         {
-            var contact = _contacts.FirstOrDefault(x => x.ContactID == r.ContactID);
-            var room = _rooms.FirstOrDefault(x => x.RoomID == r.RoomID);
-            return _reservationPostConverter.Convert(r, contact, room);
+            var contact = _singletonBd.GetContactById(r.ContactID);
+            var room = _singletonBd.GetRoomById(r.RoomID);
+            return _reservationConverter.Convert(r, contact, room);
         }).ToList();
         
         return result;
     }
 
-    public override async Task<ReservationDTO> CreateReservation(ReservationDTO reservationDto)
+    public override async Task<List<ReservationDTO>> CreateReservation(ReservationPostDTO[] reservationPostDto)
     {
         await Task.Delay(100);
-        if (reservationDto != null)
+        List<ReservationDTO> newReservations = new List<ReservationDTO>(); 
+        foreach (ReservationPostDTO postDto in reservationPostDto)
         {
-            var newReservation = new Reservation
+            if (postDto != null)
             {
-                ContactID = Guid.NewGuid(),
-                Cancelled = reservationDto.Cancelled,
-                ReservationDate = reservationDto.ReservationDate,
-                RoomID = Guid.NewGuid(),
-                UseDate = reservationDto.UseDate,
-            };
-            _reservations.Add(newReservation);
-
-            var newContact = new Contact
-            {
-                ContactID = newReservation.ContactID,
-                Email = reservationDto.UserEmail,
-                PhoneNumber = reservationDto.UserPhoneNumber,
-            };
-            _contacts.Add(newContact);
-
-            var newRoom = new Room
-            {
-                RoomID = reservationDto.RoomID,
-                Code = reservationDto.RoomCode,
-                FloorNumber = reservationDto.RoomFloorNumber,
-                HotelID = Guid.NewGuid(),
-                PricePerNight = reservationDto.PricePerNight
-            };
-            _rooms.Add(newRoom);
-            if(_reservations.Contains(newReservation) && _contacts.Contains(newContact) && _rooms.Contains(newRoom))
-                return reservationDto;
-            else 
-                throw new Exception("Reservation not created");
+                var newReservation = new Reservation
+                {
+                    ContactID = postDto.ContactId,
+                    Cancelled = false,
+                    ReservationDate = postDto.ReservationDate,
+                    RoomID = postDto.RoomId,
+                    UseDate = postDto.UseDate,
+                };
+                _singletonBd.AddReservation(newReservation);
+                newReservations.Add(_reservationConverter.Convert(postDto, _singletonBd.GetContactById(postDto.ContactId), _singletonBd.GetRoomById(postDto.RoomId)));
+            }
         }
 
-        throw new Exception("Reservation data not found");
+        return newReservations;
+
     }
 
-    public override async Task<ReservationDTO> CancelReservation(Guid contactId)
+    public override async Task<ReservationDTO> CancelReservation(Guid contactId) //check later
     {
         await Task.Delay(10);
-        var reservation = _reservations.FirstOrDefault(x => x.ContactID == contactId);
-        var contact = _contacts.FirstOrDefault(x => x.ContactID == reservation.ContactID);
-        var room = _rooms.FirstOrDefault(x => x.RoomID == reservation.RoomID);
+        var reservation = _singletonBd.GetAllReservations().FirstOrDefault(x => x.ContactID == contactId);
+        var contact = _singletonBd.GetAllContacts().FirstOrDefault(x => x.ContactID == reservation.ContactID);
+        var room = _singletonBd.GetAllRooms().FirstOrDefault(x => x.RoomID == reservation.RoomID);
         if (reservation != null)
         {
             reservation.Cancelled = false;
+            _singletonBd.UpdateReservation(reservation);
             if (reservation.Cancelled == false)
-                return _reservationPostConverter.Convert(reservation, contact, room);
+                return _reservationConverter.Convert(reservation, contact, room);
             else
                 throw new Exception("Reservation not cancelled");
 

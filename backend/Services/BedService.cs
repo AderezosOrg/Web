@@ -1,4 +1,5 @@
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
@@ -12,45 +13,20 @@ using System.Linq;
 
 public class BedService : AbstractBedService
 {
-    private static List<Bed> _beds = new List<Bed>()
-    {
-        new Bed()
-        {
-            BedID = Guid.NewGuid(),
-            Capacity = "2",
-            Size = "king"
-        },
-        new Bed()
-        {
-            BedID = Guid.NewGuid(),
-            Capacity = "1",
-            Size = "single"
-        }
-    };
-
-    private List<BedInformation> _bedInformations = new List<BedInformation>()
-    {
-        new BedInformation()
-        {
-            BedID = _beds[0].BedID,
-            Quantity = 1,
-            RoomTemplateID = Guid.NewGuid(),
-        },
-        new BedInformation()
-        {
-            BedID = _beds[1].BedID,
-            Quantity = 3,
-            RoomTemplateID = Guid.NewGuid(),
-        }
-    };
+    private SingletonBD _singletonBD;
+    
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
 
+    public BedService()
+    {
+        _singletonBD = SingletonBD.Instance;
+    }
     public override async Task<List<BedInfoDTO>> GetBeds()
     {
         await Task.Delay(10);
-        List<BedInfoDTO> result = _beds.Select(b =>
+        List<BedInfoDTO> result = _singletonBD.GetAllBeds().Select(b =>
         {
             return _bedConverter.Convert(b);
         }).ToList();
@@ -61,9 +37,10 @@ public class BedService : AbstractBedService
     public override async Task<BedPostDTO> GetBedById(Guid bedID)
     {
         await Task.Delay(10);
-        var bed = _beds.FirstOrDefault(b => b.BedID == bedID);
+        var bed = _singletonBD.GetBedById(bedID);
         if (bed == null)
             throw new Exception("Bed not found");
+        Console.WriteLine(bed.Capacity);
         return _bedPostConverter.Convert(bed);
     }
 
@@ -79,12 +56,8 @@ public class BedService : AbstractBedService
                 Size = bedPostDto.Size,
                 
             };
-            _beds.Add(newBed);
-            
-            if (_beds.Contains(newBed))
-                return bedPostDto;
-            else
-                throw new Exception("Bed not created");
+            _singletonBD.AddBed(newBed);
+            return bedPostDto;
         }
         throw new Exception("Bed not data found");
     }
@@ -101,9 +74,9 @@ public class BedService : AbstractBedService
                 Size = bedPostDto.Size,
                 
             };
-            _beds.Add(newBed);
+            _singletonBD.AddBed(newBed);
             
-            if (_beds.Contains(newBed))
+            if (_singletonBD.GetAllBeds().Contains(newBed))
                 return bedPostDto;
             else
                 throw new Exception("Bed not created");
@@ -114,31 +87,18 @@ public class BedService : AbstractBedService
     public override async Task<BedPostDTO> EditBed(Guid bedID, BedPostDTO bedDto)
     {
         await Task.Delay(100);
-        var existingBed = _beds.FirstOrDefault(b => b.BedID == bedID);
-        if (existingBed != null)
+        return _bedPostConverter.Convert(_singletonBD.UpdateBed(new Bed()
         {
-            existingBed.Capacity = bedDto.Capacity;
-            existingBed.Size = bedDto.Size;
-
-            return bedDto;
-        }
-        throw new Exception("Bed not found");
+            BedID = bedID,
+            Capacity = bedDto.Capacity,
+            Size = bedDto.Size,
+        }));
     }
 
     public override async Task<bool> DeleteBed(Guid bedID)
     {
-        await Task.Delay(100);
-        var bed = _beds.FirstOrDefault(b => b.BedID == bedID);
-        if (bed != null)
-        {
-            _beds.Remove(bed);
-            if (!_beds.Contains(bed))
-                return true;
-            else
-                throw new Exception("Bed not deleted");
-        }
-        else
-            throw new Exception("Bed not found");
+        await Task.Delay(100); 
+        return _singletonBD.DeleteBed(bedID);
     }
 }
 

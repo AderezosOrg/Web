@@ -34,6 +34,7 @@ namespace Converters.ToDTO
                 RoomTemplateWindows = roomTemplate.Windows,
                 HotelName = hotel.Name,
                 HotelAllowsPets = hotel.AllowsPets,
+                Tax = hotel.Tax,
                 Beds = bedList,
                 Bathrooms = bathList,
                 Services = serviceList
@@ -50,6 +51,7 @@ namespace Converters.ToDTO
                 FloorNumber = roomPostDto.FloorNumber,
                 HotelName = roomPostDto.HotelName,
                 HotelAllowsPets = roomPostDto.HotelAllowsPets,
+                Tax = roomPostDto.Tax,
                 PricePerNight = roomPostDto.PricePerNight,
                 RoomTemplateSide = roomPostDto.RoomTemplateSide,
                 RoomTemplateWindows = roomPostDto.RoomTemplateWindows,
@@ -62,17 +64,18 @@ namespace Converters.ToDTO
         {
             return new RoomFullInfoDTO()
             {
-                Bathrooms = input2,
-                Beds = input3,
+                Bathrooms = input2.ToList(),
+                Beds = input3.ToList(),
                 Code = input1.Code,
                 FloorNumber = input1.FloorNumber,
                 HotelName = input1.HotelName,
                 HotelAllowsPets = input1.HotelAllowsPets,
+                Tax = input1.Tax,
                 PricePerNight = input1.PricePerNight,
                 RoomTemplateSide = input1.RoomTemplateSide,
                 RoomTemplateWindows = input1.RoomTemplateWindows,
                 RoomID = input1.RoomID,
-                Services = input4
+                Services = input4.ToList()
             };
         }
     }

@@ -4,150 +4,77 @@ using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 
 namespace backend.Services;
 
 public class RoomService : AbstractRoomService
 {
-    private static List<Room> _rooms = new List<Room>()
-    {
-        new Room()
-        {
-            Code = "21a",
-            FloorNumber = 1,
-            HotelID = Guid.NewGuid(),
-            PricePerNight = 2.0m,
-            RoomID = Guid.NewGuid(),
-            RoomTemplateID = Guid.NewGuid(),
-        }
-    };
-
-    private List<RoomTemplate> _roomTemplates = new List<RoomTemplate>()
-    {
-        new RoomTemplate()
-        {
-            RoomTemplateID = _rooms[0].RoomTemplateID,
-            Side = "left",
-            Windows = 12
-        }
-    };
-
-    private List<Hotel> _hotels = new List<Hotel>()
-    {
-        new Hotel()
-        {
-            HotelID = _rooms[0].HotelID,
-            Address = "123 Main Street",
-            AllowsPets = false,
-            BathRoomID = Guid.NewGuid(),
-            ContactID = Guid.NewGuid(),
-            Name = "Hotel",
-            Stars = 12,
-            UserID = Guid.NewGuid(),
-        }
-    };
-
-    private List<BedInformation> _bedsinfo = new List<BedInformation>()
-    {
-        new BedInformation()
-        {
-            RoomTemplateID = Guid.NewGuid(),
-            BedID = Guid.NewGuid(),
-            Quantity = 1
-        }
-    };
-
-    private List<RoomBathInformation> _roomBaths = new List<RoomBathInformation>()
-    {
-        new RoomBathInformation()
-        {
-            RoomTemplateID = Guid.NewGuid(),
-            BathRoomID = Guid.NewGuid(),
-            Quantity = 1
-        }
-    };
-
-    private List<RoomServices> _services = new List<RoomServices>()
-    {
-        new RoomServices()
-        {
-            ServiceID = Guid.NewGuid(),
-            RoomID = Guid.NewGuid(),
-        }
-    };
-
-    private List<Bed> _beds = new List<Bed>()
-    {
-        new Bed()
-        {
-            BedID = Guid.NewGuid(),
-            Capacity = "3",
-            Size = "king"
-        }
-    };
-    
-    private List<Bathroom> _baths = new List<Bathroom>()
-    {
-        new Bathroom()
-        {
-            BathRoomID = Guid.NewGuid(),
-            DressingTable = true,
-            Shower = false,
-            Toilet = false
-        }
-        
-    };
-    
+    private SingletonBD _singletonBd;
     private RoomConverter _roomConverter = new RoomConverter();
     private RoomPostDTOConvert _roomPostDtoConvert = new RoomPostDTOConvert();
     private BedConverter _bedConverter = new BedConverter();
+    private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
+    private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
+    private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     
     private readonly BedService _bedService;
     private readonly BathRoomServices _bathRoomServices;
     private readonly ReservationService _reservationService;
     private readonly ServiceService _serviceService;
-
-    public RoomService(BathRoomServices bathRoomServices, BedService bedService, ReservationService reservationService
-    , ServiceService serviceService)
-    {
-        _serviceService = serviceService;
-        _reservationService = reservationService;
-        _bathRoomServices = bathRoomServices;
-        _bedService = bedService;
-    }
+    
     public RoomService()
     {
         _serviceService = new ServiceService();
         _reservationService = new ReservationService();
         _bathRoomServices = new BathRoomServices();
         _bedService = new BedService();
+        _singletonBd = SingletonBD.Instance;
+
     }
-    public override async Task<RoomPostDTO> GetRoomById(Guid roomId)
+    public override async Task<RoomFullInfoDTO> GetRoomById(Guid roomId)
     {
         await Task.Delay(10);
-        var room = _rooms.FirstOrDefault(r => r.RoomID == roomId);
+        var room = _singletonBd.GetRoomById(roomId);
         if (room == null)
             throw new Exception("Room not found");
-        var roomTemplate = _roomTemplates.FirstOrDefault(r => r.RoomTemplateID == room.RoomTemplateID);
-        var hotel = _hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
-        var bedInformation = _bedsinfo.Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
-        var bathInformation = _roomBaths.Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
-        var serviceInformation = _services.Where(s => s.RoomID == room.RoomID).ToList();
-        return _roomPostDtoConvert.Convert(room, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation);
+        var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(r => r.RoomTemplateID == room.RoomTemplateID);
+        var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == room.HotelID);
+        var bedInformation = _singletonBd.GetAllBedInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
+        var bathInformation = _singletonBd.GetAllBathroomInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
+        var serviceInformation = _singletonBd.GetAllRoomServices().Where(s => s.RoomID == room.RoomID).ToList();
+        var roomDto = _roomConverter.Convert(room, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation);
+        var bathPostDtos = new List<BathroomPostDTO>();
+        foreach (RoomBathInformation information in bathInformation)
+        {
+            bathPostDtos.Add(_bathroomPostConverter.Convert(_singletonBd.GetBathRoomById(information.BathRoomID)));
+        }
+        var bedPostDtos  = new List<BedPostDTO>();
+        foreach (BedInformation information in bedInformation)
+        {
+            bedPostDtos.Add(_bedPostConverter.Convert(_singletonBd.GetBedById(information.BedID)));
+        }
+        var servicePostDtos  = new List<ServicePostDTO>();
+        foreach (RoomServices information in serviceInformation)
+        {
+            servicePostDtos.Add(_servicePostConverter.Convert(_singletonBd.GetServiceById(information.ServiceID)));
+        }
+
+        return _roomConverter.Convert(roomDto, bathPostDtos, bedPostDtos, servicePostDtos);
     }
 
     public override async Task<List<RoomFullInfoDTO>> GetRooms()
     {
         await Task.Delay(10);
-        List<RoomDTO> roomDtos = _rooms.Select(r =>
+        List<RoomDTO> roomDtos = _singletonBd.GetAllRooms().Select(r =>
         {
-            var roomTemplate = _roomTemplates.FirstOrDefault(r => r.RoomTemplateID == r.RoomTemplateID);
-            var hotel = _hotels.FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformation = _bedsinfo.Where(b => b.RoomTemplateID == r.RoomTemplateID).ToList();
-            var bathInformation = _roomBaths.Where(b => b.RoomTemplateID == r.RoomTemplateID).ToList();
-            var serviceInformation = _services.Where(s => s.RoomID == r.RoomID).ToList();
+            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
+            var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
+            var bedInformation = _singletonBd.GetBedInformationByRoomTemplateId(r.RoomTemplateID);
+            var bathInformation = _singletonBd.GetBathRoomInformationByRoomTemplateId(r.RoomTemplateID);
+            var serviceInformation = _singletonBd.GetRoomServicesByRoomId(r.RoomID);
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation);
         }).ToList();
         
@@ -160,7 +87,8 @@ public class RoomService : AbstractRoomService
         {
             foreach (var bathroomId in room.Bathrooms)
             {
-                bathrooms.Add( await _bathRoomServices.GetBathRoomById(bathroomId));
+                
+                bathrooms.Add(_bathroomPostConverter.Convert(_singletonBd.GetBathRoomById(bathroomId)));
             }
             foreach (var bedId in room.Beds)
             {
@@ -178,63 +106,35 @@ public class RoomService : AbstractRoomService
         return fullInfoRooms;
     }
 
-    public override async Task<RoomPostDTO> CreateRoom(RoomPostDTO roomPostDto)
+    public override async Task<RoomPostDTO> CreateRoom(RoomNewPostDTO roomPostDto)
     {
         await Task.Delay(10);
         if (roomPostDto != null)
         {
-            var newRoom = new Room
+            var room = new Room()
             {
-                RoomID = Guid.NewGuid(),
                 Code = roomPostDto.Code,
                 FloorNumber = roomPostDto.FloorNumber,
-                HotelID = Guid.NewGuid(),
+                HotelID = roomPostDto.HotelId,
                 PricePerNight = roomPostDto.PricePerNight,
-                RoomTemplateID = Guid.NewGuid(),
+                RoomID = Guid.NewGuid(),
+                RoomTemplateID = roomPostDto.RoomTemplateId
             };
-            _rooms.Add(newRoom);
-
-            var newHotel = new Hotel
+            _singletonBd.AddRoom(room);
+            var roomTemplate = _singletonBd.GetRoomTemplateById(room.RoomTemplateID);
+            var hotel = _singletonBd.GetHotelById(room.HotelID);
+            var bathroomInfo = _singletonBd.GetBathRoomInformationByRoomTemplateId(room.RoomTemplateID);
+            var bedInfo = _singletonBd.GetBedInformationByRoomTemplateId(room.RoomTemplateID);
+            foreach (Guid roomService in roomPostDto.RoomServices)
             {
-                HotelID = newRoom.HotelID,
-                AllowsPets = roomPostDto.HotelAllowsPets,
-                Name = roomPostDto.HotelName,
-            };
-            _hotels.Add(newHotel);
-
-            var newTemplate = new RoomTemplate
-            {
-                RoomTemplateID = newRoom.RoomTemplateID,
-                Side = roomPostDto.RoomTemplateSide,
-                Windows = roomPostDto.RoomTemplateWindows,
-            };
-            _roomTemplates.Add(newTemplate);
-
-            var bedInformation = new BedInformation
-            {
-                RoomTemplateID = newRoom.RoomTemplateID,
-                BedID = Guid.NewGuid(),
-            };
-            _bedsinfo.Add(bedInformation);
-
-            var bathroomInformation = new RoomBathInformation
-            {
-                RoomTemplateID = newRoom.RoomTemplateID,
-                BathRoomID = Guid.NewGuid(),
-            };
-            _roomBaths.Add(bathroomInformation);
-
-            var serviceInfomration = new RoomServices
-            {
-                ServiceID = Guid.NewGuid(),
-                RoomID = newRoom.RoomID,
-            };
-            _services.Add(serviceInfomration);
-            if(_rooms.Contains(newRoom) && _roomTemplates.Contains(newTemplate) && _hotels.Contains(newHotel) 
-               && _bedsinfo.Contains(bedInformation) && _roomBaths.Contains(bathroomInformation) && _services.Contains(serviceInfomration))
-                return roomPostDto;
-            else
-                throw new Exception("Room not created");
+                _singletonBd.AddRoomServices(new RoomServices()
+                {
+                    RoomID = room.RoomID,
+                    ServiceID = roomService
+                });
+            }
+            var services = _singletonBd.GetRoomServicesByRoomId(room.RoomID);
+            return _roomPostDtoConvert.Convert(room, roomTemplate, hotel,bedInfo, bathroomInfo, services);
         }
         throw new Exception("Room not data found");
     }
@@ -242,13 +142,17 @@ public class RoomService : AbstractRoomService
     public override async Task<List<BedDTO>> GetRoomBedsById(Guid roomId)
     {
         await Task.Delay(10);
-    
-        var room = _rooms.FirstOrDefault(r => r.RoomID == roomId);
+
+        var room = _singletonBd.GetRoomById(roomId);
         if (room == null)
             throw new Exception("Room not found");
 
-        var bedInformationList = _bedsinfo.Where(bi => bi.RoomTemplateID == room.RoomTemplateID).ToList();
-        var bedList = _bedsinfo.Where(b => bedInformationList.Select(bi => bi.BedID).Contains(b.BedID)).ToList();
+        var bedInformationList = _singletonBd.GetBedInformationByRoomTemplateId(room.RoomTemplateID);
+        var bedList = new List<Bed>();
+        foreach (BedInformation bedInformation in bedInformationList)
+        {
+            bedList.Add(_singletonBd.GetBedById(bedInformation.BedID));
+        }
         var bedDtoList = new List<BedDTO>();
     
         foreach (var bed in bedList)
@@ -263,32 +167,41 @@ public class RoomService : AbstractRoomService
     public override async Task<List<BathroomDTO>> GetRoomBathroomsById(Guid roomId)
     {
         await Task.Delay(10);
-    
-        var room = _rooms.FirstOrDefault(r => r.RoomID == roomId);
+
+        var room = _singletonBd.GetRoomById(roomId);
         if (room == null)
             throw new Exception("Room not found");
 
-        var bathInfomration = _roomBaths.Where(bi => bi.RoomTemplateID == room.RoomTemplateID).ToList();
-        var bathList = _roomBaths.Where(b => bathInfomration.Select(bi => bi.BathRoomID).Contains(b.BathRoomID)).ToList();
-        var bathDTOList = new List<BathroomDTO>();
-    
-        foreach (var bath in bathList)
+        var bathRoomInfo = _singletonBd.GetBathRoomInformationByRoomTemplateId(room.RoomTemplateID);
+        var baths = new List<Bathroom>();
+        foreach (RoomBathInformation bathInformation in bathRoomInfo)
         {
-            var bathroomDTO = await _bathRoomServices.GetBathRoomById(bath .BathRoomID); 
-            bathDTOList.Add(_bathroomConverter.Convert(bathroomDTO, bath.BathRoomID));
+            baths.Add(_singletonBd.GetBathRoomById(bathInformation.BathRoomID));
+        }
+        var bathroomDto = new List<BathroomDTO>();
+    
+        foreach (var bath in baths)
+        {
+            var bathPostDto = await _bathRoomServices.GetBathRoomById(bath.BathRoomID);
+            bathroomDto.Add(_bathroomConverter.Convert(bathPostDto, bath.BathRoomID));
         }
 
-        return bathDTOList;
+        return bathroomDto;
     }
 
     public override async Task<List<RoomFullInfoDTO>> GetAvailableRooms(DateTime startDate, DateTime endDate)
     {
         List<RoomDTO> rooms = new List<RoomDTO>();
-        foreach (Room room in _rooms)
+        foreach (Room room in _singletonBd.GetAllRooms())
         {
             if ( await IsAvailable(room.RoomID, startDate, endDate))
             {
-                rooms.Add(_roomConverter.Convert( await GetRoomById(room.RoomID), room.RoomID));
+                var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(r => r.RoomTemplateID == room.RoomTemplateID);
+                var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == room.HotelID);
+                var bedInformation = _singletonBd.GetAllBedInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
+                var bathInformation = _singletonBd.GetAllBathroomInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
+                var serviceInformation = _singletonBd.GetAllRoomServices().Where(s => s.RoomID == room.RoomID).ToList();
+                rooms.Add(_roomConverter.Convert(room, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation));
             }
         }
         List<RoomFullInfoDTO> fullInfoRooms = new List<RoomFullInfoDTO>();
@@ -323,17 +236,17 @@ public class RoomService : AbstractRoomService
     {
         await Task.Delay(10);
 
-        var roomsOnFloor = _rooms
+        var roomsOnFloor = _singletonBd.GetAllRooms()
             .Where(r => r.FloorNumber == floorNumber)
             .ToList();
 
         var roomDTOs = roomsOnFloor.Select(r =>
         {
-            var roomTemplate = _roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
-            var hotel = _hotels.FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformations = _bedsinfo.Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomBathInformations = _roomBaths.Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomServices = _services.Where(rs => rs.RoomID == r.RoomID).ToList();
+            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
+            var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
+            var bedInformations = _singletonBd.GetAllBedInformation().Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
+            var roomBathInformations = _singletonBd.GetAllBathroomInformation().Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
+            var roomServices = _singletonBd.GetAllRoomServices().Where(rs => rs.RoomID == r.RoomID).ToList();
 
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformations, roomBathInformations, roomServices);
         }).ToList();
@@ -346,17 +259,17 @@ public class RoomService : AbstractRoomService
     {
         await Task.Delay(10);
 
-        var roomsInPriceRange = _rooms
+        var roomsInPriceRange = _singletonBd.GetAllRooms()
             .Where(r => r.PricePerNight >= minPrice && r.PricePerNight <= maxPrice)
             .ToList();
 
         var roomDTOs = roomsInPriceRange.Select(r =>
         {
-            var roomTemplate = _roomTemplates.FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
-            var hotel = _hotels.FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformations = _bedsinfo.Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomBathInformations = _roomBaths.Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomServices = _services.Where(rs => rs.RoomID == r.RoomID).ToList();
+            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
+            var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
+            var bedInformations = _singletonBd.GetAllBedInformation().Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
+            var roomBathInformations = _singletonBd.GetAllBathroomInformation().Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
+            var roomServices = _singletonBd.GetAllRoomServices().Where(rs => rs.RoomID == r.RoomID).ToList();
 
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformations, roomBathInformations, roomServices);
         }).ToList();
@@ -367,22 +280,28 @@ public class RoomService : AbstractRoomService
 
     public override async Task<List<ServiceDTO>> GetRoomServicesById(Guid roomId)
     {
+        
         await Task.Delay(10);
-    
-        var room = _rooms.FirstOrDefault(r => r.RoomID == roomId);
+
+        var room = _singletonBd.GetRoomById(roomId);
         if (room == null)
             throw new Exception("Room not found");
 
-        var serviceInformation = _services.Where(bi => bi.ServiceID == room.RoomID).ToList();
-        var serviceList = _services.Where(b => serviceInformation.Select(bi => bi.ServiceID).Contains(b.ServiceID)).ToList();
-        var serviceDTOList = new List<ServiceDTO>();
-    
-        foreach (var service in serviceList)
+        var roomServicesList = _singletonBd.GetRoomServicesByRoomId(room.RoomID);
+        var services = new List<Service>();
+        foreach (RoomServices roomServices in roomServicesList)
         {
-            var servicePostDTO = await _serviceService.GetServiceById(service.ServiceID);
+            services.Add(_singletonBd.GetServiceById(roomServices.ServiceID));
+        }
+        var serviceDtos = new List<ServiceDTO>();
+    
+        foreach (var service in services)
+        {
+            var servicePostDto = await _serviceService.GetServiceById(service.ServiceID);
+            serviceDtos.Add(_serviceConverter.Convert(servicePostDto, service.ServiceID));
         }
 
-        return serviceDTOList;
+        return serviceDtos;
     }
 
     public override async Task<bool> IsAvailable(Guid roomId, DateTime startDate, DateTime endDate)

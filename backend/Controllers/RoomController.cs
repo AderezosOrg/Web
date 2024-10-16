@@ -18,9 +18,9 @@ public class RoomController : ControllerBase
     }
 
     [HttpGet("{roomId}")]
-    public async Task<ActionResult<RoomPostDTO>> GetRoomById(Guid roomId)
+    public async Task<ActionResult<RoomFullInfoDTO>> GetRoomById(Guid roomId)
     {
-        RoomPostDTO room = await _roomService.GetRoomById(roomId);
+        RoomFullInfoDTO room = await _roomService.GetRoomById(roomId);
         return Ok(room);
     }
     
@@ -32,7 +32,7 @@ public class RoomController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomPostDTO roomDto)
+    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomNewPostDTO roomDto)
     {
         RoomPostDTO room = await _roomService.CreateRoom(roomDto);
         return Ok(room);

@@ -4,30 +4,26 @@ using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 
 namespace backend.Services;
 
 public class ServiceService : AbstractServiceService
 {
-    private static List<Service> _services = new List<Service>()
-    {
-        new Service()
-        {
-            Type = "Room Service"
-        },
-        new Service()
-        {
-            Type = "Food Service"
-        }
-    };
+    private SingletonBD _singletonBd;
     
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
+
+    public ServiceService()
+    {
+        _singletonBd = SingletonBD.Instance;
+    }
     
     public override async Task<ServicePostDTO> GetServiceById(Guid serviceId)
     {
         await Task.Delay(10);
-        var service = _services.FirstOrDefault(s => s.ServiceID == serviceId);
+        var service = _singletonBd.GetServiceById(serviceId);
         if (service == null)
             throw new Exception("Service not found");
         return _servicePostConverter.Convert(service);
@@ -36,7 +32,8 @@ public class ServiceService : AbstractServiceService
     public override async Task<List<ServiceDTO>> GetServices()
     {
         await Task.Delay(10);
-        List<ServiceDTO> result = _services.Select(s =>
+        
+        List<ServiceDTO> result = _singletonBd.GetAllServices().Select(s =>
         {
             return _serviceConverter.Convert(s);
         }).ToList();
@@ -54,11 +51,8 @@ public class ServiceService : AbstractServiceService
                 ServiceID = Guid.NewGuid(),
                 Type = servicePostDto.Type,
             };
-            _services.Add(newService);
-            if(_services.Contains(newService))
-                return servicePostDto;
-            else
-                throw new Exception("Service not created");
+            _singletonBd.AddService(newService);
+            return servicePostDto;
         }
         throw new Exception("Service not data found");
     }
@@ -66,12 +60,10 @@ public class ServiceService : AbstractServiceService
     public override async Task<ServicePostDTO> ChangeServiceType(Guid serviceId, ServicePostDTO servicePostDto)
     {
        await Task.Delay(10);
-       var existingService = _services.FirstOrDefault(s => s.ServiceID == serviceId);
-       if (existingService != null)
+       return _servicePostConverter.Convert(_singletonBd.UpdateService(new Service()
        {
-           existingService.Type = servicePostDto.Type;
-           return servicePostDto;
-       }
-       throw new Exception("Service not found");
+           ServiceID = serviceId,
+           Type = servicePostDto.Type,
+       }));
     }
 }

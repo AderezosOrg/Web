@@ -1,7 +1,6 @@
 using backend.Services;
 using DTOs.WithId;
 using DTOs.WithoutId;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -39,10 +38,10 @@ public class ReservationController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<ReservationDTO>> CreateReservation(ReservationDTO reservationDto)
+    public async Task<ActionResult<List<ReservationDTO>>> CreateReservation( params ReservationPostDTO[] reservationDtos)
     {
-        ReservationDTO reservation = await _reservationService.CreateReservation(reservationDto);
-        return Ok(reservation);
+        List<ReservationDTO> reservations = await _reservationService.CreateReservation(reservationDtos);
+        return Ok(reservations);
         
     }
     
