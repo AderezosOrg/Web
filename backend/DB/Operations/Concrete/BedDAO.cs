@@ -11,7 +11,7 @@ public class BedDAO : IDAO<Bed>
     {
         string IdC = h.BedID.ToString();
         string size = h.Size;
-        string capacity = h.Capacity;
+        string capacity = h.Capacity.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
@@ -44,7 +44,7 @@ public class BedDAO : IDAO<Bed>
         Bed toReturn = new Bed {
             BedID = Guid.Parse(reader.GetString(0)),
             Size = reader.GetString(1),
-            Capacity = reader.GetString(2)
+            Capacity = reader.GetInt32(2)
             
         };
         reader.Close();
@@ -71,7 +71,7 @@ public class BedDAO : IDAO<Bed>
             toAppend = new Bed {
                 BedID = Guid.Parse(reader.GetString(0)),
                 Size = reader.GetString(1),
-                Capacity = reader.GetString(2)
+                Capacity = reader.GetInt32(2)
             };
 
             toReturn.Add(toAppend);
@@ -84,7 +84,7 @@ public class BedDAO : IDAO<Bed>
     {
         string IdC = s.BedID.ToString();
         string size = s.Size;
-        string capacity = s.Capacity;
+        string capacity = s.Capacity.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();

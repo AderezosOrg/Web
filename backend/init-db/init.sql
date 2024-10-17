@@ -5,7 +5,7 @@ USE dbaderezosweb;
 CREATE TABLE IF NOT EXISTS Bed(
   Id        VARCHAR(36) PRIMARY KEY NOT NULL,
   Size      VARCHAR(80),
-  Capacity  VARCHAR(80)
+  Capacity  TINYINT
 );
 
 CREATE TABLE IF NOT EXISTS Bathroom(
