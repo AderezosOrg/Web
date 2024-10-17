@@ -5,6 +5,7 @@ using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
@@ -14,35 +15,41 @@ public class HotelService :
     ICreateSingleElement<HotelPostDTO, HotelPostDTO>,
     IUpdateElementByID<HotelPostDTO, HotelPostDTO>
 {
-    private SingletonBD _singletonBD;
+    private HotelDAO _hotelDao;
+    private UserDAO _userDao;
+    private ContactDAO _contactDao;
+    private BathroomDAO _bathroomDao;
+    
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
     private HotelConverter _hotelConverter = new HotelConverter();
 
-    public HotelService()
+    public HotelService(HotelDAO hotelDao, UserDAO userDao, ContactDAO contactDao, BathroomDAO bathroomDao,)
     {
-        _singletonBD = SingletonBD.Instance;
+        _bathroomDao = bathroomDao;
+        _contactDao = contactDao;
+        _userDao = userDao;
+        _hotelDao = hotelDao;
     }
     public async Task<HotelPostDTO> GetElementById(Guid hotelID)
     {
         await Task.Delay(10);
-        var hotel = _singletonBD.GetHotelById(hotelID);
+        var hotel = _hotelDao.Read(hotelID);
         if (hotel == null)
             throw new Exception("Hotel not found");
-        var user = _singletonBD.GetAllUsers().FirstOrDefault(u => u.UserID == hotel.UserID);
-        var contact = _singletonBD.GetAllContacts().FirstOrDefault(c => c.ContactID == hotel.ContactID);
-        var bathroom = _singletonBD.GetAllBathRooms().FirstOrDefault(b => b.BathRoomID == hotel.BathRoomID);
-        
+        var user = _userDao.Read(hotel.UserID);
+        var contact = _contactDao.Read(hotel.ContactID);
+        var bathroom =_bathroomDao.Read(hotel.BathRoomID);
         return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
     public async Task<List<HotelDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<HotelDTO> result = _singletonBD.GetAllHotels().Select(h =>
+        List<HotelDTO> result = _hotelDao.ReadAll().Select(h =>
         {
-            var user = _singletonBD.GetAllUsers().FirstOrDefault(u => u.UserID == h.UserID);
-            var contact = _singletonBD.GetAllContacts().FirstOrDefault(c => c.ContactID == h.ContactID);
-            var bathroom = _singletonBD.GetAllBathRooms().FirstOrDefault(b => b.BathRoomID == h.BathRoomID);
+            var user =_userDao.Read(h.UserID);
+            var contact = _contactDao.Read(h.ContactID);
+            var bathroom = _bathroomDao.Read(h.BathRoomID);
             return _hotelConverter.Convert(h, user, contact, bathroom);
         }).ToList();
         
@@ -64,8 +71,7 @@ public class HotelService :
                 Name = hotelPostDto.Name,
                 UserID = Guid.NewGuid(),
             };
-            _singletonBD.AddHotel(newHotel);
-            
+            _hotelDao.Create(newHotel);
             return hotelPostDto;
         }
         throw new Exception("Hotel not data found");
@@ -74,21 +80,21 @@ public class HotelService :
     public async Task<HotelPostDTO> UpdateElementById(Guid hotelID, HotelPostDTO hotelPostDto)
     {
         await Task.Delay(10);
-
-        var updatedHotel = _singletonBD.UpdateHotel(new Hotel()
+        var hotel = new Hotel()
         {
             Address = hotelPostDto.Address,
             AllowsPets = hotelPostDto.AllowsPets,
+            BathRoomID = Guid.NewGuid(),
+            ContactID = Guid.NewGuid(),
             HotelID = hotelID,
             Name = hotelPostDto.Name,
-            Stars = hotelPostDto.Stars
-        });
-
-        var user = _singletonBD.GetAllUsers().FirstOrDefault(u => u.UserID == updatedHotel.UserID);
-        var contact = _singletonBD.GetAllContacts().FirstOrDefault(c => c.ContactID == updatedHotel.ContactID);
-        var bathroom = _singletonBD.GetAllBathRooms().FirstOrDefault(b => b.BathRoomID == updatedHotel.BathRoomID);
-
-        return _hotelPostConverter.Convert(updatedHotel, user, contact, bathroom);
+            UserID = Guid.NewGuid(),
+        };
+        _hotelDao.Update(hotel);
+        var user =_userDao.Read(hotel.UserID);
+        var contact = _contactDao.Read(hotel.ContactID);
+        var bathroom = _bathroomDao.Read(hotel.BathRoomID);
+        return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
 }
