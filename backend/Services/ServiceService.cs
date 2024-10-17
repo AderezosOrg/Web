@@ -5,6 +5,7 @@ using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
@@ -14,20 +15,20 @@ public class ServiceService :
     ICreateSingleElement<ServicePostDTO, ServicePostDTO>,
     IUpdateElementByID<ServicePostDTO, ServicePostDTO>
 {
-    private SingletonBD _singletonBd;
+    private ServiceDAO _serviceDao;
     
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
 
-    public ServiceService()
+    public ServiceService(ServiceDAO serviceDao)
     {
-        _singletonBd = SingletonBD.Instance;
+        _serviceDao = serviceDao;
     }
     
     public async Task<ServicePostDTO> GetElementById(Guid serviceId)
     {
         await Task.Delay(10);
-        var service = _singletonBd.GetServiceById(serviceId);
+        var service = _serviceDao.Read(serviceId);
         if (service == null)
             throw new Exception("Service not found");
         return _servicePostConverter.Convert(service);
@@ -37,7 +38,7 @@ public class ServiceService :
     {
         await Task.Delay(10);
         
-        List<ServiceDTO> result = _singletonBd.GetAllServices().Select(s =>
+        List<ServiceDTO> result = _serviceDao.ReadAll().Select(s =>
         {
             return _serviceConverter.Convert(s);
         }).ToList();
@@ -55,7 +56,7 @@ public class ServiceService :
                 ServiceID = Guid.NewGuid(),
                 Type = servicePostDto.Type,
             };
-            _singletonBd.AddService(newService);
+            _serviceDao.Create(newService);
             return servicePostDto;
         }
         throw new Exception("Service not data found");
@@ -64,10 +65,12 @@ public class ServiceService :
     public async Task<ServicePostDTO> UpdateElementById(Guid serviceId, ServicePostDTO servicePostDto)
     {
        await Task.Delay(10);
-       return _servicePostConverter.Convert(_singletonBd.UpdateService(new Service()
+       var service = new Service()
        {
            ServiceID = serviceId,
            Type = servicePostDto.Type,
-       }));
+       };
+       _serviceDao.Update(service);
+       return _servicePostConverter.Convert(service);
     }
 }

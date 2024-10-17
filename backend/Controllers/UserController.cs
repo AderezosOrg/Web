@@ -44,7 +44,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPut("{userId}")]
-    public async Task<ActionResult<UserPostDTO>> EditUserById(Guid userId, UserPostDTO userDto)
+    public async Task<ActionResult<UserPostDTO>> EditUserById(Guid userId, UpdateUserDTO userDto)
     {
         UserPostDTO userPostDto = await _userService.UpdateElementById(userId, userDto);
         return Ok(userPostDto);
