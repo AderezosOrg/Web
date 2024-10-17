@@ -1,7 +1,6 @@
 using backend.Services;
 using backend.Services.AbstractClass;
 using Db;
-using Entities;
 
 DbUtils.OpenConnection();
 
@@ -9,65 +8,6 @@ DbUtils.OpenConnection();
 DbUtils.TruncateAllTables();
 
 DbUtils.InjectData();
-
-Guid id = Guid.NewGuid();
-
-IDAO<Bathroom> simpleDao = new BathroomDAO();
-
-// Create
-Console.WriteLine("Create");
-simpleDao.Create(new Bathroom{
-    BathRoomID = id,
-    Shower = true,
-    Toilet = true,
-    DressingTable = true
-});
-
-//Read Created
-Console.WriteLine("Read Created");
-var b2  = simpleDao.Read(id);
-Console.WriteLine(b2.BathRoomID);
-Console.WriteLine(b2.Shower);
-Console.WriteLine(b2.Toilet);
-Console.WriteLine(b2.DressingTable);
-
-
-// Update
-Console.WriteLine("Update");
-int rowsUpdated = simpleDao.Update(
-    new Bathroom{
-        BathRoomID = id,
-        Shower = false,
-        Toilet = false,
-        DressingTable = false
-    }
-);
-
-//Read Updated
-Console.WriteLine("Read Updated");
-b2  = simpleDao.Read(id);
-Console.WriteLine(b2.BathRoomID);
-Console.WriteLine(b2.Shower);
-Console.WriteLine(b2.Toilet);
-Console.WriteLine(b2.DressingTable);
-
-//Delete
-Console.WriteLine("Delete");
-simpleDao.Delete(id);
-
-//Read Deleted?
-Console.WriteLine("Read Deleted?");
-b2  = simpleDao.Read(id);
-Console.WriteLine(b2 is null);
-
-
-// Read All
-Console.WriteLine("Read All Ids");
-List<Bathroom> list = simpleDao.ReadAll();
-foreach (Bathroom b in list)
-{
-    Console.WriteLine(b.BathRoomID);
-}
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();

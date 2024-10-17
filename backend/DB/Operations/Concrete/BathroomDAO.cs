@@ -7,7 +7,7 @@ using Entities;
 
 namespace Db;
 
-public class BathroomDAO : IDAO<Bathroom>
+public sealed class BathroomDAO : IDAO<Bathroom>
 {
     public int Create(Bathroom b)
     {
