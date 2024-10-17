@@ -23,7 +23,7 @@ public class HotelService :
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
     private HotelConverter _hotelConverter = new HotelConverter();
 
-    public HotelService(HotelDAO hotelDao, UserDAO userDao, ContactDAO contactDao, BathroomDAO bathroomDao,)
+    public HotelService(HotelDAO hotelDao, UserDAO userDao, ContactDAO contactDao, BathroomDAO bathroomDao)
     {
         _bathroomDao = bathroomDao;
         _contactDao = contactDao;
