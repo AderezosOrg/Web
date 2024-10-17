@@ -5,6 +5,7 @@ using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
@@ -13,37 +14,40 @@ public class UserService :
     IGetAllElementsService<UserDTO>,
     IGetElementById<UserPostDTO>,
     ICreateSingleElement<UserPostDTO, UserPostDTO>,
-    IUpdateElementByID<UserPostDTO, UserPostDTO>
+    IUpdateElementByID<UpdateUserDTO, UserPostDTO>
 {
-    private SingletonBD _singletonBd;
-    
+    private UserDAO _userDAO;
+    private ContactDAO _contactDAO;
+    private HotelDAO _hotelDao;
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
 
-    public UserService()
+    public UserService(UserDAO userDAO, ContactDAO contactDAO, HotelDAO hotelDAO)
     {
-        _singletonBd = SingletonBD.Instance;
+        _userDAO = userDAO;
+        _contactDAO = contactDAO;
+        _hotelDao = hotelDAO;
     }
     public async Task<UserPostDTO> GetElementById(Guid userId)
     {
         await Task.Delay(10);
-        var user = _singletonBd.GetUserById(userId);
+        var user = _userDAO.Read(userId);
         if (user == null)
             throw new Exception("User not found");
-        var contact = _singletonBd.GetContactById(user.ContactID);
-        var hotel = _singletonBd.GetHotelByUserId(user.UserID);
-        return _userPostConverter.Convert(user,contact, hotel);
+        var contact = _contactDAO.Read(user.ContactID);
+        var hotels = _hotelDao.ReadAll().Where(hotel1 => hotel1.UserID == user.UserID).ToList();
+        return _userPostConverter.Convert(user,contact, hotels);
     }
 
     public async Task<List<UserDTO>> GetAllElements()
     {
         await Task.Delay(10);
         
-        List<UserDTO> result = _singletonBd.GetAllUsers().Select(x =>
+        List<UserDTO> result = _userDAO.ReadAll().Select(x =>
         {
-            var contact = _singletonBd.GetContactById(x.ContactID);
-            var hotel = _singletonBd.GetHotelByUserId(x.UserID);
-            return _userConverter.Convert(x, contact, hotel);
+            var contact = _contactDAO.Read(x.ContactID);
+            var hotels = _hotelDao.ReadAll().Where(hotel1 => hotel1.UserID == x.UserID).ToList();
+            return _userConverter.Convert(x, contact, hotels);
         }).ToList();
         
         return result;
@@ -54,14 +58,21 @@ public class UserService :
         await Task.Delay(10);
         if (userPostDto != null)
         {
+            var contactId = Guid.NewGuid();
+            var contact = new Contact()
+            {
+                ContactID = contactId,
+                Email = userPostDto.Email,
+                PhoneNumber = userPostDto.PhoneNumber,
+            };
             var newUser = new User
             {
                 Name = userPostDto.Name,
                 CINumber = userPostDto.CINumber,
-                ContactID = Guid.NewGuid(),
+                ContactID = contactId,
                 UserID = Guid.NewGuid(),
             };
-            _singletonBd.AddUser(newUser);
+            _userDAO.Create(newUser);
             return userPostDto;
         }
         throw new Exception("Contact not Data found");
@@ -70,35 +81,25 @@ public class UserService :
 
 
 
-    public async Task<UserPostDTO> UpdateElementById(Guid userId, UserPostDTO userPostDto)
+    public async Task<UserPostDTO> UpdateElementById(Guid userId, UpdateUserDTO userPostDto)
     {
         await Task.Delay(10);
-    
-        var existingUser = _singletonBd.GetUserById(userId);
-        if (existingUser == null)
-            throw new Exception("User not found");
-
-        existingUser.Name = userPostDto.Name;
-        existingUser.CINumber = userPostDto.CINumber;
-
-        var contact = _singletonBd.GetContactById(existingUser.ContactID);
-        if (contact != null)
+        var oldUser = _userDAO.Read(userId);
+        var newUser = new User()
         {
-            contact.PhoneNumber = userPostDto.PhoneNumber; 
-            contact.Email = userPostDto.Email;
-            _singletonBd.UpdateContact(contact); 
-        }
-
-        _singletonBd.UpdateUser(existingUser);
-    
-        var relatedHotels = _singletonBd.GetAllHotels().Where(h => h.UserID == userId).ToList();
-    
-        return _userPostConverter.Convert(existingUser, contact, relatedHotels);
+            UserID = userId,
+            CINumber = userPostDto.CINumber,
+            Name = userPostDto.Name,
+            ContactID = oldUser.ContactID,
+        };
+        _userDAO.Update(newUser);
+        var hotels = _hotelDao.ReadAll().Where(hotel => hotel.UserID == userId).ToList();
+        return _userPostConverter.Convert(newUser, _contactDAO.Read(oldUser.ContactID), hotels);
     }
 
     public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(10);
-        return _singletonBd.DeleteUser(elementId);
+        return _userDAO.Delete(elementId);
     }
 }

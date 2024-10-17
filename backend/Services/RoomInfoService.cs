@@ -9,19 +9,22 @@ namespace backend.Services;
 public class RoomInfoService : IRoomService
 {
     private SingletonBD _singletonBd;
-    private BedService _bedService  = new BedService();
-    private BathRoomService _bathRoomService  = new BathRoomService();
-    private ServiceService _serviceService = new ServiceService();
+    private BedService _bedService;
+    private BathRoomService _bathRoomService;
+    private ServiceService _serviceService;
     private BedConverter _bedConverter;
     private BathroomConverter _bathroomConverter;
     private ServiceConverter _serviceConverter;
 
-    public RoomInfoService()
+    public RoomInfoService(BedService bedService, BathRoomService bathRoomService, ServiceService serviceService)
     {
         _singletonBd = SingletonBD.Instance;
         _bedConverter = new BedConverter();
         _bathroomConverter = new BathroomConverter();
         _serviceConverter = new ServiceConverter();
+        _bedService = bedService;
+        _bathRoomService = bathRoomService;
+        _serviceService = serviceService;
     }
     public async Task<List<BedDTO>> GetRoomBedsById(Guid roomId)
     {

@@ -1,6 +1,7 @@
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
 using Converters.ToDTO;
+using Db;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
@@ -18,20 +19,19 @@ public class BedService :
     ICreateSingleElement<BedPostDTO, BedPostDTO>,
     IUpdateElementByID<BedPostDTO, BedPostDTO>
 {
-    private SingletonBD _singletonBD;
-    
+    private BedDAO _bedDao;
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
 
-    public BedService()
+    public BedService(BedDAO bedDao)
     {
-        _singletonBD = SingletonBD.Instance;
+        _bedDao = bedDao;
     }
     public async Task<List<BedInfoDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<BedInfoDTO> result = _singletonBD.GetAllBeds().Select(b =>
+        List<BedInfoDTO> result = _bedDao.ReadAll().Select(b =>
         {
             return _bedConverter.Convert(b);
         }).ToList();
@@ -42,7 +42,7 @@ public class BedService :
     public async Task<BedPostDTO> GetElementById(Guid bedID)
     {
         await Task.Delay(10);
-        var bed = _singletonBD.GetBedById(bedID);
+        var bed = _bedDao.Read(bedID);
         if (bed == null)
             throw new Exception("Bed not found");
         return _bedPostConverter.Convert(bed);
@@ -60,7 +60,7 @@ public class BedService :
                 Size = bedPostDto.Size,
                 
             };
-            _singletonBD.AddBed(newBed);
+            _bedDao.Create(newBed);
             return bedPostDto;
         }
         throw new Exception("Bed not data found");
@@ -78,9 +78,9 @@ public class BedService :
                 Size = bedPostDto.Size,
                 
             };
-            _singletonBD.AddBed(newBed);
+            _bedDao.Create(newBed);
             
-            if (_singletonBD.GetAllBeds().Contains(newBed))
+            if (_bedDao.ReadAll().Contains(newBed))
                 return bedPostDto;
             else
                 throw new Exception("Bed not created");
@@ -91,18 +91,20 @@ public class BedService :
     public async Task<BedPostDTO> UpdateElementById(Guid bedID, BedPostDTO bedDto)
     {
         await Task.Delay(100);
-        return _bedPostConverter.Convert(_singletonBD.UpdateBed(new Bed()
+        var bed = new Bed()
         {
             BedID = bedID,
             Capacity = bedDto.Capacity,
             Size = bedDto.Size,
-        }));
+        };
+        _bedDao.Update(bed);
+        return _bedPostConverter.Convert(bed);
     }
 
     public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(100); 
-        return _singletonBD.DeleteBed(elementId);
+        return _bedDao.Delete(elementId);
     }
 }
 

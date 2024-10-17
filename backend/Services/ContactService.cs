@@ -2,6 +2,7 @@ using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
 using backend.Services.ServicesInterfaces;
 using Converters.ToDTO;
+using Db;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
@@ -14,31 +15,34 @@ public class ContactService :
     ICreateSingleElement<ContactPostDTO, ContactPostDTO>,
     IUpdateElementByID<ContactPostDTO, ContactPostDTO>
 {
-    private SingletonBD _singletonBd;
+    private ContactDAO _contactDao;
+    private ReservationDAO _reservationDao;
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
 
-    public ContactService()
+    public ContactService(ContactDAO contactDao, ReservationDAO reservationDao)
     {
-        _singletonBd = SingletonBD.Instance;
+        _reservationDao = reservationDao;
+        _contactDao = contactDao;
     }
     public async Task<ContactPostDTO> GetElementById(Guid contactID)
     {
         await Task.Delay(10);
-        var contact = _singletonBd.GetContactById(contactID);
+        var contact = _contactDao.Read(contactID);
         if (contact == null)
             throw new Exception("Contact not found");
-        var reservation = _singletonBd.GetReservationByContactId(contactID);
+        var reservation = _reservationDao.GetReservationsByContactId(contactID);
         return _contactPostConverter.Convert(contact, reservation);
     }
 
     public async Task<List<ContactDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<ContactDTO> result = _singletonBd.GetAllContacts().Select(x =>
+        List<ContactDTO> result = _contactDao.ReadAll().Select(x =>
         {
-            var reservation = _singletonBd.GetReservationByContactId(x.ContactID);
+            var contactID = x.ContactID;
+            var reservation = _reservationDao.GetReservationsByContactId(contactID);
             return _contactConverter.Convert(x, reservation);
         }).ToList();
         
@@ -56,8 +60,7 @@ public class ContactService :
                 Email = contactPostDtoDto.Email,
                 PhoneNumber = contactPostDtoDto.PhoneNumber
             };
-            _singletonBd.AddContact(newContact);
-             
+            _contactDao.Create(newContact);
             return contactPostDtoDto;
         }
         throw new Exception("Contact not data found");
@@ -66,12 +69,14 @@ public class ContactService :
     public async Task<ContactPostDTO> UpdateElementById(Guid contactID, ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
-        var reservation = _singletonBd.GetAllReservations();
-        return _contactPostConverter.Convert(_singletonBd.UpdateContact(new Contact()
+        var reservation = _reservationDao.GetReservationsByContactId(contactID);
+        var contact = new Contact()
         {
             ContactID = contactID,
             Email = contactPostDtoDto.Email,
             PhoneNumber = contactPostDtoDto.PhoneNumber
-        }), reservation);
+        };
+        _contactDao.Update(contact);
+        return _contactPostConverter.Convert(contact, reservation);
     }
 }

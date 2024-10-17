@@ -23,10 +23,10 @@ public class RoomService :
     private readonly BedService _bedService;
     private readonly ServiceService _serviceService;
     
-    public RoomService()
+    public RoomService(ServiceService serviceService, BedService bedService)
     {
-        _serviceService = new ServiceService();
-        _bedService = new BedService();
+        _serviceService = serviceService;
+        _bedService = bedService;
         _singletonBd = SingletonBD.Instance;
     }
     public async Task<RoomFullInfoDTO> GetElementById(Guid roomId)

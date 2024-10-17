@@ -17,13 +17,13 @@ public class RoomFiltersService: IRoomFiltersService
     private BedService _bedService;
     private RoomService _roomService;
 
-    public RoomFiltersService()
+    public RoomFiltersService(ServiceService serviceService, ReservationService reservationService, BathRoomService bathRoomService, BedService bedService, RoomService roomService)
     {
-        _serviceService = new ServiceService();
-        _reservationService = new ReservationService();
-        _bathRoomService = new BathRoomService();
-        _bedService = new BedService();
-        _roomService = new RoomService();
+        _serviceService = serviceService;
+        _reservationService = reservationService;
+        _bathRoomService = bathRoomService;
+        _bedService = bedService;
+        _roomService = roomService;
         _singletonBd = SingletonBD.Instance;
 
     }

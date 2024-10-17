@@ -1,4 +1,13 @@
 using backend.Services;
+using backend.Services.ServicesInterfaces;
+using Db;
+
+DbUtils.OpenConnection();
+
+// Delete to conserve persistency.
+DbUtils.TruncateAllTables();
+
+DbUtils.InjectData();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
