@@ -1,4 +1,4 @@
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
@@ -8,7 +8,12 @@ using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class UserService : AbstractUserService
+public class UserService : 
+    IDeleteService,
+    IGetAllElementsService<UserDTO>,
+    IGetElementById<UserPostDTO>,
+    ICreateSingleElement<UserPostDTO, UserPostDTO>,
+    IUpdateElementByID<UserPostDTO, UserPostDTO>
 {
     private SingletonBD _singletonBd;
     
@@ -19,7 +24,7 @@ public class UserService : AbstractUserService
     {
         _singletonBd = SingletonBD.Instance;
     }
-    public override async Task<UserPostDTO> GetUserById(Guid userId)
+    public async Task<UserPostDTO> GetElementById(Guid userId)
     {
         await Task.Delay(10);
         var user = _singletonBd.GetUserById(userId);
@@ -30,7 +35,7 @@ public class UserService : AbstractUserService
         return _userPostConverter.Convert(user,contact, hotel);
     }
 
-    public override async Task<List<UserDTO>> GetUsers()
+    public async Task<List<UserDTO>> GetAllElements()
     {
         await Task.Delay(10);
         
@@ -44,7 +49,7 @@ public class UserService : AbstractUserService
         return result;
     }
 
-    public override async Task<UserPostDTO> CreateUser(UserPostDTO userPostDto)
+    public async Task<UserPostDTO> CreateSingleElement(UserPostDTO userPostDto)
     {
         await Task.Delay(10);
         if (userPostDto != null)
@@ -63,13 +68,9 @@ public class UserService : AbstractUserService
 
     }
 
-    public override async Task<bool> DeleteUserById(Guid userId)
-    {
-        await Task.Delay(10);
-        return _singletonBd.DeleteUser(userId);
-    }
 
-    public override async Task<UserPostDTO> EditUserById(Guid userId, UserPostDTO userPostDto)
+
+    public async Task<UserPostDTO> UpdateElementById(Guid userId, UserPostDTO userPostDto)
     {
         await Task.Delay(10);
     
@@ -95,4 +96,9 @@ public class UserService : AbstractUserService
         return _userPostConverter.Convert(existingUser, contact, relatedHotels);
     }
 
+    public async Task<bool> DeleteElementById(Guid elementId)
+    {
+        await Task.Delay(10);
+        return _singletonBd.DeleteUser(elementId);
+    }
 }

@@ -1,9 +1,6 @@
-using DTOs;
-using System.Collections.Generic;
-using System.Linq;
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
@@ -11,7 +8,11 @@ using Entities;
 
 namespace backend.Services;
 
-public class ContactService : AbstractContactService
+public class ContactService :
+    IGetAllElementsService<ContactDTO>,
+    IGetElementById<ContactPostDTO>,
+    ICreateSingleElement<ContactPostDTO, ContactPostDTO>,
+    IUpdateElementByID<ContactPostDTO, ContactPostDTO>
 {
     private SingletonBD _singletonBd;
     
@@ -22,7 +23,7 @@ public class ContactService : AbstractContactService
     {
         _singletonBd = SingletonBD.Instance;
     }
-    public override async Task<ContactPostDTO> GetContactById(Guid contactID)
+    public async Task<ContactPostDTO> GetElementById(Guid contactID)
     {
         await Task.Delay(10);
         var contact = _singletonBd.GetContactById(contactID);
@@ -32,7 +33,7 @@ public class ContactService : AbstractContactService
         return _contactPostConverter.Convert(contact, reservation);
     }
 
-    public override async Task<List<ContactDTO>> GetContacts()
+    public async Task<List<ContactDTO>> GetAllElements()
     {
         await Task.Delay(10);
         List<ContactDTO> result = _singletonBd.GetAllContacts().Select(x =>
@@ -44,7 +45,7 @@ public class ContactService : AbstractContactService
         return result;
     }
 
-    public override async Task<ContactPostDTO> CreateContact(ContactPostDTO contactPostDtoDto)
+    public async Task<ContactPostDTO> CreateSingleElement(ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
         if (contactPostDtoDto != null)
@@ -62,7 +63,7 @@ public class ContactService : AbstractContactService
         throw new Exception("Contact not data found");
     }
 
-    public override async Task<ContactPostDTO> ChangeContact(Guid contactID, ContactPostDTO contactPostDtoDto)
+    public async Task<ContactPostDTO> UpdateElementById(Guid contactID, ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
         var reservation = _singletonBd.GetAllReservations();

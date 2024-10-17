@@ -3,7 +3,7 @@ using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -33,7 +33,7 @@ public class ReservationController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ReservationDTO>>> GetReservations()
     {
-        List<ReservationDTO> reservations = await _reservationService.GetReservations();
+        List<ReservationDTO> reservations = await _reservationService.GetAllElements();
         return Ok(reservations);
     }
     

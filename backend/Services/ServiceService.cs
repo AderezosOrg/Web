@@ -1,4 +1,4 @@
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
@@ -8,7 +8,11 @@ using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class ServiceService : AbstractServiceService
+public class ServiceService : 
+    IGetAllElementsService<ServiceDTO>,
+    IGetElementById<ServicePostDTO>,
+    ICreateSingleElement<ServicePostDTO, ServicePostDTO>,
+    IUpdateElementByID<ServicePostDTO, ServicePostDTO>
 {
     private SingletonBD _singletonBd;
     
@@ -20,7 +24,7 @@ public class ServiceService : AbstractServiceService
         _singletonBd = SingletonBD.Instance;
     }
     
-    public override async Task<ServicePostDTO> GetServiceById(Guid serviceId)
+    public async Task<ServicePostDTO> GetElementById(Guid serviceId)
     {
         await Task.Delay(10);
         var service = _singletonBd.GetServiceById(serviceId);
@@ -29,7 +33,7 @@ public class ServiceService : AbstractServiceService
         return _servicePostConverter.Convert(service);
     }
 
-    public override async Task<List<ServiceDTO>> GetServices()
+    public async Task<List<ServiceDTO>> GetAllElements()
     {
         await Task.Delay(10);
         
@@ -41,7 +45,7 @@ public class ServiceService : AbstractServiceService
         return result;
     }
 
-    public override async Task<ServicePostDTO> CreateService(ServicePostDTO servicePostDto)
+    public async Task<ServicePostDTO> CreateSingleElement(ServicePostDTO servicePostDto)
     {
         await Task.Delay(10);
         if (servicePostDto != null)
@@ -57,7 +61,7 @@ public class ServiceService : AbstractServiceService
         throw new Exception("Service not data found");
     }
 
-    public override async Task<ServicePostDTO> ChangeServiceType(Guid serviceId, ServicePostDTO servicePostDto)
+    public async Task<ServicePostDTO> UpdateElementById(Guid serviceId, ServicePostDTO servicePostDto)
     {
        await Task.Delay(10);
        return _servicePostConverter.Convert(_singletonBd.UpdateService(new Service()

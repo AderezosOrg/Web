@@ -1,14 +1,14 @@
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
-using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
 
 namespace backend.Services;
 
-public class ReservationService : AbstractReservationService
+public class ReservationService : IReservationService,
+    IGetAllElementsService<ReservationDTO>
 {
     private SingletonBD _singletonBd;
     
@@ -20,7 +20,7 @@ public class ReservationService : AbstractReservationService
         _singletonBd = SingletonBD.Instance;
     }
 
-    public override async Task<List<ReservationDTO>> GetReservationsByContactId(Guid contactId)
+    public async Task<List<ReservationDTO>> GetReservationsByContactId(Guid contactId)
     {
         await Task.Delay(20);
         var reservations = _singletonBd.GetReservationByContactId(contactId);
@@ -36,7 +36,7 @@ public class ReservationService : AbstractReservationService
 
     }
 
-    public override async Task<List<ReservationDTO>> GetReservationsByRoomId(Guid roomId)
+    public async Task<List<ReservationDTO>> GetReservationsByRoomId(Guid roomId)
     {
         await Task.Delay(20);
         var reservations = _singletonBd.GetReservationByRoomId(roomId);
@@ -51,7 +51,7 @@ public class ReservationService : AbstractReservationService
         return reservationDTOs;
     }
 
-    public override async Task<List<ReservationDTO>> GetReservations()
+    public async Task<List<ReservationDTO>> GetAllElements()
     {
         await Task.Delay(10);
         List<ReservationDTO> result = _singletonBd.GetAllReservations().Select(r =>
@@ -64,7 +64,7 @@ public class ReservationService : AbstractReservationService
         return result;
     }
 
-    public override async Task<List<ReservationDTO>> CreateReservation(ReservationPostDTO[] reservationPostDto)
+    public async Task<List<ReservationDTO>> CreateReservation(ReservationPostDTO[] reservationPostDto)
     {
         await Task.Delay(100);
         List<ReservationDTO> newReservations = new List<ReservationDTO>(); 
@@ -89,7 +89,7 @@ public class ReservationService : AbstractReservationService
 
     }
 
-    public override async Task<ReservationDTO> CancelReservation(Guid contactId) //check later
+    public async Task<ReservationDTO> CancelReservation(Guid contactId) //check later
     {
         await Task.Delay(10);
         var reservation = _singletonBd.GetAllReservations().FirstOrDefault(x => x.ContactID == contactId);
