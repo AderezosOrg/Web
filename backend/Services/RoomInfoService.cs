@@ -6,7 +6,7 @@ using Entities;
 
 namespace backend.Services;
 
-public class RoomInfoServices : IRoomService
+public class RoomInfoService : IRoomService
 {
     private SingletonBD _singletonBd;
     private BedService _bedService  = new BedService();
@@ -16,7 +16,7 @@ public class RoomInfoServices : IRoomService
     private BathroomConverter _bathroomConverter;
     private ServiceConverter _serviceConverter;
 
-    public RoomInfoServices()
+    public RoomInfoService()
     {
         _singletonBd = SingletonBD.Instance;
         _bedConverter = new BedConverter();
