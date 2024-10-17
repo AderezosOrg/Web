@@ -9,7 +9,7 @@ export default function SelectRoom() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { checkInDate, checkOutDate, numPeople } = location.state;
+  const { checkInDate, checkOutDate, numPeople, email, phone, contactId } = location.state;
 
   useEffect(() => {
     async function fetchRooms() {
@@ -62,7 +62,10 @@ return(
                   checkInDate: checkInDate,
                   checkOutDate: checkOutDate,
                   numPeople: numPeople,
-                  roomPrice: item.pricePerNight
+                  room: item,
+                  email: email,
+                  phone: phone,
+                  contactId: contactId
                 }
               });
             }}
