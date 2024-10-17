@@ -6,4 +6,9 @@ public static class ObjectMapper
     {
         return value? "1":"0";
     }
+
+    public static string MapDateTime(DateTime value)
+    {
+        return value.ToString("yyyy-MM-dd H:mm:ss");
+    }
 }
