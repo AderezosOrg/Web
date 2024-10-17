@@ -57,20 +57,14 @@ public class RoomInfoService : IRoomService
             throw new Exception("Room not found");
 
         var bathRoomInfo = _singletonBd.GetBathRoomInformationByRoomTemplateId(room.RoomTemplateID);
-        var baths = new List<Bathroom>();
+        var bathroomDtos = new List<BathroomDTO>();
         foreach (RoomBathInformation bathInformation in bathRoomInfo)
         {
-            baths.Add(_singletonBd.GetBathRoomById(bathInformation.BathRoomID));
-        }
-        var bathroomDto = new List<BathroomDTO>();
-    
-        foreach (var bath in baths)
-        {
-            var bathPostDto = await _bathRoomService.GetElementById(bath.BathRoomID);
-            bathroomDto.Add(_bathroomConverter.Convert(bathPostDto, bath.BathRoomID));
+            var bath = _singletonBd.GetBathRoomById(bathInformation.BathRoomID);
+            bathroomDtos.Add(_bathroomConverter.Convert(bath,bathInformation));
         }
 
-        return bathroomDto;
+        return bathroomDtos;
     }
 
     
