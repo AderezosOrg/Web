@@ -39,7 +39,7 @@ public class PriceService : IPriceService
         {
             var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
             var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
-            taxes += room.PricePerNight * hotelTax;
+            taxes += room.PricePerNight * hotelTax  * (reservationsPostDto.UseDate - reservationsPostDto.ReservationDate).Days;
         }
         return taxes;
     }
