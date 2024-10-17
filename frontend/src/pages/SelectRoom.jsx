@@ -14,7 +14,12 @@ export default function SelectRoom() {
   useEffect(() => {
     async function fetchRooms() {
       try {
-        const availableRooms = await getAvailableRooms(checkInDate, checkOutDate);
+        const reservationDetails = {
+          checkInDate,
+          checkOutDate,
+          capacity: numPeople
+        }
+        const availableRooms = await getAvailableRooms(reservationDetails);
         setRooms(availableRooms);
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -23,7 +28,7 @@ export default function SelectRoom() {
       }
     }
     fetchRooms();
-  }, [checkInDate, checkOutDate]);
+  }, );
 
   if (loading) {
     return <div className='flex justify-center items-center h-full'>
