@@ -1,0 +1,5 @@
+{
+    "DbSettings" : {
+        "ConnectionUrl" : "server=localhost;port=3307;uid=root;pwd=DFAE824F33EA9ED3BB445CFA5C1BFA305F47BF4A;database=dbaderezosweb;Allow User Variables=True"
+    }
+}
