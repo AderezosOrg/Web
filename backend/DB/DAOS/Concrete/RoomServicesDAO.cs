@@ -7,7 +7,7 @@ using Entities;
 
 namespace Db;
 
-public sealed class RoomServicesDAO : ITwoForeignDAO<RoomServices>
+public sealed class RoomServicesDAO : IRoomServicesDAO
 {
     public int Create(RoomServices rs)
     {
