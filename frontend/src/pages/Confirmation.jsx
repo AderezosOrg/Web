@@ -45,63 +45,66 @@ function Confirmation() {
   }, [checkInDate, checkOutDate, room.roomID, contactId]);
   
   return (
-    <div className='flex flex-col w-screen items-center justify-center space-y-12'>
+    <div className='flex flex-col items-center justify-center space-y-12'>
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 4 de 4</h1>
-      <RoomCard
-        className
-        key={room.index}
-        bed={room?.beds?.[0]?.size || "Unknown Bed"} 
-        capacity={room?.beds?.[0]?.capacity || "Unknown Capacity"}
-        price={room?.pricePerNight || 0}
-        floor={room?.floorNumber || "Unknown Floor"}
-        code={room?.code || "Unknown Code"}
-        services={room?.services || []}
-        hasButton={false}
-      />
+      <div className='w-2/3'>
+        <RoomCard
+          className
+          key={room.index}
+          bed={room?.beds?.[0]?.size || "Unknown Bed"} 
+          capacity={room?.beds?.[0]?.capacity || "Unknown Capacity"}
+          price={room?.pricePerNight || 0}
+          floor={room?.floorNumber || "Unknown Floor"}
+          code={room?.code || "Unknown Code"}
+          services={room?.services || []}
+          hasButton={false}
+        />
+      </div>
         
       <Container>
-            <div className="flex flex-col justify-between gap-4">
-              <p className="text-[20px] font-bold font-roboto">
-                Email: {email}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Phone: {phone}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Entrada: {checkInDate}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Salida: {checkOutDate}
-              </p>
-            </div>
+        <div className='flex col justify-between'>
+          <div className="flex flex-col justify-between gap-4">
+            <p className="text-[20px] font-bold font-roboto">
+              Email: {email}
+            </p>
+            <p className="text-[20px] font-bold font-roboto">
+              Phone: {phone}
+            </p>
+            <p className="text-[20px] font-bold font-roboto">
+              Entrada: {checkInDate}
+            </p>
+            <p className="text-[20px] font-bold font-roboto">
+              Salida: {checkOutDate}
+            </p>
+          </div>
 
-            <div className="flex flex-col justify-between gap-4">
-              <p className="text-[20px] font-bold font-roboto">
-                Subtotal: Bs {partialPrice}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Tax: + Bs {tax}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Total: Bs {total}
-              </p>
-            </div>
-
-            <div className='mt-12 flex justify-center items-center'>
-              <Button type="common" className="font-roboto text-white"
-                onClick={() => {
-                  const reservationDetails = [{
-                    reservationDate: checkInDate,
-                    useDate: checkOutDate,
-                    roomId: room.roomID,
-                    contactId: contactId,
-                  }];
-                  submitCompleteReservation(reservationDetails);
-                  console.log("Back:" + reservationDetails);
-                }}>
-                Confirmar Reserva
-              </Button>
-            </div>
+          <div className="flex flex-col justify-between gap-4">
+            <p className="text-[20px] font-bold font-roboto">
+              Subtotal: Bs {partialPrice}
+            </p>
+            <p className="text-[20px] font-bold font-roboto">
+              Tax: + Bs {tax}
+            </p>
+            <p className="text-[20px] font-bold font-roboto">
+              Total: Bs {total}
+            </p>
+          </div>
+        </div>
+        <div className='mt-12 flex justify-center items-center'>
+          <Button type="common" className="font-roboto text-white"
+            onClick={() => {
+              const reservationDetails = [{
+                reservationDate: checkInDate,
+                useDate: checkOutDate,
+                roomId: room.roomID,
+                contactId: contactId,
+              }];
+              submitCompleteReservation(reservationDetails);
+              console.log("Back:" + reservationDetails);
+            }}>
+            Confirmar Reserva
+          </Button>
+        </div>
         {formStatus.message && (
           <p className={`mt-4 ${formStatus.success ? 'text-green-500' : 'text-red-500'}`}>
             {formStatus.message}
