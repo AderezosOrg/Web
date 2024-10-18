@@ -28,16 +28,16 @@ public class ContactController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<ContactPostDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
+    public async Task<ActionResult<ContactDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
     {
-        ContactPostDTO contact = await _contactService.CreateSingleElement(contactDto);
+        ContactDTO contact = await _contactService.CreateSingleElement(contactDto);
         return Ok(contact);
     }
     
     [HttpPut("{contactId}")]
-    public async Task<ActionResult<ContactPostDTO>> ChangeContact(Guid contactId, ContactPostDTO contactDto)
+    public async Task<ActionResult<ContactDTO>> ChangeContact(Guid contactId, ContactPostDTO contactDto)
     {
-        ContactPostDTO contact = await _contactService.UpdateElementById(contactId, contactDto);
+        ContactDTO contact = await _contactService.UpdateElementById(contactId, contactDto);
         return Ok(contact);
     }
 }

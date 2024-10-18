@@ -30,9 +30,9 @@ public class UserController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserPostDTO>> CreateUser(UserPostDTO userDto)
+    public async Task<ActionResult<UserDTO>> CreateUser(UserPostDTO userDto)
     {
-        UserPostDTO userPostDto = await _userService.CreateSingleElement(userDto);
+        UserDTO userPostDto = await _userService.CreateSingleElement(userDto);
         return Ok(userPostDto);
     }
     

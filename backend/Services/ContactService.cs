@@ -12,8 +12,8 @@ namespace backend.Services;
 public class ContactService :
     IGetAllElementsService<ContactDTO>,
     IGetElementById<ContactPostDTO>,
-    ICreateSingleElement<ContactPostDTO, ContactPostDTO>,
-    IUpdateElementByID<ContactPostDTO, ContactPostDTO>
+    ICreateSingleElement<ContactPostDTO, ContactDTO>,
+    IUpdateElementByID<ContactPostDTO, ContactDTO>
 {
     private ContactDAO _contactDao;
     private ReservationDAO _reservationDao;
@@ -33,7 +33,7 @@ public class ContactService :
         if (contact == null)
             throw new Exception("Contact not found");
         var reservation = _reservationDao.GetReservationsByContactId(contactID);
-        return _contactPostConverter.Convert(contact, reservation);
+        return _contactPostConverter.Convert(contact);
     }
 
     public async Task<List<ContactDTO>> GetAllElements()
@@ -43,13 +43,13 @@ public class ContactService :
         {
             var contactID = x.ContactID;
             var reservation = _reservationDao.GetReservationsByContactId(contactID);
-            return _contactConverter.Convert(x, reservation);
+            return _contactConverter.Convert(x);
         }).ToList();
         
         return result;
     }
 
-    public async Task<ContactPostDTO> CreateSingleElement(ContactPostDTO contactPostDtoDto)
+    public async Task<ContactDTO> CreateSingleElement(ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
         if (contactPostDtoDto != null)
@@ -61,15 +61,14 @@ public class ContactService :
                 PhoneNumber = contactPostDtoDto.PhoneNumber
             };
             _contactDao.Create(newContact);
-            return contactPostDtoDto;
+            return _contactConverter.Convert(newContact);
         }
         throw new Exception("Contact not data found");
     }
 
-    public async Task<ContactPostDTO> UpdateElementById(Guid contactID, ContactPostDTO contactPostDtoDto)
+    public async Task<ContactDTO> UpdateElementById(Guid contactID, ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
-        var reservation = _reservationDao.GetReservationsByContactId(contactID);
         var contact = new Contact()
         {
             ContactID = contactID,
@@ -77,6 +76,6 @@ public class ContactService :
             PhoneNumber = contactPostDtoDto.PhoneNumber
         };
         _contactDao.Update(contact);
-        return _contactPostConverter.Convert(contact, reservation);
+        return _contactConverter.Convert(contact);
     }
 }
