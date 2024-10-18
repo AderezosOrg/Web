@@ -9,12 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class BathRoomService : 
-    IDeleteService,
-    IGetAllElementsService<BathroomInfoDTO>,
-    IGetElementById<BathroomPostDTO>,
-    ICreateSingleElement<BathroomPostDTO, BathroomPostDTO>,
-    IUpdateElementByID<BathroomPostDTO, BathroomPostDTO>
+public class BathRoomService : IBathRoomService
 {
     private IDAO<Bathroom> _bathroomDao;
 

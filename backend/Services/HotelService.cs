@@ -9,11 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class HotelService : 
-    IGetAllElementsService<HotelDTO>,
-    IGetElementById<HotelPostDTO>,
-    ICreateSingleElement<HotelPostDTO, HotelPostDTO>,
-    IUpdateElementByID<HotelPostDTO, HotelPostDTO>
+public class HotelService : IHotelService
 {
     private IDAO<Hotel> _hotelDao;
     private IDAO<User> _userDao;

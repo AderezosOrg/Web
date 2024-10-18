@@ -1,4 +1,4 @@
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +9,9 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class ServiceController : ControllerBase
 {
-    private readonly ServiceService _serviceService;
+    private readonly IServiceService _serviceService;
 
-    public ServiceController(ServiceService serviceService)
+    public ServiceController(IServiceService serviceService)
     {
         _serviceService = serviceService;
     }

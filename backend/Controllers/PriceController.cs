@@ -1,4 +1,4 @@
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +8,9 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class PriceController : ControllerBase
 {
-    private PriceService _priceService;
+    private IPriceService _priceService;
 
-    public PriceController(PriceService priceService)
+    public PriceController(IPriceService priceService)
     {
         _priceService = priceService;
     }

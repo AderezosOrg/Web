@@ -1,4 +1,4 @@
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +8,8 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class ContactController : ControllerBase
 {
-    private readonly ContactService _contactService;
-    public ContactController(ContactService contactService)
+    private readonly IContactService _contactService;
+    public ContactController(IContactService contactService)
     {
         _contactService = contactService;
     }
