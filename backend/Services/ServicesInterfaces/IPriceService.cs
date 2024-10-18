@@ -4,8 +4,10 @@ namespace backend.Services.ServicesInterfaces;
 
 public interface IPriceService
 {
-    public abstract Task<decimal> GetReservationPrice(PriceRequestsDTO reservations);
-    public abstract Task<decimal> GetReservationPartialPrice(PriceRequestsDTO reservations);
+    public Task<decimal> GetReservationPrice(PriceRequestsDTO reservations);
+    public Task<decimal> GetReservationPartialPrice(PriceRequestsDTO reservations);
     
-    public abstract Task<decimal> GetReservationTaxPrice(PriceRequestsDTO reservations);
+    public Task<decimal> GetReservationTaxPrice(PriceRequestsDTO reservations);
+    public Task<decimal> GetReservationPriceByANight(PriceRequestsDTO reservations);
+
 }

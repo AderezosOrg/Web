@@ -12,12 +12,7 @@ using ServicesInterfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BedService :
-    IDeleteService,
-    IGetAllElementsService<BedInfoDTO>,
-    IGetElementById<BedPostDTO>,
-    ICreateSingleElement<BedPostDTO, BedPostDTO>,
-    IUpdateElementByID<BedPostDTO, BedPostDTO>
+public class BedService : IBedService
 {
     private IDAO<Bed> _bedDao;
     
@@ -62,28 +57,6 @@ public class BedService :
             };
             _bedDao.Create(newBed);
             return bedPostDto;
-        }
-        throw new Exception("Bed not data found");
-    }
-    
-    public async Task<BedPostDTO> CreateOnlyBed(BedPostDTO bedPostDto)
-    {
-        await Task.Delay(100);
-        if (bedPostDto != null)
-        {
-            var newBed = new Bed
-            {
-                BedID = Guid.NewGuid(),
-                Capacity = bedPostDto.Capacity,
-                Size = bedPostDto.Size,
-                
-            };
-            _bedDao.Create(newBed);
-            
-            if (_bedDao.ReadAll().Contains(newBed))
-                return bedPostDto;
-            else
-                throw new Exception("Bed not created");
         }
         throw new Exception("Bed not data found");
     }

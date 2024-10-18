@@ -9,10 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class RoomService : 
-    IGetAllElementsService<RoomFullInfoDTO>,
-    IGetElementById<RoomFullInfoDTO>,
-    ICreateSingleElement<RoomNewPostDTO, RoomPostDTO>
+public class RoomService : IRoomService
 {
     
     
@@ -32,11 +29,11 @@ public class RoomService :
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     
-    private readonly BedService _bedService;
-    private readonly ServiceService _serviceService;
-    private readonly BathRoomService _bathRoomService;
+    private readonly IBedService _bedService;
+    private readonly IServiceService _serviceService;
+    private readonly IBathRoomService _bathRoomService;
     
-    public RoomService(ServiceService serviceService, BedService bedService, BathRoomService bathRoomService, IDAO<Room> roomDao,
+    public RoomService(IServiceService serviceService, IBedService bedService, IBathRoomService bathRoomService, IDAO<Room> roomDao,
         RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
         RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
     {

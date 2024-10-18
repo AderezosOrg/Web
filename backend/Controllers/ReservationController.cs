@@ -1,5 +1,5 @@
 using backend.DTOs.WithId;
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +10,9 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class ReservationController : ControllerBase
 {
-    private readonly ReservationService _reservationService;
+    private readonly IReservationService _reservationService;
 
-    public ReservationController(ReservationService reservationService)
+    public ReservationController(IReservationService reservationService)
     {
         _reservationService = reservationService;
     }

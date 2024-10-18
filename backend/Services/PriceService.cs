@@ -48,7 +48,7 @@ public class PriceService : IPriceService
         return taxes;
     }
 
-    private async Task<decimal> GetReservationPriceByANight(PriceRequestsDTO reservations)
+    public async Task<decimal> GetReservationPriceByANight(PriceRequestsDTO reservations)
     {
         decimal taxedPrice = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)

@@ -8,11 +8,7 @@ using Db;
 
 namespace backend.Services;
 
-public class RoomTemplateService : 
-    IGetAllElementsService<RoomTemplateDTO>,
-    IGetElementById<RoomTemplateDTO>,
-    ICreateSingleElement<RoomTemplatePostDTO, RoomTemplatePostDTO>,
-    IUpdateElementByID<RoomTemplatePostDTO, RoomTemplatePostDTO>
+public class RoomTemplateService : IRoomTemplateService
 {
     private RoomTemplateDAO _roomTemplateDao;
     private RoomBathInformationDAO _roomBathInformationDao;

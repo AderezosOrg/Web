@@ -1,5 +1,5 @@
 using DTOs.WithId;
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +9,8 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class BedController : ControllerBase
 {
-    private BedService _bedService;
-    public BedController(BedService bedService)
+    private IBedService _bedService;
+    public BedController(IBedService bedService)
     {
         _bedService = bedService;
     }

@@ -11,4 +11,6 @@ public interface IReservationService
     public Task<List<ReservationDTO>> GetReservationsByRoomId(Guid roomId);
     public Task<List<ReservationDTO>> CreateReservation(params ReservationPostDTO[] reservationDto);
     public Task<ReservationDTO> CancelReservation(CancelReservationDTO cancelReservationDto);
+    public  Task<List<ReservationDTO>> GetAllElements();
+
 }
