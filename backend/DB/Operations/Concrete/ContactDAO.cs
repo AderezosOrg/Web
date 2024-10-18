@@ -17,10 +17,10 @@ public class ContactDAO : IDAO<Contact>
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("INSERT INTO Contact (Id, PhoneNumber, Email) VALUES ) ")
-            .Append("VALUES ('").Append(IdC).Append("',")
-                                .Append(phoneNumber).Append(",")
-                                .Append(email).Append(");");
+        sb.Append("INSERT INTO Contact (Id, PhoneNumber, Email) ")
+            .Append("VALUES ('").Append(IdC).Append("','")
+                                .Append(phoneNumber).Append("','")
+                                .Append(email).Append("');");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -89,10 +89,10 @@ public class ContactDAO : IDAO<Contact>
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("UPDATE User ")
-            .Append("SET PhoneNumber = ").Append(phoneNumber).Append(", ")
-            .Append("Email =").Append(email)
-            .Append(" WHERE Id = '").Append(IdC).Append("';");
+        sb.Append("UPDATE Contact ")
+            .Append("SET PhoneNumber = '").Append(phoneNumber).Append("', ")
+            .Append("Email ='").Append(email)
+            .Append("' WHERE Id = '").Append(IdC).Append("';");
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;

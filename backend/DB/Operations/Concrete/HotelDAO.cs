@@ -25,14 +25,14 @@ public class HotelDAO : IDAO<Hotel>
         StringBuilder sb = new StringBuilder();
         sb.Append("INSERT INTO Hotel (Id, Stars, Name, AllowPets, Address, Tax, UserID, ContactId, BathroomId)")
             .Append("VALUES ('").Append(IdC).Append("',")
-                                .Append(stars).Append(",")
-                                .Append(name).Append(",")
-                                .Append(allowPets).Append(",")
-                                .Append(address).Append(",")
-                                .Append(tax).Append(",")
-                                .Append(userId).Append(",")
-                                .Append(contactId).Append(",")
-                                .Append(bathroomId).Append(");");
+                                .Append(stars).Append(", '")
+                                .Append(name).Append("',")
+                                .Append(allowPets).Append(", '")
+                                .Append(address).Append("',")
+                                .Append(tax).Append(", '")
+                                .Append(userId).Append("', '")
+                                .Append(contactId).Append("', '")
+                                .Append(bathroomId).Append("');");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -121,14 +121,14 @@ public class HotelDAO : IDAO<Hotel>
         StringBuilder sb = new StringBuilder();
         sb.Append("UPDATE Hotel ")
             .Append("SET Stars = ").Append(stars).Append(", ")
-            .Append("Name =").Append(name).Append(", ")
+            .Append("Name = '").Append(name).Append("', ")
             .Append("AllowPets =").Append(allowPets).Append(", ")
-            .Append("Address =").Append(address).Append(", ")
+            .Append("Address ='").Append(address).Append("', ")
             .Append("Tax =").Append(tax).Append(", ")
-            .Append("UserId =").Append(userId).Append(", ")
-            .Append("ContactId =").Append(contactId).Append(", ")
-            .Append("BathRoomId =").Append(bathroomId)
-            .Append(" WHERE Id = '").Append(IdC).Append("';");
+            .Append("UserId = '").Append(userId).Append("', ")
+            .Append("ContactId = '").Append(contactId).Append("', ")
+            .Append("BathRoomId = '").Append(bathroomId)
+            .Append("' WHERE Id = '").Append(IdC).Append("';");
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;

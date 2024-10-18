@@ -15,15 +15,15 @@ public class HotelService :
     ICreateSingleElement<HotelPostDTO, HotelPostDTO>,
     IUpdateElementByID<HotelPostDTO, HotelPostDTO>
 {
-    private HotelDAO _hotelDao;
-    private UserDAO _userDao;
-    private ContactDAO _contactDao;
-    private BathroomDAO _bathroomDao;
+    private IDAO<Hotel> _hotelDao;
+    private IDAO<User> _userDao;
+    private IDAO<Contact> _contactDao;
+    private IDAO<Bathroom> _bathroomDao;
     
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
     private HotelConverter _hotelConverter = new HotelConverter();
 
-    public HotelService(HotelDAO hotelDao, UserDAO userDao, ContactDAO contactDao, BathroomDAO bathroomDao)
+    public HotelService(IDAO<Hotel> hotelDao, IDAO<User> userDao, IDAO<Contact> contactDao, IDAO<Bathroom> bathroomDao)
     {
         _bathroomDao = bathroomDao;
         _contactDao = contactDao;

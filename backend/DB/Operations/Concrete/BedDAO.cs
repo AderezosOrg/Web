@@ -18,8 +18,8 @@ public class BedDAO : IDAO<Bed>
 
         StringBuilder sb = new StringBuilder();
         sb.Append("INSERT INTO Bed (Id, Size, Capacity)")
-            .Append("VALUES ('").Append(IdC).Append("',")
-                                .Append(size).Append(",")
+            .Append("VALUES ('").Append(IdC).Append("','")
+                                .Append(size).Append("',")
                                 .Append(capacity).Append(");");
 
         com.CommandText = sb.ToString();
@@ -91,7 +91,7 @@ public class BedDAO : IDAO<Bed>
 
         StringBuilder sb = new StringBuilder();
         sb.Append("UPDATE Bed ")
-            .Append("SET Size = ").Append(size).Append(", ")
+            .Append("SET Size = '").Append(size).Append("', ")
             .Append("Capacity =").Append(capacity)
             .Append(" WHERE Id = '").Append(IdC).Append("';");
         com.CommandText = sb.ToString();

@@ -100,7 +100,7 @@ public sealed class RoomServicesDAO : ITwoForeignDAO<RoomServices>
         StringBuilder sb = new StringBuilder();
         sb.Append("DELETE FROM RoomServices ")
             .Append(" WHERE RoomId = '").Append(roomIdC).Append("' ")
-            .Append("AND ServiceId = '").Append(serviceIdC).Append("' ;");
+            .Append("AND ServiceId = '").Append(serviceIdC).Append("';");
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();

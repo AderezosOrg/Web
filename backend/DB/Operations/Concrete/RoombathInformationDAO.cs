@@ -22,7 +22,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
         sb.Append("INSERT INTO RoomBathInformation (RoomTemplateId,BathroomId,Quantity) ")
             .Append("VALUES ('").Append(roomTemplateIdC).Append("','")
                                 .Append(bathRoomIdC).Append("', ")
-                                .Append(quantityC).Append(") ;");
+                                .Append(quantityC).Append(");");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -120,7 +120,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
         StringBuilder sb = new StringBuilder();
         sb.Append("DELETE FROM RoomBathInformation ")
             .Append(" WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
-            .Append("AND BathroomId = '").Append(bathRoomIdC).Append("' ;");
+            .Append("AND BathroomId = '").Append(bathRoomIdC).Append("';");
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
@@ -157,7 +157,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
             toAppend = new RoomBathInformation {
                 RoomTemplateID = Guid.Parse(reader.GetString(0)),
                 BathRoomID = bathrooomId,
-                Quantity = Convert.ToInt32(reader.GetInt16(1))
+                Quantity = reader.GetInt32(1)
             };
 
             toReturn.Add(toAppend);
@@ -191,7 +191,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
             toAppend = new RoomBathInformation {
                 RoomTemplateID = roomTemplateId,
                 BathRoomID = Guid.Parse(reader.GetString(0)),
-                Quantity = Convert.ToInt32(reader.GetInt16(1))
+                Quantity = reader.GetInt32(1)
             };
 
             toReturn.Add(toAppend);
@@ -199,5 +199,25 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
         reader.Close();
         
         return toReturn;
+    }
+    
+    public bool DeleteRoomBathInformationByRoomTemplateId(Guid roomTemplateId)
+    {
+        string roomTemplateIdC = roomTemplateId.ToString();
+
+        MySqlCommand com = new MySqlCommand("DeleteRoomBathInformationByRoomTemplateId",DbUtils.GetConnection());
+        com.CommandType = CommandType.StoredProcedure;
+
+        com.Parameters.AddWithValue("@roomTemplateId",roomTemplateIdC);
+        com.Parameters["@roomTemplateId"].Direction = ParameterDirection.Input;
+        
+        var reader = com.ExecuteReader();
+        int recordsAffected;
+
+        reader.Read();
+        recordsAffected = reader.RecordsAffected;
+        reader.Close();
+
+        return recordsAffected>0;
     }
 }

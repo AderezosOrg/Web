@@ -13,20 +13,18 @@ public class UserService :
     IDeleteService,
     IGetAllElementsService<UserDTO>,
     IGetElementById<UserPostDTO>,
-    ICreateSingleElement<UserPostDTO, UserPostDTO>,
+    ICreateSingleElement<UserPostDTO, UserDTO>,
     IUpdateElementByID<UpdateUserDTO, UserPostDTO>
 {
-    private UserDAO _userDAO;
-    private ContactDAO _contactDAO;
-    private HotelDAO _hotelDao;
+    private IDAO<User> _userDAO;
+    private IDAO<Contact> _contactDAO;
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
 
-    public UserService(UserDAO userDAO, ContactDAO contactDAO, HotelDAO hotelDAO)
+    public UserService(IDAO<User> userDAO, IDAO<Contact> contactDAO)
     {
         _userDAO = userDAO;
         _contactDAO = contactDAO;
-        _hotelDao = hotelDAO;
     }
     public async Task<UserPostDTO> GetElementById(Guid userId)
     {
@@ -35,8 +33,7 @@ public class UserService :
         if (user == null)
             throw new Exception("User not found");
         var contact = _contactDAO.Read(user.ContactID);
-        var hotels = _hotelDao.ReadAll().Where(hotel1 => hotel1.UserID == user.UserID).ToList();
-        return _userPostConverter.Convert(user,contact, hotels);
+        return _userPostConverter.Convert(user,contact);
     }
 
     public async Task<List<UserDTO>> GetAllElements()
@@ -46,34 +43,26 @@ public class UserService :
         List<UserDTO> result = _userDAO.ReadAll().Select(x =>
         {
             var contact = _contactDAO.Read(x.ContactID);
-            var hotels = _hotelDao.ReadAll().Where(hotel1 => hotel1.UserID == x.UserID).ToList();
-            return _userConverter.Convert(x, contact, hotels);
+            return _userConverter.Convert(x, contact);
         }).ToList();
         
         return result;
     }
 
-    public async Task<UserPostDTO> CreateSingleElement(UserPostDTO userPostDto)
+    public async Task<UserDTO> CreateSingleElement(UserPostDTO userPostDto)
     {
         await Task.Delay(10);
         if (userPostDto != null)
         {
-            var contactId = Guid.NewGuid();
-            var contact = new Contact()
-            {
-                ContactID = contactId,
-                Email = userPostDto.Email,
-                PhoneNumber = userPostDto.PhoneNumber,
-            };
             var newUser = new User
             {
                 Name = userPostDto.Name,
                 CINumber = userPostDto.CINumber,
-                ContactID = contactId,
+                ContactID = userPostDto.ContactId,
                 UserID = Guid.NewGuid(),
             };
             _userDAO.Create(newUser);
-            return userPostDto;
+            return _userConverter.Convert(newUser, _contactDAO.Read(userPostDto.ContactId));
         }
         throw new Exception("Contact not Data found");
 
@@ -93,8 +82,7 @@ public class UserService :
             ContactID = oldUser.ContactID,
         };
         _userDAO.Update(newUser);
-        var hotels = _hotelDao.ReadAll().Where(hotel => hotel.UserID == userId).ToList();
-        return _userPostConverter.Convert(newUser, _contactDAO.Read(oldUser.ContactID), hotels);
+        return _userPostConverter.Convert(newUser, _contactDAO.Read(oldUser.ContactID));
     }
 
     public async Task<bool> DeleteElementById(Guid elementId)

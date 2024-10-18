@@ -4,12 +4,19 @@ using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 using backend.Services.ServicesInterfaces;
+using Db;
 
 namespace backend.Services;
 
 public class RoomFiltersService: IRoomFiltersService
 {
-    private SingletonBD _singletonBd;
+    private IDAO<Room> _roomDao;
+    private RoomTemplateDAO _roomTemplateDao;
+    private IDAO<Hotel> _hotelDao;
+    private BedInformationDAO _bedInformationDAO;
+    private RoomBathInformationDAO _RoomBathInformationDAO;
+    private RoomServicesDAO _RoomServicesDAO; 
+    
     private ReservationService _reservationService;
     private RoomConverter _roomConverter = new RoomConverter();
     private BathRoomService _bathRoomService;
@@ -17,28 +24,34 @@ public class RoomFiltersService: IRoomFiltersService
     private BedService _bedService;
     private RoomService _roomService;
 
-    public RoomFiltersService(ServiceService serviceService, ReservationService reservationService, BathRoomService bathRoomService, BedService bedService, RoomService roomService)
+    public RoomFiltersService(IDAO<Room> roomDao, RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
+        RoomBathInformationDAO roomBathInformation, RoomServicesDAO roomServicesDao ,ServiceService serviceService, ReservationService reservationService,
+        BathRoomService bathRoomService, BedService bedService, RoomService roomService)
     {
         _serviceService = serviceService;
         _reservationService = reservationService;
         _bathRoomService = bathRoomService;
         _bedService = bedService;
         _roomService = roomService;
-        _singletonBd = SingletonBD.Instance;
-
+        _roomDao = roomDao;
+        _roomTemplateDao = roomTemplateDao;
+        _hotelDao = hotelDao;
+        _bedInformationDAO = bedInformationDao;
+        _RoomBathInformationDAO = roomBathInformation;
+        _RoomServicesDAO = roomServicesDao;
     }
     public async Task<List<RoomFullInfoDTO>> GetAvailableRooms(AvailabilityRequestDTO availabilityRequest)
     {
         List<RoomDTO> rooms = new List<RoomDTO>();
-        foreach (Room room in _singletonBd.GetAllRooms())
+        foreach (Room room in _roomDao.ReadAll())
         {
             if ( await IsAvailable(room, availabilityRequest))
             {
-                var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(r => r.RoomTemplateID == room.RoomTemplateID);
-                var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == room.HotelID);
-                var bedInformation = _singletonBd.GetAllBedInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
-                var bathInformation = _singletonBd.GetAllBathroomInformation().Where(b => b.RoomTemplateID == room.RoomTemplateID).ToList();
-                var serviceInformation = _singletonBd.GetAllRoomServices().Where(s => s.RoomID == room.RoomID).ToList();
+                var roomTemplate = _roomTemplateDao.Read(room.RoomTemplateID);
+                var hotel = _hotelDao.Read(room.HotelID);
+                var bedInformation = _bedInformationDAO.GetBedInformationByRoomTemplateId(room.RoomTemplateID);
+                var bathInformation = _RoomBathInformationDAO.GetRoombathInformationsByRoomTemplateId(room.RoomTemplateID);
+                var serviceInformation = _RoomServicesDAO.GetRoomServicesByRoomId(room.RoomID);
                 rooms.Add(_roomConverter.Convert(room, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation));
             }
         }
@@ -74,17 +87,17 @@ public class RoomFiltersService: IRoomFiltersService
     {
         await Task.Delay(10);
 
-        var roomsOnFloor = _singletonBd.GetAllRooms()
+        var roomsOnFloor = _roomDao.ReadAll()
             .Where(r => r.FloorNumber == floorNumber)
             .ToList();
 
         var roomDTOs = roomsOnFloor.Select(r =>
         {
-            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
-            var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformations = _singletonBd.GetAllBedInformation().Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomBathInformations = _singletonBd.GetAllBathroomInformation().Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomServices = _singletonBd.GetAllRoomServices().Where(rs => rs.RoomID == r.RoomID).ToList();
+            var roomTemplate = _roomTemplateDao.Read(r.RoomTemplateID);
+            var hotel = _hotelDao.Read(r.HotelID);
+            var bedInformations = _bedInformationDAO.GetBedInformationByRoomTemplateId(roomTemplate.RoomTemplateID);
+            var roomBathInformations = _RoomBathInformationDAO.GetRoombathInformationsByRoomTemplateId(roomTemplate.RoomTemplateID);
+            var roomServices = _RoomServicesDAO.GetRoomServicesByRoomId(r.RoomID);
 
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformations, roomBathInformations, roomServices);
         }).ToList();
@@ -97,17 +110,17 @@ public class RoomFiltersService: IRoomFiltersService
     {
         await Task.Delay(10);
 
-        var roomsInPriceRange = _singletonBd.GetAllRooms()
+        var roomsInPriceRange = _roomDao.ReadAll()
             .Where(r => r.PricePerNight >= priceRangeRequest.MinPrice && r.PricePerNight <= priceRangeRequest.MaxPrice)
             .ToList();
 
         var roomDTOs = roomsInPriceRange.Select(r =>
         {
-            var roomTemplate = _singletonBd.GetAllRoomTemplates().FirstOrDefault(rt => rt.RoomTemplateID == r.RoomTemplateID);
-            var hotel = _singletonBd.GetAllHotels().FirstOrDefault(h => h.HotelID == r.HotelID);
-            var bedInformations = _singletonBd.GetAllBedInformation().Where(bi => bi.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomBathInformations = _singletonBd.GetAllBathroomInformation().Where(rb => rb.RoomTemplateID == r.RoomTemplateID).ToList();
-            var roomServices = _singletonBd.GetAllRoomServices().Where(rs => rs.RoomID == r.RoomID).ToList();
+            var roomTemplate = _roomTemplateDao.Read(r.RoomTemplateID);
+            var hotel =_hotelDao.Read(r.HotelID);
+            var bedInformations = _bedInformationDAO.GetBedInformationByRoomTemplateId(roomTemplate.RoomTemplateID);
+            var roomBathInformations = _RoomBathInformationDAO.GetRoombathInformationsByRoomTemplateId(roomTemplate.RoomTemplateID);
+            var roomServices = _RoomServicesDAO.GetRoomServicesByRoomId(r.RoomID);
 
             return _roomConverter.Convert(r, roomTemplate, hotel, bedInformations, roomBathInformations, roomServices);
         }).ToList();

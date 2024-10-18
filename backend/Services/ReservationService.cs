@@ -13,12 +13,12 @@ public class ReservationService : IReservationService,
     IGetAllElementsService<ReservationDTO>
 {
     private ReservationDAO _reservationDao;
-    private ContactDAO _contactDao;
-    private RoomDAO _roomDao;
+    private IDAO<Contact> _contactDao;
+    private IDAO<Room> _roomDao;
     private ReservationConverter _reservationConverter = new ReservationConverter();
 
 
-    public ReservationService(ReservationDAO reservationDao, ContactDAO contactDao, RoomDAO roomDao)
+    public ReservationService(ReservationDAO reservationDao, IDAO<Contact> contactDao, IDAO<Room> roomDao)
     {
         _reservationDao = reservationDao;
         _contactDao = contactDao;

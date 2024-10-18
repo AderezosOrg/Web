@@ -1,16 +1,20 @@
 using backend.MyHappyBD;
 using backend.Services.ServicesInterfaces;
+using Db;
 using DTOs.WithoutId;
+using Entities;
 
 namespace backend.Services;
 
 public class PriceService : IPriceService
 {
-    private SingletonBD _singletonBd;
+    private readonly IDAO<Hotel> _hotelDao;
+    private readonly IDAO<Room> _roomDao;
 
-    public PriceService()
+    public PriceService(IDAO<Room> roomDao, IDAO<Hotel> hotelDao)
     {
-        _singletonBd = SingletonBD.Instance;
+        _roomDao = roomDao;
+        _hotelDao = hotelDao;
     }
 
     
@@ -26,7 +30,7 @@ public class PriceService : IPriceService
         decimal partialPrice = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
-            var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
+            var room = _roomDao.Read(reservationsPostDto.RoomId);
             partialPrice += room.PricePerNight * (reservationsPostDto.UseDate - reservationsPostDto.ReservationDate).Days;
         }
         return partialPrice;
@@ -37,8 +41,8 @@ public class PriceService : IPriceService
         decimal taxes = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
-            var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
-            var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
+            var room = _roomDao.Read(reservationsPostDto.RoomId);
+            var hotelTax = _hotelDao.Read(room.HotelID).Tax / 100;
             taxes += room.PricePerNight * hotelTax  * (reservationsPostDto.UseDate - reservationsPostDto.ReservationDate).Days;
         }
         return taxes;
@@ -49,8 +53,8 @@ public class PriceService : IPriceService
         decimal taxedPrice = 0;
         foreach (ReservationPostDTO reservationsPostDto in reservations.Reservations)
         {
-            var room = _singletonBd.GetRoomById(reservationsPostDto.RoomId);
-            var hotelTax = _singletonBd.GetHotelById(room.HotelID).Tax / 100;
+            var room = _roomDao.Read(reservationsPostDto.RoomId);
+            var hotelTax = _hotelDao.Read(room.HotelID).Tax / 100;
             taxedPrice += room.PricePerNight + room.PricePerNight * hotelTax;
         }
         return taxedPrice;
