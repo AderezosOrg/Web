@@ -21,7 +21,7 @@ import (
 )
 
 const(
-	redirectionFrontEndUrl = "http://localhost:5173"
+	redirectionFrontEndUrl = "http://localhost:5173/personal-info"
 	redirectionBackendUrl = "http://localhost:5009/api/Contact"
 	key = "randomString"
 	MaxAge = 86400 * 30
