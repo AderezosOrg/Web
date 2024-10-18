@@ -21,8 +21,8 @@ public class RoomTemplateDAO : IDAO<RoomTemplate>
         
         StringBuilder rt = new StringBuilder();
         rt.Append("INSERT INTO RoomTemplate(Id, Side, Windows)")
-            .Append("VALUES (").Append(RoomTemplateID).Append(", ")
-            .Append(side).Append(", ")
+            .Append("VALUES ('").Append(RoomTemplateID).Append("',' ")
+            .Append(side).Append("', ")
             .Append(windows).Append(");");
         
         com.CommandText = rt.ToString();
@@ -37,7 +37,7 @@ public class RoomTemplateDAO : IDAO<RoomTemplate>
         com.Connection = DbUtils.GetConnection();
         
         StringBuilder rt = new StringBuilder();
-        rt.Append("SELECT * FROM RoomTemplate WHERE Id = ").Append(RoomTemplateID).AppendLine(";");
+        rt.Append("SELECT * FROM RoomTemplate WHERE Id = ''").Append(RoomTemplateID).AppendLine("';");
         
         com.CommandText = rt.ToString();
         var reader = com.ExecuteReader();
@@ -99,8 +99,9 @@ public class RoomTemplateDAO : IDAO<RoomTemplate>
         
         StringBuilder rt = new StringBuilder();
         rt.Append("UPDATE RoomTemplate")
-            .Append("SET Side = ").Append(side).Append(", ")
-            .Append("Windows = ").Append(windows).Append(", ");
+            .Append("SET Side = '").Append(side).Append("', ")
+            .Append("Windows = ").Append(windows).Append(", ")
+            .Append(" WHERE Id = '").Append(RoomTemplateID).Append("';");
         com.CommandText = rt.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;
@@ -118,7 +119,7 @@ public class RoomTemplateDAO : IDAO<RoomTemplate>
         
         StringBuilder rt = new StringBuilder();
         rt.Append("DELETE FROM RoomTemplate")
-            .Append(" WHERE Id = '").Append(RoomTemplateID).Append(";");
+            .Append(" WHERE Id = '").Append(RoomTemplateID).Append("';");
 
         com.CommandText = rt.ToString();
         var reader = com.ExecuteReader();

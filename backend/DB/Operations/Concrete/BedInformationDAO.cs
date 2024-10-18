@@ -22,7 +22,7 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         sb.Append("INSERT INTO BedInformation (RoomTemplateID,BedID,Quantity) ")
             .Append("VALUES ('").Append(roomTemplateIdC).Append("','")
                                 .Append(bedIdC).Append("', ")
-                                .Append(quantityC).Append(") ;");
+                                .Append(quantityC).Append(");");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -120,7 +120,7 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         StringBuilder sb = new StringBuilder();
         sb.Append("DELETE FROM BedInformation ")
             .Append(" WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
-            .Append("AND BedId = '").Append(bedIdC).Append("' ;");
+            .Append("AND BedId = '").Append(bedIdC).Append("';");
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();

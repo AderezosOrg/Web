@@ -4,6 +4,7 @@ using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 using backend.Services.ServicesInterfaces;
+using Db;
 
 namespace backend.Services;
 
@@ -13,35 +14,44 @@ public class RoomTemplateService :
     ICreateSingleElement<RoomTemplatePostDTO, RoomTemplatePostDTO>,
     IUpdateElementByID<RoomTemplatePostDTO, RoomTemplatePostDTO>
 {
-    private SingletonBD _singletonBd;
+    private RoomTemplateDAO _roomTemplateDao;
+    private RoomBathInformationDAO _roomBathInformationDao;
+    private BathroomDAO _bathroomDao;
+    private BedInformationDAO _bedInformationDao;
+    private BedDAO _bedDAO;
+    
     private RoomTemplateConverter _roomTemplateConverter;
 
-    public RoomTemplateService()
+    public RoomTemplateService(RoomTemplateDAO roomTemplateDAO, RoomBathInformationDAO roomBathInformationDAO, BathroomDAO bathroomDAO, BedInformationDAO bedInformationDAO, BedDAO bedDAO)
     {
-        _singletonBd = SingletonBD.Instance;
+        _roomTemplateDao = roomTemplateDAO;
+        _roomBathInformationDao = roomBathInformationDAO;
+        _bathroomDao = bathroomDAO;
+        _bedInformationDao = bedInformationDAO;
+        _bedDAO = bedDAO;
         _roomTemplateConverter = new RoomTemplateConverter();
     }
 
     public async Task<RoomTemplateDTO> GetElementById(Guid roomTemplateId)
     {
-        var roomTemplate = _singletonBd.GetRoomTemplateById(roomTemplateId);
+        var roomTemplate = _roomTemplateDao.Read(roomTemplateId);
         return _roomTemplateConverter.Convert(
             roomTemplate,
-            _singletonBd.GetAllBathroomInformation(),
-            _singletonBd.GetAllBathRooms(),
-            _singletonBd.GetAllBedInformation(),
-            _singletonBd.GetAllBeds());
+            _roomBathInformationDao.ReadAll(),
+            _bathroomDao.ReadAll(),
+            _bedInformationDao.ReadAll(),
+            _bedDAO.ReadAll());
     }
 
     public async Task<List<RoomTemplateDTO>> GetAllElements()
     {
-        var roomTemplates = _singletonBd.GetAllRoomTemplates();
+        var roomTemplates = _roomTemplateDao.ReadAll();
         List<RoomTemplateDTO> roomTemplateDTOs = roomTemplates.Select(rt =>
         {
-            var bathrooms = _singletonBd.GetAllBathRooms();
-            var bathroomInformation = _singletonBd.GetAllBathroomInformation();
-            var beds = _singletonBd.GetAllBeds();
-            var bedInformation = _singletonBd.GetAllBedInformation();
+            var bathrooms = _bathroomDao.ReadAll();
+            var bathroomInformation = _roomBathInformationDao.ReadAll();
+            var beds = _bedDAO.ReadAll();
+            var bedInformation = _bedInformationDao.ReadAll();
             return _roomTemplateConverter.Convert(rt, bathroomInformation, bathrooms, bedInformation, beds);
         }).ToList();
         return roomTemplateDTOs;
@@ -50,7 +60,7 @@ public class RoomTemplateService :
     public async Task<RoomTemplatePostDTO> CreateSingleElement(RoomTemplatePostDTO roomTemplatePostDto)
     {
         var guid = Guid.NewGuid();
-        _singletonBd.AddRoomTemplate(new RoomTemplate()
+        _roomTemplateDao.Create(new RoomTemplate()
         {
             RoomTemplateID = guid,
             Side = roomTemplatePostDto.Side,
@@ -58,7 +68,7 @@ public class RoomTemplateService :
         });
         foreach (BathroomAddToTemplateDTO bathroomAddToTemplateDto in roomTemplatePostDto.Bathrooms)
         {
-            _singletonBd.AddBathroomInformation(new RoomBathInformation()
+            _roomBathInformationDao.Create(new RoomBathInformation()
             {
                 BathRoomID = bathroomAddToTemplateDto.BathRoomID,
                 Quantity = bathroomAddToTemplateDto.BathroomQuantity,
@@ -67,7 +77,7 @@ public class RoomTemplateService :
         }
         foreach (BedAddToTemplateDTO bedAddToTemplateDto in roomTemplatePostDto.Beds)
         {
-            _singletonBd.AddBedInformation(new BedInformation()
+            _bedInformationDao.Create(new BedInformation()
             {
                 BedID = bedAddToTemplateDto.BedID,
                 Quantity = bedAddToTemplateDto.BedQuantity,
@@ -80,18 +90,18 @@ public class RoomTemplateService :
 
     public async Task<RoomTemplatePostDTO> UpdateElementById(Guid roomTemplateId, RoomTemplatePostDTO roomTemplatePostDto)
     {
-        _singletonBd.UpdateRoomTemplate(new RoomTemplate()
+        _roomTemplateDao.Update(new RoomTemplate()
         {
             RoomTemplateID = roomTemplateId,
             Side = roomTemplatePostDto.Side,
             Windows = roomTemplatePostDto.Windows
         });
-        _singletonBd.DeleteBathroomInformationByRoomTemplateId(roomTemplateId);
-        _singletonBd.DeleteBedByRoomTemplateIdInformation(roomTemplateId);
+        _roomBathInformationDao.DeleteRoomBathInformationByRoomTemplateId(roomTemplateId);
+        _bedInformationDao.DeleteBedInformationByRoomTemplateId(roomTemplateId);
         
         foreach (BathroomAddToTemplateDTO bathroomAddToTemplateDto in roomTemplatePostDto.Bathrooms)
         {
-            _singletonBd.AddBathroomInformation(new RoomBathInformation()
+            _roomBathInformationDao.Create(new RoomBathInformation()
             {
                 BathRoomID = bathroomAddToTemplateDto.BathRoomID,
                 Quantity = bathroomAddToTemplateDto.BathroomQuantity,
@@ -100,7 +110,7 @@ public class RoomTemplateService :
         }
         foreach (BedAddToTemplateDTO bedAddToTemplateDto in roomTemplatePostDto.Beds)
         {
-            _singletonBd.AddBedInformation(new BedInformation()
+            _bedInformationDao.Create(new BedInformation()
             {
                 BedID = bedAddToTemplateDto.BedID,
                 Quantity = bedAddToTemplateDto.BedQuantity,

@@ -19,11 +19,11 @@ public class UserDAO : IDAO<User>
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("INSERT INTO User (Id, Name, CINumber, ContactId)) ")
-            .Append("VALUES ('").Append(IdC).Append("',")
-                                .Append(name).Append(",")
-                                .Append(ciNumber).Append(",")
-                                .Append(contactId).Append(");");
+        sb.Append("INSERT INTO User (Id, Name, CINumber, ContactId) ")
+            .Append("VALUES ('").Append(IdC).Append("','")
+                                .Append(name).Append("','")
+                                .Append(ciNumber).Append("','")
+                                .Append(contactId).Append("');");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -96,10 +96,10 @@ public class UserDAO : IDAO<User>
 
         StringBuilder sb = new StringBuilder();
         sb.Append("UPDATE User ")
-            .Append("SET Name = ").Append(name).Append(", ")
-            .Append("CINumber =").Append(ciNumber).Append(", ")
-            .Append("ContactId =").Append(contactId)
-            .Append(" WHERE Id = '").Append(IdC).Append("';");
+            .Append("SET Name = '").Append(name).Append("', ")
+            .Append("CINumber = '").Append(ciNumber).Append("', ")
+            .Append("ContactId = '").Append(contactId)
+            .Append("' WHERE Id = '").Append(IdC).Append("';");
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;

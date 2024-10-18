@@ -18,8 +18,8 @@ public class ServiceDAO : IDAO<Service>
 
         StringBuilder sb = new StringBuilder();
         sb.Append("INSERT INTO Service (Id, Type)")
-            .Append("VALUES ('").Append(IdC).Append("',")
-                                .Append(type).Append(");");
+            .Append("VALUES ('").Append(IdC).Append("','")
+                                .Append(type).Append("');");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
@@ -86,8 +86,8 @@ public class ServiceDAO : IDAO<Service>
 
         StringBuilder sb = new StringBuilder();
         sb.Append("UPDATE Service ")
-            .Append("SET Type = ").Append(type)
-            .Append(" WHERE Id = '").Append(IdC).Append("';");
+            .Append("SET Type = '").Append(type)
+            .Append("' WHERE Id = '").Append(IdC).Append("';");
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;

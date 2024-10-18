@@ -25,12 +25,12 @@ public class RoomDAO : IDAO<Room>
         
         StringBuilder a = new StringBuilder();
         a.Append("INSERT INTO Room (Id,Code,FloorNumber,PricePerNight,RoomTemplateId,HotelId)")
-            .Append("VALUES ('").Append(IdRoom). Append("',")
-                                .Append(codeRoom).Append(",")
+            .Append("VALUES ('").Append(IdRoom). Append("','")
+                                .Append(codeRoom).Append("',")
                                 .Append(floorNumber).Append(",")
-                                .Append(pricePerNight).Append(",")
-                                .Append(roomTemplateId).Append(",")
-                                .Append(hotelId).Append(")");
+                                .Append(pricePerNight).Append(",'")
+                                .Append(roomTemplateId).Append("','")
+                                .Append(hotelId).Append("');");
         com.CommandText = a.ToString();
         return com.ExecuteNonQuery();
     }
@@ -43,7 +43,7 @@ public class RoomDAO : IDAO<Room>
         com.Connection = DbUtils.GetConnection();
         
         StringBuilder a = new StringBuilder();
-        a.Append("SELECT * FROM Room WHERE Id = ''").Append(IdRoom).Append("';");
+        a.Append("SELECT * FROM Room WHERE Id = '").Append(IdRoom).Append("';");
         
         com.CommandText = a.ToString();
         var reader = com.ExecuteReader();
@@ -89,9 +89,9 @@ public class RoomDAO : IDAO<Room>
                 RoomID = Guid.Parse(reader.GetString(0)),
                 Code = reader.GetString(1),
                 FloorNumber = reader.GetInt32(2),
-                HotelID = Guid.Parse(reader.GetString(3)),
-                PricePerNight = reader.GetDecimal(4),
-                RoomTemplateID = Guid.Parse(reader.GetString(5)),
+                PricePerNight = reader.GetDecimal(3),
+                RoomTemplateID = Guid.Parse(reader.GetString(4)),
+                HotelID = Guid.Parse(reader.GetString(5))
             };
             
             toReturn.Add(toAppend);
@@ -114,11 +114,12 @@ public class RoomDAO : IDAO<Room>
         
         StringBuilder a = new StringBuilder();
         a.Append("UPDATE Room ")
-            .Append("SET Code = ").Append(codeRoom).Append(",")
+            .Append("SET Code = '").Append(codeRoom).Append("',")
             .Append("FloorNumber = ").Append(floorNumber).Append(",")
             .Append("PricePerNight = ").Append(pricePerNight).Append(",")
-            .Append("RoomTemplateId = ").Append(roomTemplateId).Append(",")
-            .Append("HotelId = ").Append(hotelId).Append(",");
+            .Append("RoomTemplateId = '").Append(roomTemplateId).Append("',")
+            .Append("HotelId = '").Append(hotelId).Append("',")
+            .Append(" WHERE Id = '").Append(IdRoom).Append("';");
         com.CommandText = a.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;
