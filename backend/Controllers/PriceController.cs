@@ -10,9 +10,9 @@ public class PriceController : ControllerBase
 {
     private PriceService _priceService;
 
-    public PriceController()
+    public PriceController(PriceService priceService)
     {
-        _priceService = new PriceService();
+        _priceService = priceService;
     }
 
     [HttpPost("/total")]

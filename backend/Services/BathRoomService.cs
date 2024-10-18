@@ -5,6 +5,7 @@ using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
 using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
@@ -15,20 +16,20 @@ public class BathRoomService :
     ICreateSingleElement<BathroomPostDTO, BathroomPostDTO>,
     IUpdateElementByID<BathroomPostDTO, BathroomPostDTO>
 {
-    private SingletonBD _singletonBd;
+    private IDAO<Bathroom> _bathroomDao;
 
     
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
     
-    public BathRoomService()
+    public BathRoomService(IDAO<Bathroom> bathroomDao)
     {
-        _singletonBd = SingletonBD.Instance;
+        _bathroomDao = bathroomDao;
     }
     public async Task<List<BathroomInfoDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<BathroomInfoDTO> result = _singletonBd.GetAllBathRooms().Select(b =>
+        List<BathroomInfoDTO> result = _bathroomDao.ReadAll().Select(b =>
         {
             return _bathroomConverter.Convert(b);
         }).ToList();
@@ -39,7 +40,7 @@ public class BathRoomService :
     public async Task<BathroomPostDTO> GetElementById(Guid bathroomID)
     {
         await Task.Delay(10);
-        var bathroom = _singletonBd.GetBathRoomById(bathroomID);
+        var bathroom = _bathroomDao.Read(bathroomID);
         if (bathroom == null)
         {
             throw new Exception("Bathroom not found");
@@ -59,7 +60,7 @@ public class BathRoomService :
                 Toilet = bathroomPostDto.Toilet,
                 DressingTable = bathroomPostDto.DressingTable
             };
-            _singletonBd.AddBathroom(newBathroom); 
+            _bathroomDao.Create(newBathroom); 
             return bathroomPostDto;
         }
         throw new Exception("Bathroom not data found");
@@ -68,18 +69,20 @@ public class BathRoomService :
     public async Task<BathroomPostDTO> UpdateElementById(Guid bathroomID, BathroomPostDTO bathroomDto)
     {
         await Task.Delay(100);
-        return _bathroomPostConverter.Convert(_singletonBd.UpdateBathroom(new Bathroom()
+        var bathroom = new Bathroom()
         {
             BathRoomID = bathroomID,
             DressingTable = bathroomDto.DressingTable,
             Shower = bathroomDto.Shower,
             Toilet = bathroomDto.Toilet
-        }));
+        };
+        _bathroomDao.Update(bathroom);
+        return _bathroomPostConverter.Convert(bathroom);
     }
     
     public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(100);
-        return _singletonBd.DeleteBathroom(elementId);
+        return _bathroomDao.Delete(elementId);
     }
 }

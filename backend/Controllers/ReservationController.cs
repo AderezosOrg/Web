@@ -1,3 +1,4 @@
+using backend.DTOs.WithId;
 using backend.Services;
 using DTOs.WithId;
 using DTOs.WithoutId;
@@ -46,9 +47,9 @@ public class ReservationController : ControllerBase
     }
     
     [HttpPatch("cancel/{contactId}")]
-    public async Task<ActionResult<ReservationDTO>> CancelReservation(Guid contactId)
+    public async Task<ActionResult<ReservationDTO>> CancelReservation(CancelReservationDTO cancelReservationDto)
     {
-        ReservationDTO reservation = await _reservationService.CancelReservation(contactId);
+        ReservationDTO reservation = await _reservationService.CancelReservation(cancelReservationDto);
         return Ok(reservation);
     }
 }

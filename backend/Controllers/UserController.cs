@@ -30,7 +30,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserPostDTO>> CreateUser(UserPostDTO userDto)
+    public async Task<ActionResult<UserDTO>> CreateUser(UserPostDTO userDto)
     {
         Console.WriteLine(userDto.Name);
         Console.WriteLine(userDto.Email);
@@ -46,7 +46,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPut("{userId}")]
-    public async Task<ActionResult<UserPostDTO>> EditUserById(Guid userId, UserPostDTO userDto)
+    public async Task<ActionResult<UserPostDTO>> EditUserById(Guid userId, UpdateUserDTO userDto)
     {
         UserPostDTO userPostDto = await _userService.UpdateElementById(userId, userDto);
         return Ok(userPostDto);
