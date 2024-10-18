@@ -85,9 +85,6 @@ function Confirmation() {
               <p className="text-[20px] font-bold font-roboto">
                 Total: Bs {total}
               </p>
-              <p className="text-[20px] font-bold font-roboto">
-                ContactID: {contactId}
-              </p>
             </div>
 
             <div className='mt-12 flex justify-center items-center'>
