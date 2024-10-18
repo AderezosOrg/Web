@@ -7,38 +7,38 @@ using Entities;
 
 namespace Db;
 
-public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
+public sealed class RoomBathInformationDAO : IRoombathInformationDAO
 {
-    public int Create(BedInformation bi)
+    public int Create(RoomBathInformation rbi)
     {
-        string roomTemplateIdC = bi.RoomTemplateID.ToString();
-        string bedIdC = bi.BedID.ToString();
-        string quantityC = bi.Quantity.ToString();
+        string roomTemplateIdC = rbi.RoomTemplateID.ToString();
+        string bathRoomIdC = rbi.BathRoomID.ToString();
+        string quantityC = rbi.Quantity.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("INSERT INTO BedInformation (RoomTemplateID,BedID,Quantity) ")
+        sb.Append("INSERT INTO RoomBathInformation (RoomTemplateId,BathroomId,Quantity) ")
             .Append("VALUES ('").Append(roomTemplateIdC).Append("','")
-                                .Append(bedIdC).Append("', ")
+                                .Append(bathRoomIdC).Append("', ")
                                 .Append(quantityC).Append(");");
 
         com.CommandText = sb.ToString();
         return com.ExecuteNonQuery();
     }
 
-    public BedInformation? Read(Guid roomTemplateId, Guid bedId)
+    public RoomBathInformation? Read(Guid roomTemplateId, Guid bathRoomId)
     {
         string roomTemplateIdC = roomTemplateId.ToString();
-        string bedIdC = bedId.ToString();
+        string bathRoomIdC = bathRoomId.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("SELECT * FROM BedInformation WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
-            .Append("AND BedId = '").Append(bedIdC).Append("';");
+        sb.Append("SELECT * FROM RoomBathInformation WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
+            .Append("AND BathroomId = '").Append(bathRoomIdC).Append("';");
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
@@ -49,9 +49,9 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         }
         reader.Read();
         
-        BedInformation toReturn = new BedInformation {
+        RoomBathInformation toReturn = new RoomBathInformation {
             RoomTemplateID = roomTemplateId,
-            BedID = bedId,
+            BathRoomID = bathRoomId,
             Quantity = Convert.ToInt32(reader.GetInt16(2))
         };
 
@@ -59,26 +59,26 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         return toReturn;
     }
 
-    public List<BedInformation> ReadAll()
+    public List<RoomBathInformation> ReadAll()
     {
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("BedInformation");
+        sb.Append("RoomBathInformation");
 
         com.CommandText = sb.ToString();
         com.CommandType = CommandType.TableDirect;
 
-        BedInformation toAppend;
+        RoomBathInformation toAppend;
 
         var reader = com.ExecuteReader();
-        List<BedInformation> toReturn = new List<BedInformation>();
+        List<RoomBathInformation> toReturn = new List<RoomBathInformation>();
         while (reader.Read())
         {
-            toAppend = new BedInformation {
+            toAppend = new RoomBathInformation {
                 RoomTemplateID = Guid.Parse(reader.GetString(0)),
-                BedID = Guid.Parse(reader.GetString(1)),
+                BathRoomID = Guid.Parse(reader.GetString(1)),
                 Quantity = Convert.ToInt32(reader.GetInt16(2))
             };
             toReturn.Add(toAppend);
@@ -87,20 +87,20 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         return toReturn;
     }
 
-    public int Update(BedInformation bi)
+    public int Update(RoomBathInformation rbi)
     {
-        string roomTemplateIdC = bi.RoomTemplateID.ToString();
-        string bedIdC = bi.BedID.ToString();
-        string quantityC = bi.Quantity.ToString();
+        string roomTemplateIdC = rbi.RoomTemplateID.ToString();
+        string bathRoomIdC = rbi.BathRoomID.ToString();
+        string quantityC = rbi.Quantity.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("UPDATE BedInformation ")
+        sb.Append("UPDATE RoomBathInformation ")
             .Append("SET Quantity =").Append(quantityC)
             .Append(" WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
-            .Append(" AND BedId = '").Append(bedIdC).Append("' ;");
+            .Append(" AND BathroomId = '").Append(bathRoomIdC).Append("' ;");
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
         int toReturn = reader.RecordsAffected;
@@ -109,18 +109,18 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         return toReturn;
     }
 
-    public bool Delete(Guid roomTemplateId, Guid bedId)
+    public bool Delete(Guid roomTemplateId, Guid bathRoomId)
     {
         string roomTemplateIdC = roomTemplateId.ToString();
-        string bedIdC = bedId.ToString();
+        string bathRoomIdC = bathRoomId.ToString();
 
         MySqlCommand com = new MySqlCommand();
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("DELETE FROM BedInformation ")
+        sb.Append("DELETE FROM RoomBathInformation ")
             .Append(" WHERE RoomTemplateId = '").Append(roomTemplateIdC).Append("' ")
-            .Append("AND BedId = '").Append(bedIdC).Append("';");
+            .Append("AND BathroomId = '").Append(bathRoomIdC).Append("';");
 
         com.CommandText = sb.ToString();
         var reader = com.ExecuteReader();
@@ -133,15 +133,15 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         return recordsAffected>0;
     }
 
-    public List<BedInformation> GetBedInformationsByBedId(Guid bedId)
+    public List<RoomBathInformation> GetRoombathInformationsByBathroomId(Guid bathrooomId)
     {
-        string bedIdC = bedId.ToString();
+        string bathrooomIdC = bathrooomId.ToString();
 
-        MySqlCommand com = new MySqlCommand("GetBedInformationByBedId",DbUtils.GetConnection());
+        MySqlCommand com = new MySqlCommand("GetBathroomInformationByBathroomId",DbUtils.GetConnection());
         com.CommandType = CommandType.StoredProcedure;
 
-        com.Parameters.AddWithValue("@bedId",bedIdC);
-        com.Parameters["@bedId"].Direction = ParameterDirection.Input;
+        com.Parameters.AddWithValue("@bathroomId",bathrooomIdC);
+        com.Parameters["@bathroomId"].Direction = ParameterDirection.Input;
 
         var reader = com.ExecuteReader();
         if (!reader.HasRows) 
@@ -150,13 +150,13 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
             return null;
         }
 
-        List<BedInformation> toReturn = new List<BedInformation>();
-        BedInformation toAppend;
+        List<RoomBathInformation> toReturn = new List<RoomBathInformation>();
+        RoomBathInformation toAppend;
         while (reader.Read())
         {
-            toAppend = new BedInformation {
+            toAppend = new RoomBathInformation {
                 RoomTemplateID = Guid.Parse(reader.GetString(0)),
-                BedID = bedId,
+                BathRoomID = bathrooomId,
                 Quantity = reader.GetInt32(1)
             };
 
@@ -167,11 +167,11 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         return toReturn;
     }
 
-    public List<BedInformation> GetBedInformationByRoomTemplateId(Guid roomTemplateId)
+    public List<RoomBathInformation> GetRoombathInformationsByRoomTemplateId(Guid roomTemplateId)
     {
         string roomTemplateIdC = roomTemplateId.ToString();
 
-        MySqlCommand com = new MySqlCommand("GetBedInformationByRoomTemplateId",DbUtils.GetConnection());
+        MySqlCommand com = new MySqlCommand("GetBathroomInformationByRoomTemplateId",DbUtils.GetConnection());
         com.CommandType = CommandType.StoredProcedure;
 
         com.Parameters.AddWithValue("@roomTemplateId",roomTemplateIdC);
@@ -184,13 +184,13 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
             return null;
         }
 
-        List<BedInformation> toReturn = new List<BedInformation>();
-        BedInformation toAppend;
+        List<RoomBathInformation> toReturn = new List<RoomBathInformation>();
+        RoomBathInformation toAppend;
         while (reader.Read())
         {
-            toAppend = new BedInformation {
+            toAppend = new RoomBathInformation {
                 RoomTemplateID = roomTemplateId,
-                BedID = Guid.Parse(reader.GetString(0)),
+                BathRoomID = Guid.Parse(reader.GetString(0)),
                 Quantity = reader.GetInt32(1)
             };
 
@@ -200,36 +200,16 @@ public sealed class BedInformationDAO : ITwoForeignDAO<BedInformation>
         
         return toReturn;
     }
-
-    public bool DeleteBedInformationByRoomTemplateId(Guid roomTemplateId)
+    
+    public bool DeleteRoomBathInformationByRoomTemplateId(Guid roomTemplateId)
     {
         string roomTemplateIdC = roomTemplateId.ToString();
 
-        MySqlCommand com = new MySqlCommand("DeleteBedInformationByRoomTemplateId",DbUtils.GetConnection());
+        MySqlCommand com = new MySqlCommand("DeleteRoomBathInformationByRoomTemplateId",DbUtils.GetConnection());
         com.CommandType = CommandType.StoredProcedure;
 
         com.Parameters.AddWithValue("@roomTemplateId",roomTemplateIdC);
         com.Parameters["@roomTemplateId"].Direction = ParameterDirection.Input;
-        
-        var reader = com.ExecuteReader();
-        int recordsAffected;
-
-        reader.Read();
-        recordsAffected = reader.RecordsAffected;
-        reader.Close();
-
-        return recordsAffected>0;
-    }
-
-    public bool DeleteBedInformationByBedId(Guid bedId)
-    {
-        string bedIdC = bedId.ToString();
-
-        MySqlCommand com = new MySqlCommand("DeleteBedInformationByBedId",DbUtils.GetConnection());
-        com.CommandType = CommandType.StoredProcedure;
-
-        com.Parameters.AddWithValue("@bedId",bedIdC);
-        com.Parameters["@bedId"].Direction = ParameterDirection.Input;
         
         var reader = com.ExecuteReader();
         int recordsAffected;
