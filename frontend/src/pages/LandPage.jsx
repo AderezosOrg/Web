@@ -4,7 +4,7 @@ import Google from "../assets/googleLogo.png"
 export default function LandPage() {
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://172.20.41.8:8000/auth/google";
+    window.location.href = "http://localhost:8000/auth/google";
   };
 
   return (

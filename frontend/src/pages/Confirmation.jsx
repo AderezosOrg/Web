@@ -1,18 +1,49 @@
-import { Form as FormFormik, Formik } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import useSubmitReservation from './hooks/useSubmitReservation';
 import RoomCard from '../components/RoomCard';
+import { getPartialPrice, getTaxPrice, getTotalPrice } from '../services/priceService';
 
 function Confirmation() {
   const location = useLocation();
-  const { checkInDate, checkOutDate, numPeople, room, email, phone, contactId } = location.state;
+  const { checkInDate, checkOutDate, email, phone, contactId, room } = location.state;
 
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const { submitCompleteReservation } = useSubmitReservation(setFormStatus);
 
+  const [partialPrice, setPartialPrice] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [tax, setTax] = useState(0);
+
+  useEffect(() => {
+    async function fetchPrices() {
+      const reservationList = [{
+        reservationDate: checkInDate,
+        useDate: checkOutDate,
+        roomId: room.roomID,
+        contactId: contactId,
+      }];
+      
+      console.log("Datos de la reserva que se envían al servidor:", reservationList);
+
+      try {
+        const fetchedPartialPrice = await getPartialPrice({ reservations: reservationList });
+        const fetchedTotal = await getTotalPrice({ reservations: reservationList });
+        const fetchedTax = await getTaxPrice({ reservations: reservationList });
+        
+        setPartialPrice(fetchedPartialPrice);
+        setTotal(fetchedTotal);
+        setTax(fetchedTax);
+      } catch (error) {
+        console.error("Error al obtener los precios:", error);
+      }
+    }
+
+    fetchPrices();
+  }, [checkInDate, checkOutDate, room.roomID, contactId]);
+  
   return (
     <div className='flex flex-col w-screen items-center justify-center space-y-12'>
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 4 de 4</h1>
@@ -25,23 +56,17 @@ function Confirmation() {
         floor={room?.floorNumber || "Unknown Floor"}
         code={room?.code || "Unknown Code"}
         services={room?.services || []}
+        hasButton={false}
       />
         
       <Container>
-      <Formik
-          onSubmit={() => {
-            const reservationDetails = {
-              checkInDate,
-              checkOutDate,
-              roomId: room.id,
-              contactId,
-            };
-            submitCompleteReservation(reservationDetails);
-            console.log(reservationDetails);
-          }}
-        >
-          <FormFormik className="flex flex-col gap-4">
-            <div className="flex flex-row justify-between gap-4">
+            <div className="flex flex-col justify-between gap-4">
+              <p className="text-[20px] font-bold font-roboto">
+                Email: {email}
+              </p>
+              <p className="text-[20px] font-bold font-roboto">
+                Phone: {phone}
+              </p>
               <p className="text-[20px] font-bold font-roboto">
                 Entrada: {checkInDate}
               </p>
@@ -50,18 +75,15 @@ function Confirmation() {
               </p>
             </div>
 
-            <div className="flex flex-row justify-between gap-4">
+            <div className="flex flex-col justify-between gap-4">
               <p className="text-[20px] font-bold font-roboto">
-                Número de personas: {numPeople}
+                Subtotal: Bs {partialPrice}
               </p>
               <p className="text-[20px] font-bold font-roboto">
-                Precio total: {room.pricePerNight}Bs
+                Tax: + Bs {tax}
               </p>
               <p className="text-[20px] font-bold font-roboto">
-                Email: {email}
-              </p>
-              <p className="text-[20px] font-bold font-roboto">
-                Phone: {phone}
+                Total: Bs {total}
               </p>
               <p className="text-[20px] font-bold font-roboto">
                 ContactID: {contactId}
@@ -69,12 +91,20 @@ function Confirmation() {
             </div>
 
             <div className='mt-12 flex justify-center items-center'>
-              <Button type="common" isSubmit className="font-roboto text-white">
+              <Button type="common" className="font-roboto text-white"
+                onClick={() => {
+                  const reservationDetails = [{
+                    reservationDate: checkInDate,
+                    useDate: checkOutDate,
+                    roomId: room.roomID,
+                    contactId: contactId,
+                  }];
+                  submitCompleteReservation(reservationDetails);
+                  console.log("Back:" + reservationDetails);
+                }}>
                 Confirmar Reserva
               </Button>
             </div>
-          </FormFormik>
-        </Formik>
         {formStatus.message && (
           <p className={`mt-4 ${formStatus.success ? 'text-green-500' : 'text-red-500'}`}>
             {formStatus.message}

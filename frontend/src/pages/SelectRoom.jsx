@@ -13,6 +13,11 @@ export default function SelectRoom() {
 
   useEffect(() => {
     async function fetchRooms() {
+      if (!checkInDate || !checkOutDate || !numPeople) {
+        console.error("Faltan datos importantes: checkInDate, checkOutDate o numPeople");
+        setLoading(false);
+        return;
+      }
       try {
         const reservationDetails = {
           checkInDate,
@@ -28,7 +33,7 @@ export default function SelectRoom() {
       }
     }
     fetchRooms();
-  }, );
+  }, [checkInDate, checkOutDate, numPeople]);
 
   if (loading) {
     return <div className='flex justify-center items-center h-full'>
@@ -56,16 +61,25 @@ return(
             floor={item?.floorNumber || "Unknown Floor"}
             code={item?.code || "Unknown Code"}
             services={item?.services || []}
+            hasButton={true}
             onClick={() => {
+              console.log('Navegando con los siguientes datos:', {
+                checkInDate,
+                checkOutDate,
+                email,
+                phone,
+                contactId,
+                room: item,
+              });
+
               navigate('/confirmation', {
                 state: {
-                  checkInDate: checkInDate,
-                  checkOutDate: checkOutDate,
-                  numPeople: numPeople,
+                  checkInDate,
+                  checkOutDate,
+                  email,
+                  phone,
+                  contactId,
                   room: item,
-                  email: email,
-                  phone: phone,
-                  contactId: contactId
                 }
               });
             }}

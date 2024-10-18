@@ -7,7 +7,7 @@ import Button from '../components/Button';
 import FormContainer from '../components/Container';
 import InputField from '../components/InputField';
 import { postUser } from '../services/userService';
-import { postContact, findContactByPhoneAndEmail } from '../services/contactService';
+import { putContact } from '../services/contactService';
 
 const validatePhoneNumber = (phone) => {
   const phoneNumber = parsePhoneNumberFromString(phone);
@@ -22,48 +22,38 @@ function PersonalInfoForm() {
   const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('El nombre es obligatorio')
-      .min(2, 'El nombre debe tener al menos 2 caracteres'),
     ci: Yup.string()
       .required('El CI es obligatorio')
       .matches(/^\d+$/, 'El CI solo debe contener números')
       .min(6, 'El CI debe tener al menos 6 dígitos'),
-    email: Yup.string()
-      .email('Debe ser un email válido')
-      .required('El email es obligatorio'),
     phone: Yup.string()
       .required('El celular es obligatorio')
       .test('isValidPhone', 'Número de teléfono no válido', (value) => validatePhoneNumber(value)),
   });
 
+  const email= "john.doe@example.com";
+
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const contactResponse = await postContact({
+      const contactResponse = await putContact({
+        contactID: "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
         phoneNumber: values.phone,
-        email: values.email,
-        reservationList: []
+        email: "john.doe@example.com",
       });
       
       const userResponse = await postUser({
-        name: values.name,
+        name: "Mayerli",
         ciNumber: values.ci,
-        phoneNumber: values.phone,
-        email: values.email,
-        hotelList: []
+        contactId: "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
       });
-
-      const contactId = await findContactByPhoneAndEmail(values.phone, values.email);
-      console.log(contactId.id),
 
       setFormStatus({ success: true, message: 'Contacto y usuario enviados con éxito' });
       navigate('/date-form', {
         state: {
-          email: values.email,
+          email,
           phone: values.phone,
-          contactId: contactId,
+          contactId: contactResponse.contactID,
           userName: userResponse.name,
-          contact: contactResponse,
         },
       });
     } catch (error) {
@@ -85,28 +75,12 @@ function PersonalInfoForm() {
           {({ errors, touched, isSubmitting }) => (
             <FormFormik className="flex flex-col gap-4">
               <InputField
-                id="name"
-                name="name"
-                label="Nombre"
-                type="text"
-                placeholder="Ingrese su nombre"
-                isCorrect={!touched.name || !errors.name}
-              />
-              <InputField
                 id="ci"
                 name="ci"
                 label="CI"
                 type="text"
                 placeholder="Ingrese su CI"
                 isCorrect={!touched.ci || !errors.ci}
-              />
-              <InputField
-                id="email"
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="Ingrese su email"
-                isCorrect={!touched.email || !errors.email}
               />
               <InputField
                 id="phone"

@@ -4,12 +4,12 @@ export const contactAPI = axios.create({
   baseURL: 'http://localhost:5009/api/Contact',
 });
 
-export const postContact = async (contactData) => {
+export const putContact = async (contactData) => {
   try {
-    const response = await contactAPI.post('/', contactData);
+    const response = await contactAPI.put(`/${contactData.contactID}`, contactData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Error al crear contacto');
+    throw new Error(error.response?.data?.message || 'Error al actualizar contacto');
   }
 };
 
