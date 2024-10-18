@@ -41,4 +41,4 @@ public class ContactController : ControllerBase
         ContactDTO contact = await _contactService.UpdateElementById(contactId, contactDto);
         return Ok(contact);
     }
-}
+
