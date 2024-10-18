@@ -37,7 +37,7 @@ public class RoomTemplateDAO : IDAO<RoomTemplate>
         com.Connection = DbUtils.GetConnection();
         
         StringBuilder rt = new StringBuilder();
-        rt.Append("SELECT * FROM RoomTemplate WHERE Id = ''").Append(RoomTemplateID).AppendLine("';");
+        rt.Append("SELECT * FROM RoomTemplate WHERE Id = '").Append(RoomTemplateID).AppendLine("';");
         
         com.CommandText = rt.ToString();
         var reader = com.ExecuteReader();
