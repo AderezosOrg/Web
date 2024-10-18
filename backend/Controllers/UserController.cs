@@ -32,9 +32,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDTO>> CreateUser(UserPostDTO userDto)
     {
-        Console.WriteLine(userDto.Name);
-        Console.WriteLine(userDto.Email);
-        UserPostDTO userPostDto = await _userService.CreateSingleElement(userDto);
+        UserDTO userPostDto = await _userService.CreateSingleElement(userDto);
         return Ok(userPostDto);
     }
     

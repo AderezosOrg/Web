@@ -30,6 +30,7 @@ public class ContactController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ContactDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
     {
+        Console.WriteLine(contactDto.Email);
         ContactDTO contact = await _contactService.CreateSingleElement(contactDto);
         return Ok(contact);
     }

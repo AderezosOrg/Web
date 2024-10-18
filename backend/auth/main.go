@@ -22,7 +22,7 @@ import (
 
 const(
 	redirectionFrontEndUrl = "http://localhost:5173"
-	redirectionBackendUrl = "http://localhost:5009/api/User"
+	redirectionBackendUrl = "http://localhost:5009/api/Contact"
 	key = "randomString"
 	MaxAge = 86400 * 30
 	IsProd = false
@@ -92,7 +92,7 @@ func main() {
 }
 
 func SendRequest(userName string, userEmail string) {
-	var jsonStr = []byte("{\"name\" 		: \""+userName+"\",\"ciNumber\"	: \"\",\"phoneNumber\"	: \"\",\"email\"		: \""+userEmail+"\",\"hotelList\"	: []}")
+	var jsonStr = []byte("{\"phoneNumber\" : \"\",\"email\"	: \""+userEmail+"\"}")
 		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
 		jreq.Header.Set("Content-Type","application/json")
 
