@@ -17,7 +17,7 @@ public class ContactDAO : IDAO<Contact>
         com.Connection = DbUtils.GetConnection();
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("INSERT INTO Contact (Id, PhoneNumber, Email) VALUES ) ")
+        sb.Append("INSERT INTO Contact (Id, PhoneNumber, Email) VALUES ")
             .Append("VALUES ('").Append(IdC).Append("','")
                                 .Append(phoneNumber).Append("','")
                                 .Append(email).Append("');");
