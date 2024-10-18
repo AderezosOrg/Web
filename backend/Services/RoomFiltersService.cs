@@ -10,9 +10,9 @@ namespace backend.Services;
 
 public class RoomFiltersService: IRoomFiltersService
 {
-    private RoomDAO _roomDao;
+    private IDAO<Room> _roomDao;
     private RoomTemplateDAO _roomTemplateDao;
-    private HotelDAO _hotelDao;
+    private IDAO<Hotel> _hotelDao;
     private BedInformationDAO _bedInformationDAO;
     private RoomBathInformationDAO _RoomBathInformationDAO;
     private RoomServicesDAO _RoomServicesDAO; 
@@ -24,7 +24,9 @@ public class RoomFiltersService: IRoomFiltersService
     private BedService _bedService;
     private RoomService _roomService;
 
-    public RoomFiltersService(RoomDAO roomDao, RoomTemplateDAO roomTemplateDao, HotelDAO hotelDao, BedInformationDAO bedInformationDao, RoomBathInformationDAO roomBathInformation, RoomServicesDAO roomServicesDao ,ServiceService serviceService, ReservationService reservationService, BathRoomService bathRoomService, BedService bedService, RoomService roomService)
+    public RoomFiltersService(IDAO<Room> roomDao, RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
+        RoomBathInformationDAO roomBathInformation, RoomServicesDAO roomServicesDao ,ServiceService serviceService, ReservationService reservationService,
+        BathRoomService bathRoomService, BedService bedService, RoomService roomService)
     {
         _serviceService = serviceService;
         _reservationService = reservationService;

@@ -59,9 +59,10 @@ public class RoomDAO : IDAO<Room>
             RoomID = Guid.Parse(reader.GetString(0)),
             Code = reader.GetString(1),
             FloorNumber = reader.GetInt32(2),
-            HotelID = Guid.Parse(reader.GetString(3)),
-            PricePerNight = reader.GetDecimal(4),
-            RoomTemplateID = Guid.Parse(reader.GetString(5)),
+            PricePerNight = reader.GetDecimal(3),
+            RoomTemplateID = Guid.Parse(reader.GetString(4)),
+            HotelID = Guid.Parse(reader.GetString(5))
+            
         };
         reader.Close();
         return toReturn;

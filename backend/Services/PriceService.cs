@@ -2,15 +2,16 @@ using backend.MyHappyBD;
 using backend.Services.ServicesInterfaces;
 using Db;
 using DTOs.WithoutId;
+using Entities;
 
 namespace backend.Services;
 
 public class PriceService : IPriceService
 {
-    private readonly HotelDAO _hotelDao;
-    private readonly RoomDAO _roomDao;
+    private readonly IDAO<Hotel> _hotelDao;
+    private readonly IDAO<Room> _roomDao;
 
-    public PriceService(RoomDAO roomDao, HotelDAO hotelDao)
+    public PriceService(IDAO<Room> roomDao, IDAO<Hotel> hotelDao)
     {
         _roomDao = roomDao;
         _hotelDao = hotelDao;

@@ -15,13 +15,13 @@ public class ContactService :
     ICreateSingleElement<ContactPostDTO, ContactDTO>,
     IUpdateElementByID<ContactPostDTO, ContactDTO>
 {
-    private ContactDAO _contactDao;
+    private IDAO<Contact> _contactDao;
     private ReservationDAO _reservationDao;
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
 
-    public ContactService(ContactDAO contactDao, ReservationDAO reservationDao)
+    public ContactService(IDAO<Contact> contactDao, ReservationDAO reservationDao)
     {
         _reservationDao = reservationDao;
         _contactDao = contactDao;

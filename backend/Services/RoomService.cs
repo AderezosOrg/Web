@@ -16,15 +16,15 @@ public class RoomService :
 {
     
     
-    private RoomDAO _roomDao;
+    private IDAO<Room> _roomDao;
     private RoomTemplateDAO _roomTemplateDao;
-    private HotelDAO _hotelDao;
+    private IDAO<Hotel> _hotelDao;
     private BedInformationDAO _bedInformationDAO;
     private RoomBathInformationDAO _RoomBathInformationDAO;
     private RoomServicesDAO _RoomServicesDAO;
-    private BathroomDAO _BathroomDAO;
-    private BedDAO _bedDAO;
-    private ServiceDAO _serviceDAO;
+    private IDAO<Bathroom> _BathroomDAO;
+    private IDAO<Bed> _bedDAO;
+    private IDAO<Service> _serviceDAO;
     
     private RoomConverter _roomConverter = new RoomConverter();
     private RoomPostDTOConvert _roomPostDtoConvert = new RoomPostDTOConvert();
@@ -36,7 +36,9 @@ public class RoomService :
     private readonly ServiceService _serviceService;
     private readonly BathRoomService _bathRoomService;
     
-    public RoomService(ServiceService serviceService, BedService bedService, BathRoomService bathRoomService, RoomDAO roomDao, RoomTemplateDAO roomTemplateDao, HotelDAO hotelDao, BedInformationDAO bedInformationDao, RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, BathroomDAO bathroomDao, BedDAO bedDao, ServiceDAO serviceDao)
+    public RoomService(ServiceService serviceService, BedService bedService, BathRoomService bathRoomService, IDAO<Room> roomDao,
+        RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
+        RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
     {
         _serviceService = serviceService;
         _bedService = bedService;

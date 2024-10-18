@@ -19,12 +19,12 @@ public class BedService :
     ICreateSingleElement<BedPostDTO, BedPostDTO>,
     IUpdateElementByID<BedPostDTO, BedPostDTO>
 {
-    private BedDAO _bedDao;
+    private IDAO<Bed> _bedDao;
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
 
-    public BedService(BedDAO bedDao)
+    public BedService(IDAO<Bed> bedDao)
     {
         _bedDao = bedDao;
     }

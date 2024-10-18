@@ -15,12 +15,12 @@ public class ServiceService :
     ICreateSingleElement<ServicePostDTO, ServicePostDTO>,
     IUpdateElementByID<ServicePostDTO, ServicePostDTO>
 {
-    private ServiceDAO _serviceDao;
+    private IDAO<Service> _serviceDao;
     
     private ServicePostConverter _servicePostConverter = new ServicePostConverter();
     private ServiceConverter _serviceConverter = new ServiceConverter();
 
-    public ServiceService(ServiceDAO serviceDao)
+    public ServiceService(IDAO<Service> serviceDao)
     {
         _serviceDao = serviceDao;
     }

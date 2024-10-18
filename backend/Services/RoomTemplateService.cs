@@ -16,13 +16,14 @@ public class RoomTemplateService :
 {
     private RoomTemplateDAO _roomTemplateDao;
     private RoomBathInformationDAO _roomBathInformationDao;
-    private BathroomDAO _bathroomDao;
+    private IDAO<Bathroom> _bathroomDao;
     private BedInformationDAO _bedInformationDao;
-    private BedDAO _bedDAO;
+    private IDAO<Bed> _bedDAO;
     
     private RoomTemplateConverter _roomTemplateConverter;
 
-    public RoomTemplateService(RoomTemplateDAO roomTemplateDAO, RoomBathInformationDAO roomBathInformationDAO, BathroomDAO bathroomDAO, BedInformationDAO bedInformationDAO, BedDAO bedDAO)
+    public RoomTemplateService(RoomTemplateDAO roomTemplateDAO, RoomBathInformationDAO roomBathInformationDAO,
+        IDAO<Bathroom> bathroomDAO, BedInformationDAO bedInformationDAO, IDAO<Bed> bedDAO)
     {
         _roomTemplateDao = roomTemplateDAO;
         _roomBathInformationDao = roomBathInformationDAO;

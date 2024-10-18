@@ -16,17 +16,15 @@ public class UserService :
     ICreateSingleElement<UserPostDTO, UserDTO>,
     IUpdateElementByID<UpdateUserDTO, UserPostDTO>
 {
-    private UserDAO _userDAO;
-    private ContactDAO _contactDAO;
-    private HotelDAO _hotelDao;
+    private IDAO<User> _userDAO;
+    private IDAO<Contact> _contactDAO;
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
 
-    public UserService(UserDAO userDAO, ContactDAO contactDAO, HotelDAO hotelDAO)
+    public UserService(IDAO<User> userDAO, IDAO<Contact> contactDAO)
     {
         _userDAO = userDAO;
         _contactDAO = contactDAO;
-        _hotelDao = hotelDAO;
     }
     public async Task<UserPostDTO> GetElementById(Guid userId)
     {

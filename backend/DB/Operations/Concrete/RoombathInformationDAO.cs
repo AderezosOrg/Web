@@ -157,7 +157,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
             toAppend = new RoomBathInformation {
                 RoomTemplateID = Guid.Parse(reader.GetString(0)),
                 BathRoomID = bathrooomId,
-                Quantity = Convert.ToInt32(reader.GetInt16(1))
+                Quantity = reader.GetInt32(1)
             };
 
             toReturn.Add(toAppend);
@@ -191,7 +191,7 @@ public sealed class RoomBathInformationDAO : ITwoForeignDAO<RoomBathInformation>
             toAppend = new RoomBathInformation {
                 RoomTemplateID = roomTemplateId,
                 BathRoomID = Guid.Parse(reader.GetString(0)),
-                Quantity = Convert.ToInt32(reader.GetInt16(1))
+                Quantity = reader.GetInt32(1)
             };
 
             toReturn.Add(toAppend);

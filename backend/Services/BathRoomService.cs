@@ -16,13 +16,13 @@ public class BathRoomService :
     ICreateSingleElement<BathroomPostDTO, BathroomPostDTO>,
     IUpdateElementByID<BathroomPostDTO, BathroomPostDTO>
 {
-    private BathroomDAO _bathroomDao;
+    private IDAO<Bathroom> _bathroomDao;
 
     
     private BathroomPostConverter _bathroomPostConverter = new BathroomPostConverter();
     private BathroomConverter _bathroomConverter = new BathroomConverter();
     
-    public BathRoomService(BathroomDAO bathroomDao)
+    public BathRoomService(IDAO<Bathroom> bathroomDao)
     {
         _bathroomDao = bathroomDao;
     }
