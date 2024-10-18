@@ -66,14 +66,25 @@ func main() {
 			return
 		}
 
-		go SendRequest(user.Name, user.Email)
-		res.Header().Set("Location", redirectionFrontEndUrl)
-		res.WriteHeader(http.StatusTemporaryRedirect)
+		cookie := http.Cookie{
+			Name:     "exampleCookie",
+			Value:    "Hello world!",
+			Path:     "/",
+			MaxAge:   3600,
+			HttpOnly: false,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		}
 
+		http.SetCookie(res, &cookie)
+
+		go SendRequest(user.Name, user.Email)
+		http.Redirect(res, req, redirectionFrontEndUrl,http.StatusTemporaryRedirect)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		gothic.Logout(res, req)
+		
 		res.Header().Set("Location", "http://localhost:8000")
 		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
