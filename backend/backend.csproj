@@ -10,6 +10,7 @@
     <PackageReference Include="Scrutor" Version="5.0.1" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
   </ItemGroup>
 
 </Project>
