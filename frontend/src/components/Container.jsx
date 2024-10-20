@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
 
-function FormContainer({ children }) {
+function Container({ children }) {
   return (
     <div className="flex flex-col items-center justify-center bg-white w-full">
-      <div className="bg-white border-2 border-rose-950 p-10 rounded-[20px] shadow-lg w-full max-w-xl">
+      <div className="bg-white border-2 border-rose-950 p-8 rounded-[20px] shadow-lg shadow-black/20 w-full max-w-xl
+      ">
         {children}
       </div>
     </div>
   );
 }
 
-FormContainer.propTypes = {
+Container.propTypes = {
   children: PropTypes.node.isRequired,
 };
   
-export default FormContainer;
+export default Container;

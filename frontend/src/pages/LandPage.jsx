@@ -2,6 +2,11 @@ import Hotel from "../assets/Hotel.jpg"
 import HotelRoom from "../assets/HotelRoom.jpeg"
 import Google from "../assets/googleLogo.png"
 export default function LandPage() {
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8000/auth/google";
+  };
+
   return (
     <div className="font-roboto flex flex-row h-full">
       <div className="bg-[#D7D7D7] flex flex-col h-full w-1/2 items-center">
@@ -26,7 +31,8 @@ export default function LandPage() {
           />
           <p className="text-[20px] font-bold">¿Quieres hacer una reserva?</p>
           <button 
-            className="flex p-4 border border-rose-950 rounded-[20px] items-center justify-center space-x-2 bg-white hover:bg-[#D7D7D7] transition-transform duration-150 active:scale-95">
+            className="flex p-4 border border-rose-950 rounded-[20px] items-center justify-center space-x-2 bg-white hover:bg-[#D7D7D7] transition-transform duration-150 active:scale-95"
+            onClick={handleGoogleLogin}>
             <img src={Google} 
                  alt="Google logo" 
                  className="w-6 h-6" />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const reservationAPI = axios.create({
-  baseURL: 'http://localhost:5009/api/Reservation',
+  baseURL: 'http://localhost:5009/api',
 });
 
 export const createReservation = async (reservationData) => {

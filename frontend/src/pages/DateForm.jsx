@@ -1,18 +1,17 @@
-import { useLocation } from 'react-router-dom';
 import { Form as FormFormik, Formik } from 'formik';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import Button from '../components/Button';
+import FormContainer from '../components/Container';
 import InputField from '../components/InputField';
-import FormContainer from '../components/FormContainer';
 
 function DateForm() {
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const navigate = useNavigate();
 
   const location = useLocation();
-  const { name, email, phone } = location.state;
+  const { email, phone, contactId, userName } = location.state;
 
   const validationSchema = Yup.object().shape({
     checkInDate: Yup.date()
@@ -39,9 +38,10 @@ function DateForm() {
             navigate('/select-room', {
               state: {
                 ...values,
-                name,
                 email,
                 phone,
+                contactId,
+                userName,
               }
             });
           }}
