@@ -7,7 +7,6 @@ import (
 	"os"
 	"sort"
 	"bytes"
-	"fmt"
 
 	"github.com/subosito/gotenv"
 	"github.com/gorilla/sessions"
