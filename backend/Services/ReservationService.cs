@@ -9,8 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class ReservationService : IReservationService,
-    IGetAllElementsService<ReservationDTO>
+public class ReservationService : IReservationService
 {
     private ReservationDAO _reservationDao;
     private IDAO<Contact> _contactDao;

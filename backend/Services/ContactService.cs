@@ -9,11 +9,7 @@ using Entities;
 
 namespace backend.Services;
 
-public class ContactService :
-    IGetAllElementsService<ContactDTO>,
-    IGetElementById<ContactPostDTO>,
-    ICreateSingleElement<ContactPostDTO, ContactDTO>,
-    IUpdateElementByID<ContactPostDTO, ContactDTO>
+public class ContactService : IContactService
 {
     private IDAO<Contact> _contactDao;
     private ReservationDAO _reservationDao;

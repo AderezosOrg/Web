@@ -4,8 +4,10 @@ namespace backend.Services.ServicesInterfaces;
 
 public interface IRoomService
 {
-    public Task<List<BedDTO>> GetRoomBedsById(Guid roomId);
-    public Task<List<BathroomDTO>> GetRoomBathroomsById(Guid roomId);
-    public Task<List<ServiceDTO>> GetRoomServicesById(Guid roomId);
+    
+    public Task<RoomPostDTO> CreateSingleElement(RoomNewPostDTO newElement);
+    public Task<List<RoomFullInfoDTO>> GetAllElements();
+    public Task<RoomFullInfoDTO> GetElementById(Guid elementId);
+    
     
 }

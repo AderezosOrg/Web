@@ -17,16 +17,16 @@ public class RoomFiltersService: IRoomFiltersService
     private RoomBathInformationDAO _RoomBathInformationDAO;
     private RoomServicesDAO _RoomServicesDAO; 
     
-    private ReservationService _reservationService;
+    private IReservationService _reservationService;
     private RoomConverter _roomConverter = new RoomConverter();
-    private BathRoomService _bathRoomService;
-    private ServiceService _serviceService;
-    private BedService _bedService;
-    private RoomService _roomService;
+    private IBathRoomService _bathRoomService;
+    private IServiceService _serviceService;
+    private IBedService _bedService;
+    private IRoomService _roomService;
 
     public RoomFiltersService(IDAO<Room> roomDao, RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
-        RoomBathInformationDAO roomBathInformation, RoomServicesDAO roomServicesDao ,ServiceService serviceService, ReservationService reservationService,
-        BathRoomService bathRoomService, BedService bedService, RoomService roomService)
+        RoomBathInformationDAO roomBathInformation, RoomServicesDAO roomServicesDao ,IServiceService serviceService, IReservationService reservationService,
+        IBathRoomService bathRoomService, IBedService bedService, IRoomService roomService)
     {
         _serviceService = serviceService;
         _reservationService = reservationService;

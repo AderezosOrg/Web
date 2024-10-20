@@ -1,4 +1,4 @@
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +9,9 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class RoomFiltersController : ControllerBase
 {
-    private RoomFiltersService _roomFiltersService;
+    private IRoomFiltersService _roomFiltersService;
 
-    public RoomFiltersController(RoomFiltersService roomFiltersService)
+    public RoomFiltersController(IRoomFiltersService roomFiltersService)
     {
         _roomFiltersService = roomFiltersService;
     }

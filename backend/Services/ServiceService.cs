@@ -9,11 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class ServiceService : 
-    IGetAllElementsService<ServiceDTO>,
-    IGetElementById<ServicePostDTO>,
-    ICreateSingleElement<ServicePostDTO, ServicePostDTO>,
-    IUpdateElementByID<ServicePostDTO, ServicePostDTO>
+public class ServiceService : IServiceService
 {
     private IDAO<Service> _serviceDao;
     

@@ -9,12 +9,7 @@ using Db;
 
 namespace backend.Services;
 
-public class UserService : 
-    IDeleteService,
-    IGetAllElementsService<UserDTO>,
-    IGetElementById<UserPostDTO>,
-    ICreateSingleElement<UserPostDTO, UserDTO>,
-    IUpdateElementByID<UpdateUserDTO, UserPostDTO>
+public class UserService : IUserService
 {
     private IDAO<User> _userDAO;
     private IDAO<Contact> _contactDAO;

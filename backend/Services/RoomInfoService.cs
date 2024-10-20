@@ -7,7 +7,7 @@ using Entities;
 
 namespace backend.Services;
 
-public class RoomInfoService : IRoomService
+public class RoomInfoService : IRoomInfoService
 {
     private IDAO<Room> _roomDao;
     private BedInformationDAO _bedInformationDAO;
@@ -16,13 +16,13 @@ public class RoomInfoService : IRoomService
     private IDAO<Bathroom> _BathroomDAO;
     private IDAO<Bed> _bedDAO;
     private IDAO<Service> _serviceDAO;
-    private BedService _bedService;
-    private ServiceService _serviceService;
+    private IBedService _bedService;
+    private IServiceService _serviceService;
     private BedConverter _bedConverter;
     private BathroomConverter _bathroomConverter;
     private ServiceConverter _serviceConverter;
 
-    public RoomInfoService(BedService bedService, ServiceService serviceService, IDAO<Room> roomDao,
+    public RoomInfoService(IBedService bedService, IServiceService serviceService, IDAO<Room> roomDao,
         BedInformationDAO bedInformationDao, RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, 
         IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
     {
