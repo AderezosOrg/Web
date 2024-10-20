@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"sort"
 	"bytes"
+	"fmt"
 
 	"github.com/subosito/gotenv"
 	"github.com/gorilla/sessions"
@@ -21,10 +21,11 @@ import (
 )
 
 const(
+	redirectionFrontEndRootUrl = "http://localhost:5173/"
 	redirectionFrontEndUrl = "http://localhost:5173/personal-info"
-	redirectionBackendUrl = "http://localhost:5009/api/Contact"
+	redirectionBackendUrl = "http://localhost:5009/api/Login"
 	key = "randomString"
-	MaxAge = 86400 * 30
+	MaxAge = 1800 * 30
 	IsProd = false
 )
 
@@ -62,14 +63,12 @@ func main() {
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
-			fmt.Println(res, err)
+			res.Header().Set("Location", redirectionFrontEndRootUrl)
+			res.WriteHeader(http.StatusTemporaryRedirect)
 			return
 		}
 
-		go SendRequest(user.Name, user.Email)
-		res.Header().Set("Location", redirectionFrontEndUrl)
-		res.WriteHeader(http.StatusTemporaryRedirect)
-
+		go SendRequest(user.Email,user.AccessToken, res)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
@@ -91,8 +90,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8000", p))
 }
 
-func SendRequest(userName string, userEmail string) {
-	var jsonStr = []byte("{\"phoneNumber\" : \"\",\"email\"	: \""+userEmail+"\"}")
+func SendRequest(userEmail string, userToken string, res http.ResponseWriter) {
+	var jsonStr = []byte("{\"Email\":"+userEmail+",\"Token\":\""+userToken+"\"}")
 		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
 		jreq.Header.Set("Content-Type","application/json")
 
@@ -102,6 +101,12 @@ func SendRequest(userName string, userEmail string) {
 			return
 		}
 		defer hresp.Body.Close()
+	RedirectToBackend(res)
+}
+
+func RedirectToBackend(res http.ResponseWriter){
+	res.Header().Set("Location", redirectionBackendUrl)
+	res.WriteHeader(http.StatusTemporaryRedirect)
 }
 
 type ProviderIndex struct {
