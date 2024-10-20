@@ -21,8 +21,9 @@ public class LoginController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<bool>> GetCookie()
+    public async Task<IActionResult> GetCookie()
     {
-        return Ok(_loginService.GetCookie());
+        await _loginService.GetCookie();
+        return  Redirect("http://localhost:5173/personal-info");
     }
 }
