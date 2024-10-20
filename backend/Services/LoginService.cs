@@ -31,7 +31,7 @@ public class LoginService : ILoginService
     public async Task<bool> PostToken(LoginDTO loginDto)
     {
         _logins.Add(loginDto);
-        Console.WriteLine(_logins[0].Token + _logins[0].Email);
+        Console.WriteLine(loginDto.Email + " - " + loginDto.Token);
         return true;
         
     }
