@@ -12,5 +12,6 @@ public interface ISessionService
     public Task<SessionFullInfoDTO> RefreshToken(SessionDTO sessionDto);
     public Task<SessionFullInfoDTO> GetSession(Guid sessionId);
     public Task<List<SessionDTO>> GetSessions();
-    
+    public Task<bool> IsTokenValid(Guid sessionId);
+
 }

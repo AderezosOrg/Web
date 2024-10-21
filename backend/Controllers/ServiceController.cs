@@ -10,10 +10,12 @@ namespace backend.Controllers;
 public class ServiceController : ControllerBase
 {
     private readonly IServiceService _serviceService;
+    private readonly ISessionService _sessionService;
 
-    public ServiceController(IServiceService serviceService)
+    public ServiceController(IServiceService serviceService, ISessionService sessionService)
     {
         _serviceService = serviceService;
+        _sessionService = sessionService;
     }
 
     [HttpGet("{serviceId}")]
@@ -33,6 +35,10 @@ public class ServiceController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ServicePostDTO>> CreateService([FromBody] ServicePostDTO serviceDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         ServicePostDTO service = await _serviceService.CreateSingleElement(serviceDto);
         return Ok(service);
     }
@@ -40,6 +46,10 @@ public class ServiceController : ControllerBase
     [HttpPatch("{serviceId}")]
     public async Task<ActionResult<ServicePostDTO>> ChangeServiceType(Guid serviceId, ServicePostDTO type)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         ServicePostDTO service = await _serviceService.UpdateElementById(serviceId, type);
         return Ok(service);
     }

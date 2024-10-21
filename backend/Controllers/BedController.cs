@@ -9,10 +9,12 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class BedController : ControllerBase
 {
-    private IBedService _bedService;
-    public BedController(IBedService bedService)
+    private readonly IBedService _bedService;
+    private readonly ISessionService _sessionService;
+    public BedController(IBedService bedService, ISessionService sessionService)
     {
         _bedService = bedService;
+        _sessionService = sessionService;
     }
 
     [HttpGet]
@@ -34,6 +36,10 @@ public class BedController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BedPostDTO>> CreateBed(BedPostDTO bedDTO)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         var bed = await _bedService.CreateSingleElement(bedDTO);
         return Ok(bed);
     }
@@ -41,6 +47,10 @@ public class BedController : ControllerBase
     [HttpPut("{BedID}")]
     public async Task<ActionResult<BedPostDTO>> EditBed(Guid BedID, BedPostDTO bedDTO)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         var bed = await _bedService.UpdateElementById(BedID, bedDTO);
         return Ok(bed);
     }

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
 using System.Text;
 using backend.Services.ServicesInterfaces;
@@ -16,6 +17,7 @@ public class SessionService : ISessionService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private IDAO<Session> _sessionDAO;
     private IDAO<Contact> _contactDAO;
+    private static readonly TimeSpan _expirationTime = new TimeSpan(0, 30, 1);
 
 
     public SessionService(IHttpContextAccessor httpContextAccessor, IDAO<Session> sessionDao, IDAO<Contact> contactDao)
@@ -35,10 +37,12 @@ public class SessionService : ISessionService
             PhoneNumber = ""
         });
         Guid sessionID = Guid.NewGuid();
+        DateTime createdAt = DateTime.Now;
         _sessionDAO.Create(new Session()
         {
             SessionID = sessionID,
             Token = sessionPostDto.Token,
+            CreationDate = createdAt,
             ContactID = contactID
         });
         return new SessionFullInfoDTO()
@@ -47,7 +51,8 @@ public class SessionService : ISessionService
             Email = sessionPostDto.Email,
             PhoneNumber = "",
             SessionID = sessionID,
-            Token = sessionPostDto.Token
+            Token = sessionPostDto.Token,
+            CreationDate = createdAt
         };
         
     }
@@ -91,11 +96,14 @@ public class SessionService : ISessionService
 
     public async Task<SessionFullInfoDTO> UpdateSession(SessionFullInfoDTO sessionFullInfoDto)
     {
+        Session oldSession = _sessionDAO.Read(sessionFullInfoDto.SessionID);
         _sessionDAO.Update(new Session()
         {
             SessionID = sessionFullInfoDto.SessionID,
             ContactID = sessionFullInfoDto.ContactID,
             Token = sessionFullInfoDto.Token,
+            CreationDate = oldSession.CreationDate
+            
         });
         _contactDAO.Update(new Contact()
         {
@@ -109,11 +117,14 @@ public class SessionService : ISessionService
     public async Task<SessionFullInfoDTO> RefreshToken(SessionDTO sessionDto)
     {
         var oldSession = _sessionDAO.Read(sessionDto.SessionId);
+        DateTime createdAt = DateTime.Now;
         _sessionDAO.Update(new Session()
         {
             SessionID = oldSession.SessionID,
             ContactID = oldSession.ContactID,
-            Token = sessionDto.Token
+            Token = sessionDto.Token,
+            CreationDate = createdAt,
+            
         });
         var contact = _contactDAO.Read(oldSession.ContactID);
         return new SessionFullInfoDTO()
@@ -122,7 +133,8 @@ public class SessionService : ISessionService
             Email = contact.Email,
             PhoneNumber = contact.PhoneNumber,
             SessionID = oldSession.SessionID,
-            Token = oldSession.Token
+            Token = oldSession.Token,
+            CreationDate = createdAt
         };
 
     }
@@ -137,7 +149,8 @@ public class SessionService : ISessionService
             ContactID = contact.ContactID,
             Token = session.Token,
             Email = contact.Email,
-            PhoneNumber = contact.PhoneNumber
+            PhoneNumber = contact.PhoneNumber,
+            CreationDate = session.CreationDate
         };
     }
 
@@ -146,8 +159,16 @@ public class SessionService : ISessionService
         var sessions = _sessionDAO.ReadAll().Select(s => new SessionDTO()
         {
             SessionId = s.SessionID,
-            Token = s.Token
+            Token = s.Token,
+            CreationDate = s.CreationDate
         }).ToList();
         return sessions;
+    }
+
+    public async Task<bool> IsTokenValid(Guid sessionId)
+    {
+        Session session = _sessionDAO.Read(sessionId);
+        return (DateTime.Now - session.CreationDate)  < _expirationTime;
+        
     }
 }

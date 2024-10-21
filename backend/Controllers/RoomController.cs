@@ -10,10 +10,12 @@ namespace backend.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly IRoomService _roomService;
+    private readonly ISessionService _sessionService;
 
-    public RoomController(IRoomService roomService)
+    public RoomController(IRoomService roomService, ISessionService sessionService)
     {
         _roomService = roomService;
+        _sessionService = sessionService;
     }
 
     [HttpGet("{roomId}")]
@@ -33,6 +35,10 @@ public class RoomController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomNewPostDTO roomDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         RoomPostDTO room = await _roomService.CreateSingleElement(roomDto);
         return Ok(room);
     }
