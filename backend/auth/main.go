@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
+	"io/ioutil"
 	"os"
 	"sort"
 	"bytes"
@@ -21,8 +23,9 @@ import (
 )
 
 const(
-	redirectionFrontEndUrl = "http://localhost:5173/personal-info"
-	redirectionBackendUrl = "http://localhost:5009/api/Contact"
+	redirectionFrontEndRootUrl = "http://localhost:5173/"
+	redirectionBackendPostSessionUrl = "http://localhost:5009/api/Session/"
+	redirectionBackendGetCookieUrl = "http://localhost:5009/api/Session/cookie/"
 	key = "randomString"
 	MaxAge = 86400 * 30
 	IsProd = false
@@ -62,14 +65,37 @@ func main() {
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
-			fmt.Println(res, err)
+			res.Header().Set("Location", redirectionFrontEndRootUrl)
+			res.WriteHeader(http.StatusTemporaryRedirect)
+		}
+
+		userEmail := user.Email
+		userToken := user.AccessToken
+	
+		var jsonStr = []byte("{\"email\" : \""+userEmail+"\",\"token\"	: \""+userToken+"\"}")
+		jreq, jerr := http.NewRequest("POST",redirectionBackendPostSessionUrl, bytes.NewBuffer(jsonStr))
+		jreq.Header.Set("Content-Type","application/json")
+
+		client := &http.Client{}
+		hresp, jerr := client.Do(jreq)
+		if jerr != nil {
 			return
 		}
 
-		go SendRequest(user.Name, user.Email)
-		res.Header().Set("Location", redirectionFrontEndUrl)
-		res.WriteHeader(http.StatusTemporaryRedirect)
+		defer hresp.Body.Close()
 
+		var r PostCookieRequest
+
+		requestBody, err := ioutil.ReadAll(hresp.Body)
+
+		err = json.Unmarshal(requestBody, &r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		
+		res.Header().Set("Location", redirectionBackendGetCookieUrl+r.SessionID)
+		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
@@ -91,17 +117,12 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8000", p))
 }
 
-func SendRequest(userName string, userEmail string) {
-	var jsonStr = []byte("{\"phoneNumber\" : \"\",\"email\"	: \""+userEmail+"\"}")
-		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
-		jreq.Header.Set("Content-Type","application/json")
-
-		client := &http.Client{}
-		hresp, jerr := client.Do(jreq)
-		if jerr != nil {
-			return
-		}
-		defer hresp.Body.Close()
+type PostCookieRequest struct {
+	SessionID   string `json:"sessionID"`
+	Token       string `json:"token"`
+	ContactID   string `json:"contactID"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 type ProviderIndex struct {

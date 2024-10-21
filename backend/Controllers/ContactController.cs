@@ -9,9 +9,11 @@ namespace backend.Controllers;
 public class ContactController : ControllerBase
 {
     private readonly IContactService _contactService;
-    public ContactController(IContactService contactService)
+    private readonly ISessionService _sessionService;
+    public ContactController(IContactService contactService, ISessionService sessionService)
     {
         _contactService = contactService;
+        _sessionService = sessionService;
     }
     [HttpGet("{contactId}")]
     public async Task<ActionResult<ContactPostDTO>> GetContactById(Guid contactId)
@@ -30,7 +32,10 @@ public class ContactController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ContactDTO>> CreateContact([FromBody] ContactPostDTO contactDto)
     {
-        Console.WriteLine(contactDto.Email);
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         ContactDTO contact = await _contactService.CreateSingleElement(contactDto);
         return Ok(contact);
     }
@@ -38,6 +43,10 @@ public class ContactController : ControllerBase
     [HttpPut("{contactId}")]
     public async Task<ActionResult<ContactDTO>> ChangeContact(Guid contactId, ContactPostDTO contactDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         ContactDTO contact = await _contactService.UpdateElementById(contactId, contactDto);
         return Ok(contact);
     }

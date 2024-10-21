@@ -1,5 +1,4 @@
 using backend.Services;
-using backend.Services.ServicesInterfaces;
 using Db;
 
 DbUtils.OpenConnection();
@@ -12,6 +11,7 @@ DbUtils.InjectData();
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 builder.Services.Scan(scan => scan
     .FromAssemblyOf<RoomService>()
     .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")  && type.Namespace == "backend.Services"))
@@ -33,7 +33,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost",
         builder => builder.WithOrigins("http://localhost:5173", "http://localhost:5174")
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+        );
+    
 });
 
 var app = builder.Build();

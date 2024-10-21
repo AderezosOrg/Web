@@ -9,11 +9,13 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class RoomTemplateController : ControllerBase
 {
-    private IRoomTemplateService _roomTemplateService;
+    private readonly IRoomTemplateService _roomTemplateService;
+    private readonly ISessionService _sessionService;
 
-    public RoomTemplateController(IRoomTemplateService roomTemplateService)
+    public RoomTemplateController(IRoomTemplateService roomTemplateService, ISessionService sessionService)
     {
         _roomTemplateService = roomTemplateService;
+        _sessionService = sessionService;
     }
 
     [HttpGet]
@@ -33,6 +35,10 @@ public class RoomTemplateController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<RoomTemplateDTO>>> PostRoomTemplate([FromBody] RoomTemplatePostDTO roomTemplatePostDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         var roomTemplate = await _roomTemplateService.CreateSingleElement(roomTemplatePostDto);
         return Ok(roomTemplate);
     }
@@ -40,6 +46,10 @@ public class RoomTemplateController : ControllerBase
     [HttpPut("{roomTemplateid}")]
     public async Task<ActionResult<List<RoomTemplateDTO>>> EditRoomTemplate(Guid roomTemplateId, [FromBody] RoomTemplatePostDTO roomTemplatePostDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         var roomTemplate = await _roomTemplateService.UpdateElementById(roomTemplateId, roomTemplatePostDto);
         return Ok(roomTemplate);
     }

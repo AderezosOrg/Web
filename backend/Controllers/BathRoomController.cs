@@ -10,9 +10,11 @@ namespace backend.Controllers;
 public class BathRoomController : ControllerBase
 {
     private readonly IBathRoomService _bathRoomService;
-    public BathRoomController(IBathRoomService bathRoomService)
+    private readonly ISessionService _sessionService;
+    public BathRoomController(IBathRoomService bathRoomService, ISessionService sessionService)
     {
         _bathRoomService = bathRoomService;
+        _sessionService = sessionService;
     }
     [HttpGet]
     public async Task<ActionResult<List<BathroomInfoDTO>>> GetBathRooms()
@@ -31,6 +33,10 @@ public class BathRoomController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BathroomPostDTO>> CreateBathRoom(BathroomPostDTO bathroomDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         BathroomPostDTO newBathRoom = await _bathRoomService.CreateSingleElement(bathroomDto);
         return Ok(newBathRoom);
     }
@@ -38,6 +44,10 @@ public class BathRoomController : ControllerBase
     [HttpPut("{bathroomId}")]
     public async Task<ActionResult<BathroomPostDTO>> EditBathRoom(Guid bathroomId, BathroomPostDTO bathroomDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         BathroomPostDTO editBathRoom = await _bathRoomService.UpdateElementById(bathroomId, bathroomDto);
         return Ok(editBathRoom);
     }

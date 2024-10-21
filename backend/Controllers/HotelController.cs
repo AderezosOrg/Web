@@ -10,10 +10,12 @@ namespace backend.Controllers;
 public class HotelController : ControllerBase
 {
     private readonly IHotelService _hotelService;
+    private readonly ISessionService _sessionService;
 
-    public HotelController(IHotelService hotelService)
+    public HotelController(IHotelService hotelService, ISessionService sessionService)
     {
         _hotelService = hotelService;
+        _sessionService = sessionService;
     }
 
     [HttpGet("{hotelId}")]
@@ -33,13 +35,21 @@ public class HotelController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<HotelPostDTO>> CreateHotel([FromBody] HotelPostDTO hotelDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         HotelPostDTO hotel = await _hotelService.CreateSingleElement(hotelDto);
-        return Ok(true);
+        return Ok(hotel);
     }
     
     [HttpPut("{hotelId}")]
     public async Task<ActionResult<HotelPostDTO>> UpdateHotel(Guid hotelId, HotelPostDTO hotelDto)
     {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
         HotelPostDTO result = await _hotelService.UpdateElementById(hotelId, hotelDto);
         return Ok(result);
     }
