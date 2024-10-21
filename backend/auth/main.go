@@ -1,10 +1,12 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
+	"io/ioutil"
 	"os"
 	"sort"
 	"bytes"
@@ -22,7 +24,8 @@ import (
 
 const(
 	redirectionFrontEndRootUrl = "http://localhost:5173/"
-	redirectionBackendUrl = "http://localhost:5009/api/Login"
+	redirectionBackendPostSessionUrl = "http://localhost:5009/api/Session/"
+	redirectionBackendGetCookieUrl = "http://localhost:5009/api/Session/cookie/"
 	key = "randomString"
 	MaxAge = 86400 * 30
 	IsProd = false
@@ -70,7 +73,7 @@ func main() {
 		userToken := user.AccessToken
 	
 		var jsonStr = []byte("{\"email\" : \""+userEmail+"\",\"token\"	: \""+userToken+"\"}")
-		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
+		jreq, jerr := http.NewRequest("POST",redirectionBackendPostSessionUrl, bytes.NewBuffer(jsonStr))
 		jreq.Header.Set("Content-Type","application/json")
 
 		client := &http.Client{}
@@ -78,9 +81,20 @@ func main() {
 		if jerr != nil {
 			return
 		}
+
 		defer hresp.Body.Close()
 
-		res.Header().Set("Location", redirectionBackendUrl)
+		var r PostCookieRequest
+
+		requestBody, err := ioutil.ReadAll(hresp.Body)
+
+		err = json.Unmarshal(requestBody, &r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		
+		res.Header().Set("Location", redirectionBackendGetCookieUrl+r.SessionID)
 		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
 
@@ -101,6 +115,14 @@ func main() {
 
 	log.Println("listening on localhost:8000")
 	log.Fatal(http.ListenAndServe(":8000", p))
+}
+
+type PostCookieRequest struct {
+	SessionID   string `json:"sessionID"`
+	Token       string `json:"token"`
+	ContactID   string `json:"contactID"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 type ProviderIndex struct {
