@@ -19,7 +19,7 @@ public class SessionDAO : IDAO<Session>
     public Session? Read(Guid id)
     {
         var sessions = ReadAll(); 
-        return sessions.FirstOrDefault(s => s.SessionId == id);
+        return sessions.FirstOrDefault(s => s.SessionID == id);
     }
 
     public List<Session> ReadAll()
@@ -30,8 +30,8 @@ public class SessionDAO : IDAO<Session>
     public int Update(Session element)
     {
         var sessions = ReadAll(); 
-        var index = sessions.FindIndex(s => s.SessionId == element.SessionId); // Busca la sesión a actualizar
-
+        var index = sessions.FindIndex(s => s.SessionID == element.SessionID);
+        
         if (index == -1)
         {
             return 0; 
@@ -45,7 +45,7 @@ public class SessionDAO : IDAO<Session>
     public bool Delete(Guid id)
     {
         var sessions = ReadAll(); 
-        var sessionToRemove = sessions.FirstOrDefault(s => s.SessionId == id); 
+        var sessionToRemove = sessions.FirstOrDefault(s => s.SessionID == id); 
 
         if (sessionToRemove == null)
         {
