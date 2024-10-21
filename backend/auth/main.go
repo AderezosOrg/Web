@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -21,8 +21,8 @@ import (
 )
 
 const(
-	redirectionFrontEndUrl = "http://localhost:5173/personal-info"
-	redirectionBackendUrl = "http://localhost:5009/api/Contact"
+	redirectionFrontEndRootUrl = "http://localhost:5173/"
+	redirectionBackendUrl = "http://localhost:5009/api/Login"
 	key = "randomString"
 	MaxAge = 86400 * 30
 	IsProd = false
@@ -62,14 +62,26 @@ func main() {
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
-			fmt.Println(res, err)
-			return
+			res.Header().Set("Location", redirectionFrontEndRootUrl)
+			res.WriteHeader(http.StatusTemporaryRedirect)
 		}
 
-		go SendRequest(user.Name, user.Email)
-		res.Header().Set("Location", redirectionFrontEndUrl)
-		res.WriteHeader(http.StatusTemporaryRedirect)
+		userEmail := user.Email
+		userToken := user.AccessToken
+	
+		var jsonStr = []byte("{\"email\" : \""+userEmail+"\",\"token\"	: \""+userToken+"\"}")
+		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
+		jreq.Header.Set("Content-Type","application/json")
 
+		client := &http.Client{}
+		hresp, jerr := client.Do(jreq)
+		if jerr != nil {
+			return
+		}
+		defer hresp.Body.Close()
+
+		res.Header().Set("Location", redirectionBackendUrl)
+		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
@@ -89,19 +101,6 @@ func main() {
 
 	log.Println("listening on localhost:8000")
 	log.Fatal(http.ListenAndServe(":8000", p))
-}
-
-func SendRequest(userName string, userEmail string) {
-	var jsonStr = []byte("{\"phoneNumber\" : \"\",\"email\"	: \""+userEmail+"\"}")
-		jreq, jerr := http.NewRequest("POST",redirectionBackendUrl, bytes.NewBuffer(jsonStr))
-		jreq.Header.Set("Content-Type","application/json")
-
-		client := &http.Client{}
-		hresp, jerr := client.Do(jreq)
-		if jerr != nil {
-			return
-		}
-		defer hresp.Body.Close()
 }
 
 type ProviderIndex struct {
