@@ -1,7 +1,7 @@
 namespace DTOs.WithoutId;
 
-public class LoginDTO
+public class SessionDTO
 {
-    public string Email { get; set; }
+    public Guid SessionId { get; set; }
     public string Token { get; set; }
 }
