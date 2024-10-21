@@ -1,4 +1,3 @@
-using backend.MyHappyBD;
 using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
@@ -149,5 +148,46 @@ public class RoomFiltersService: IRoomFiltersService
         return true;
     }
 
+    public async Task<RoomFullInfoDTO> GetRandomAvailableRoom(AvailabilityRequestDTO availabilityRequest)
+    {
+        List<RoomDTO> rooms = new List<RoomDTO>();
+        foreach (Room room in _roomDao.ReadAll())
+        {
+            if ( await IsAvailable(room, availabilityRequest))
+            {
+                var roomTemplate = _roomTemplateDao.Read(room.RoomTemplateID);
+                var hotel = _hotelDao.Read(room.HotelID);
+                var bedInformation = _bedInformationDAO.GetBedInformationByRoomTemplateId(room.RoomTemplateID);
+                var bathInformation = _RoomBathInformationDAO.GetRoombathInformationsByRoomTemplateId(room.RoomTemplateID);
+                var serviceInformation = _RoomServicesDAO.GetRoomServicesByRoomId(room.RoomID);
+                rooms.Add(_roomConverter.Convert(room, roomTemplate, hotel, bedInformation, bathInformation, serviceInformation));
+            }
+        }
+        List<RoomFullInfoDTO> fullInfoRooms = new List<RoomFullInfoDTO>();
+        List<BathroomPostDTO> bathrooms = new List<BathroomPostDTO>();
+        List<BedPostDTO> beds = new List<BedPostDTO>();
+        List<ServicePostDTO> services = new List<ServicePostDTO>();
 
+        foreach (var room in rooms)
+        {
+            foreach (var bathroomId in room.Bathrooms)
+            {
+                bathrooms.Add( await _bathRoomService.GetElementById(bathroomId));
+            }
+            foreach (var bedId in room.Beds)
+            {
+                beds.Add( await _bedService.GetElementById(bedId));
+            }
+            foreach (var serviceId in room.Services)
+            {
+                services.Add( await  _serviceService.GetElementById(serviceId));
+            }
+            fullInfoRooms.Add(_roomConverter.Convert(room, bathrooms, beds, services));
+            beds.Clear();
+            bathrooms.Clear();
+            services.Clear();
+        }
+        
+        return fullInfoRooms[new Random().Next(0, fullInfoRooms.Count)];
+    }
 }
