@@ -11,7 +11,7 @@ function DateForm() {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const { email, phone, contactId, userName } = location.state;
+  const { email, phone, contactId, sessionId } = location.state;
 
   const validationSchema = Yup.object().shape({
     checkInDate: Yup.date()
@@ -41,7 +41,7 @@ function DateForm() {
                 email,
                 phone,
                 contactId,
-                userName,
+                sessionId,
               }
             });
           }}

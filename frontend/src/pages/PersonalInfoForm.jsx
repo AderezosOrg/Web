@@ -24,7 +24,8 @@ function PersonalInfoForm() {
     ci: '',
     email: '',
     phone: '',
-    jti: '',
+    contactId: '',
+    sessionId: '',
   });
 
   useEffect(() => {
@@ -35,7 +36,8 @@ function PersonalInfoForm() {
         ci: '',
         email: decodedToken.email || '',
         phone: decodedToken.phone_number || '',
-        jti: decodedToken.jti || '',
+        contactId: decodedToken.ContactId || '',
+        sessionId: decodedToken.SessionId || ''        
       });
     }
   }, []);
@@ -53,10 +55,10 @@ function PersonalInfoForm() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const contactResponse = await putContact({
-        contactID: "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
+        contactID: values.contactId,
         phoneNumber: values.phone,
         email: values.email,
-      });
+      }, values.sessionId);
 
       setFormStatus({ success: true, message: 'Contacto y usuario enviados con éxito' });
       navigate('/date-form', {
@@ -64,6 +66,7 @@ function PersonalInfoForm() {
           email: values.email,
           phone: values.phone,
           contactId: contactResponse.contactID,
+          sessionId: values.sessionId
         },
       });
     } catch (error) {
