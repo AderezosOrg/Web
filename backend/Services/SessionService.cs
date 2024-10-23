@@ -61,7 +61,7 @@ public class SessionService : ISessionService
     {
         Session session = _sessionDAO.Read(sessionId);
         Contact contact = _contactDAO.Read(session.ContactID);
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(session.Token));
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(session.Token + "XD"));
         var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
