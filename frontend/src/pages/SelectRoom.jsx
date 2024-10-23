@@ -62,16 +62,6 @@ return(
             services={item?.services || []}
             hasButton={true}
             onClick={() => {
-              console.log('Navegando con los siguientes datos:', {
-                checkInDate,
-                checkOutDate,
-                email,
-                phone,
-                contactId,
-                sessionId,
-                room: item,
-              });
-
               navigate('/confirmation', {
                 state: {
                   checkInDate,

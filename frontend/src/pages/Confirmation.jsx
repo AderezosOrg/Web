@@ -28,8 +28,6 @@ function Confirmation() {
         sessionId: sessionId,
       }];
       
-      console.log("Datos de la reserva que se envían al servidor:", reservationList);
-
       try {
         const fetchedPartialPrice = await getPartialPrice({ reservations: reservationList }, sessionId);
         const fetchedTotal = await getTotalPrice({ reservations: reservationList }, sessionId);
