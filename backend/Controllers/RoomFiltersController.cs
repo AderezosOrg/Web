@@ -46,5 +46,14 @@ public class RoomFiltersController : ControllerBase
         List<RoomDTO> rooms = await _roomFiltersService.GetRoomsByPriceRange(priceRangeRequestDto);
         return Ok(rooms);
     }
-
+    [HttpPost("randomAvailable")]
+    public async Task<ActionResult<RoomFullInfoDTO>> GetRandomAvailableRoom(AvailabilityRequestDTO availabilityRequestDto)
+    {
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        RoomFullInfoDTO room = await _roomFiltersService.GetRandomAvailableRoom(availabilityRequestDto);
+        return Ok(room);
+    }
 }

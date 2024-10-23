@@ -1,4 +1,3 @@
-using backend.MyHappyBD;
 using Converters.ToDTO;
 using DTOs.WithId;
 using DTOs.WithoutId;
@@ -140,7 +139,9 @@ public class RoomFiltersService: IRoomFiltersService
         foreach (ReservationDTO reservationDto in reservationDtos)
         {
             
-            if (!(reservationDto.ReservationDate >= availabilityRequest.EndDate || reservationDto.UseDate <= availabilityRequest.StartDate) && !reservationDto.Cancelled)
+            if (reservationDto.ReservationDate < availabilityRequest.EndDate && 
+                reservationDto.UseDate > availabilityRequest.StartDate && 
+                !reservationDto.Cancelled)
             {
                 return false;
             }
@@ -149,5 +150,10 @@ public class RoomFiltersService: IRoomFiltersService
         return true;
     }
 
-
+    public async Task<RoomFullInfoDTO> GetRandomAvailableRoom(AvailabilityRequestDTO availabilityRequest)
+    {
+        var fullInfoRooms = await GetAvailableRooms(availabilityRequest);
+        
+        return fullInfoRooms[new Random().Next(0, fullInfoRooms.Count)];
+    }
 }
