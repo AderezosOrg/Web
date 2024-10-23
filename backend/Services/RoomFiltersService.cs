@@ -139,7 +139,9 @@ public class RoomFiltersService: IRoomFiltersService
         foreach (ReservationDTO reservationDto in reservationDtos)
         {
             
-            if (!(reservationDto.ReservationDate >= availabilityRequest.EndDate || reservationDto.UseDate <= availabilityRequest.StartDate) && !reservationDto.Cancelled)
+            if (reservationDto.ReservationDate < availabilityRequest.EndDate && 
+                reservationDto.UseDate > availabilityRequest.StartDate && 
+                !reservationDto.Cancelled)
             {
                 return false;
             }
