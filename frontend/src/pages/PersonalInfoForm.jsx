@@ -30,7 +30,6 @@ function PersonalInfoForm() {
 
   useEffect(() => {
     const decodedToken = getDecodedToken();
-    console.log('Decoded token:', decodedToken);
     if (decodedToken) {
       setInitialValues({
         ci: '',
