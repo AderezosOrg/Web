@@ -1,5 +1,4 @@
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import RoomCard from "../components/RoomCard";
 import {getAvailableRooms} from "../services/roomsService.js";
 import {useEffect, useState} from "react";
@@ -9,7 +8,7 @@ export default function SelectRoom() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { checkInDate, checkOutDate, numPeople, email, phone, contactId } = location.state;
+  const { checkInDate, checkOutDate, numPeople, email, phone, contactId, sessionId } = location.state;
 
   useEffect(() => {
     async function fetchRooms() {
@@ -24,7 +23,7 @@ export default function SelectRoom() {
           checkOutDate,
           capacity: numPeople
         }
-        const availableRooms = await getAvailableRooms(reservationDetails);
+        const availableRooms = await getAvailableRooms(reservationDetails, sessionId);
         setRooms(availableRooms);
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -33,7 +32,7 @@ export default function SelectRoom() {
       }
     }
     fetchRooms();
-  }, [checkInDate, checkOutDate, numPeople]);
+  }, [checkInDate, checkOutDate, numPeople, sessionId]);
 
   if (loading) {
     return <div className='flex justify-center items-center h-full'>
@@ -63,15 +62,6 @@ return(
             services={item?.services || []}
             hasButton={true}
             onClick={() => {
-              console.log('Navegando con los siguientes datos:', {
-                checkInDate,
-                checkOutDate,
-                email,
-                phone,
-                contactId,
-                room: item,
-              });
-
               navigate('/confirmation', {
                 state: {
                   checkInDate,
@@ -79,6 +69,7 @@ return(
                   email,
                   phone,
                   contactId,
+                  sessionId,
                   room: item,
                 }
               });

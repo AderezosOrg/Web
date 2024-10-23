@@ -1,13 +1,13 @@
 import { Form as FormFormik, Formik } from 'formik';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import { useState} from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import Button from '../components/Button';
 import FormContainer from '../components/Container';
 import InputField from '../components/InputField';
-import { postUser } from '../services/userService';
 import { putContact } from '../services/contactService';
+import { getDecodedToken } from '../services/authService';
 
 const validatePhoneNumber = (phone) => {
   const phoneNumber = parsePhoneNumberFromString(phone);
@@ -20,6 +20,26 @@ const validatePhoneNumber = (phone) => {
 function PersonalInfoForm() {
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const navigate = useNavigate();
+  const [initialValues, setInitialValues] = useState({
+    ci: '',
+    email: '',
+    phone: '',
+    contactId: '',
+    sessionId: '',
+  });
+
+  useEffect(() => {
+    const decodedToken = getDecodedToken();
+    if (decodedToken) {
+      setInitialValues({
+        ci: '',
+        email: decodedToken.email || '',
+        phone: decodedToken.phone_number || '',
+        contactId: decodedToken.ContactId || '',
+        sessionId: decodedToken.SessionId || ''        
+      });
+    }
+  }, []);
 
   const validationSchema = Yup.object().shape({
     ci: Yup.string()
@@ -31,29 +51,21 @@ function PersonalInfoForm() {
       .test('isValidPhone', 'Número de teléfono no válido', (value) => validatePhoneNumber(value)),
   });
 
-  const email= "john.doe@example.com";
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const contactResponse = await putContact({
-        contactID: "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
+        contactID: values.contactId,
         phoneNumber: values.phone,
-        email: "john.doe@example.com",
-      });
-      
-      const userResponse = await postUser({
-        name: "Mayerli",
-        ciNumber: values.ci,
-        contactId: "d1aabbf4-b621-4f4e-94ed-3b51b4dc5e70",
-      });
+        email: values.email,
+      }, values.sessionId);
 
       setFormStatus({ success: true, message: 'Contacto y usuario enviados con éxito' });
       navigate('/date-form', {
         state: {
-          email,
+          email: values.email,
           phone: values.phone,
           contactId: contactResponse.contactID,
-          userName: userResponse.name,
+          sessionId: values.sessionId
         },
       });
     } catch (error) {
@@ -68,7 +80,8 @@ function PersonalInfoForm() {
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 1 de 4</h1>
       <FormContainer>
         <Formik
-          initialValues={{ name: '', ci: '', email: '', phone: '' }}
+          initialValues={initialValues}
+          enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >

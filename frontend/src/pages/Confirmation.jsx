@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useCallback} from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '../components/Button';
 import Container from '../components/Container';
@@ -8,7 +8,7 @@ import { getPartialPrice, getTaxPrice, getTotalPrice } from '../services/priceSe
 
 function Confirmation() {
   const location = useLocation();
-  const { checkInDate, checkOutDate, email, phone, contactId, room } = location.state;
+  const { checkInDate, checkOutDate, email, phone, contactId, sessionId, room } = location.state;
 
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const { submitCompleteReservation } = useSubmitReservation(setFormStatus);
@@ -16,6 +16,7 @@ function Confirmation() {
   const [partialPrice, setPartialPrice] = useState(0);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchPrices() {
@@ -24,14 +25,13 @@ function Confirmation() {
         useDate: checkOutDate,
         roomId: room.roomID,
         contactId: contactId,
+        sessionId: sessionId,
       }];
       
-      console.log("Datos de la reserva que se envían al servidor:", reservationList);
-
       try {
-        const fetchedPartialPrice = await getPartialPrice({ reservations: reservationList });
-        const fetchedTotal = await getTotalPrice({ reservations: reservationList });
-        const fetchedTax = await getTaxPrice({ reservations: reservationList });
+        const fetchedPartialPrice = await getPartialPrice({ reservations: reservationList }, sessionId);
+        const fetchedTotal = await getTotalPrice({ reservations: reservationList }, sessionId);
+        const fetchedTax = await getTaxPrice({ reservations: reservationList }, sessionId);
         
         setPartialPrice(fetchedPartialPrice);
         setTotal(fetchedTotal);
@@ -42,7 +42,24 @@ function Confirmation() {
     }
 
     fetchPrices();
-  }, [checkInDate, checkOutDate, room.roomID, contactId]);
+  }, [checkInDate, checkOutDate, room.roomID, contactId, sessionId]);
+  
+  const handleReservationSubmit = useCallback(async () => {
+    setIsLoading(true);
+
+    const reservationDetails = [{
+        reservationDate: checkInDate,
+        useDate: checkOutDate,
+        roomId: room.roomID,
+        contactId: contactId,
+    }];
+
+    try {
+      await submitCompleteReservation(reservationDetails, sessionId);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [checkInDate, checkOutDate, room.roomID, contactId, sessionId, submitCompleteReservation]);
   
   return (
     <div className='flex flex-col items-center justify-center space-y-12'>
@@ -91,18 +108,13 @@ function Confirmation() {
           </div>
         </div>
         <div className='mt-12 flex justify-center items-center'>
-          <Button type="common" className="font-roboto text-white"
-            onClick={() => {
-              const reservationDetails = [{
-                reservationDate: checkInDate,
-                useDate: checkOutDate,
-                roomId: room.roomID,
-                contactId: contactId,
-              }];
-              submitCompleteReservation(reservationDetails);
-              console.log("Back:" + reservationDetails);
-            }}>
-            Confirmar Reserva
+          <Button 
+            type="common" 
+            className="font-roboto text-white"
+            onClick={handleReservationSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? "Procesando..." : "Confirmar Reserva"}
           </Button>
         </div>
         {formStatus.message && (
