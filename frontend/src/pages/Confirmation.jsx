@@ -63,7 +63,7 @@ function Confirmation() {
       setIsLoading(false);
       navigate('/personal-info')
     }
-  }, []);
+  }, [checkInDate, checkOutDate, contactId, navigate, room.roomID, sessionId, submitCompleteReservation]);
   
   return (
     <div className='flex flex-col items-center justify-center space-y-12'>

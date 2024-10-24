@@ -16,3 +16,16 @@ export const getAvailableRooms = async (roomData, sessionId) => {
     throw new Error(error.response?.data?.message || 'Error al buscar las habitaciones disponibles');
   }
 };
+
+export const getRandomAvailableRoom = async (availabilityRequest, sessionId) => {
+  try {
+    const response = await roomAPI.post('randomAvailable', availabilityRequest, {
+      headers: {
+        'SessionId': sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Error al obtener una habitación aleatoria disponible');
+  }
+};

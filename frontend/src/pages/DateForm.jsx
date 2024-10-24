@@ -5,11 +5,11 @@ import * as Yup from 'yup';
 import Button from '../components/Button';
 import FormContainer from '../components/Container';
 import InputField from '../components/InputField';
+import { getRandomAvailableRoom } from '../services/roomsService';
 
 function DateForm() {
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
   const navigate = useNavigate();
-
   const location = useLocation();
   const { email, phone, contactId, sessionId } = location.state;
   
@@ -25,6 +25,7 @@ function DateForm() {
       .positive('El número de personas debe ser positivo')
       .integer('El número de personas debe ser un entero'),
   });
+
   const savedCheckIn = localStorage.getItem('checkInDate');
   const savedCheckOut = localStorage.getItem('checkOutDate');
   const savedNumPeople = localStorage.getItem('numPeople');
@@ -57,7 +58,7 @@ function DateForm() {
             });
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, values }) => (
             <FormFormik className="flex flex-col gap-4">
               <InputField
                 id="checkInDate"
@@ -83,9 +84,43 @@ function DateForm() {
                 placeholder="Ingresa el número de personas"
                 isCorrect={!touched.numPeople || !errors.numPeople}
               />
-              <div className='mt-12 flex justify-center items-center'>
-                <Button type="common" isSubmit className="font-roboto text-white">
+              <div className='mt-12 flex justify-center items-center space-x-20'>
+                <Button type="common" isSubmit className="w-40 font-roboto text-white">
                   Continuar
+                </Button>
+                <Button 
+                  type="common" 
+                  onClick={async () => {
+                    localStorage.setItem('checkInDate', values.checkInDate);
+                    localStorage.setItem('checkOutDate', values.checkOutDate);
+                    localStorage.setItem('numPeople', values.numPeople);
+                    try {
+                      const availabilityRequest = {
+                        checkInDate: values.checkInDate,
+                        checkOutDate: values.checkOutDate,
+                        numPeople: values.numPeople,
+                      };
+                      const room = await getRandomAvailableRoom(availabilityRequest, sessionId);
+                      if (room) {
+                        navigate('/confirmation', {
+                          state: {
+                            checkInDate: values.checkInDate,
+                            checkOutDate: values.checkOutDate,
+                            email,
+                            phone,
+                            contactId,
+                            sessionId,
+                            room,
+                          },
+                        });
+                      }
+                    } catch (error) {
+                      setFormStatus({ success: false, message: error.message });
+                    }
+                  }}
+                  className="w-40 font-roboto text-white"
+                >
+                  Reserva Sorpresa
                 </Button>
               </div>
             </FormFormik>
