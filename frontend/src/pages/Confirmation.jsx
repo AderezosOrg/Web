@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback} from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import useSubmitReservation from './hooks/useSubmitReservation';
@@ -8,6 +8,7 @@ import { getPartialPrice, getTaxPrice, getTotalPrice } from '../services/priceSe
 
 function Confirmation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { checkInDate, checkOutDate, email, phone, contactId, sessionId, room } = location.state;
 
   const [formStatus, setFormStatus] = useState({ success: null, message: '' });
@@ -56,10 +57,13 @@ function Confirmation() {
 
     try {
       await submitCompleteReservation(reservationDetails, sessionId);
+      localStorage.clear();
+      localStorage.setItem('back', '/');      
     } finally {
       setIsLoading(false);
+      navigate('/personal-info')
     }
-  }, [checkInDate, checkOutDate, room.roomID, contactId, sessionId, submitCompleteReservation]);
+  }, []);
   
   return (
     <div className='flex flex-col items-center justify-center space-y-12'>

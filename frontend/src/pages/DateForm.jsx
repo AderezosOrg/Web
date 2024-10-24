@@ -12,7 +12,7 @@ function DateForm() {
 
   const location = useLocation();
   const { email, phone, contactId, sessionId } = location.state;
-
+  
   const validationSchema = Yup.object().shape({
     checkInDate: Yup.date()
       .required('La fecha de entrada es obligatoria')
@@ -25,15 +25,26 @@ function DateForm() {
       .positive('El número de personas debe ser positivo')
       .integer('El número de personas debe ser un entero'),
   });
+  const savedCheckIn = localStorage.getItem('checkInDate');
+  const savedCheckOut = localStorage.getItem('checkOutDate');
+  const savedNumPeople = localStorage.getItem('numPeople');
+  const initialValues = {
+    checkInDate: savedCheckIn || '',
+    checkOutDate: savedCheckOut || '',
+    numPeople: savedNumPeople || ''   
+  };
 
   return (
     <div className='flex flex-col w-screen items-center justify-center'>
       <h1 className="text-[28px] font-roboto font-bold mt-8 mb-4">Paso 2 de 4</h1>
       <FormContainer>
         <Formik
-          initialValues={{ checkInDate: '', checkOutDate: '', numPeople: '' }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
+            localStorage.setItem('checkInDate', values.checkInDate);
+            localStorage.setItem('checkOutDate', values.checkOutDate);
+            localStorage.setItem('numPeople', values.numPeople);
             setFormStatus({success: true})
             navigate('/select-room', {
               state: {

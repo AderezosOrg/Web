@@ -30,11 +30,14 @@ function PersonalInfoForm() {
 
   useEffect(() => {
     const decodedToken = getDecodedToken();
-    if (decodedToken) {
+    const savedCI = localStorage.getItem('ci');
+    const savedPhone = localStorage.getItem('phone');
+  
+    if (decodedToken || savedCI || savedPhone) {
       setInitialValues({
-        ci: '',
+        ci: savedCI || '',
         email: decodedToken.email || '',
-        phone: decodedToken.phone_number || '',
+        phone: savedPhone || '',
         contactId: decodedToken.ContactId || '',
         sessionId: decodedToken.SessionId || ''        
       });
@@ -59,6 +62,10 @@ function PersonalInfoForm() {
         email: values.email,
       }, values.sessionId);
 
+      localStorage.setItem('ci', values.ci);
+      localStorage.setItem('phone', values.phone);
+      localStorage.setItem('back', '');      
+      
       setFormStatus({ success: true, message: 'Contacto y usuario enviados con éxito' });
       navigate('/date-form', {
         state: {
