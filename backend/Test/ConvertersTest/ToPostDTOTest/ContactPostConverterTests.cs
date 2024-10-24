@@ -33,13 +33,12 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             };
 
             // Act
-            var result = _converter.Convert(contact, reservations);
+            var result = _converter.Convert(contact);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Equal(2, result.ReservationList.Count); // Verifica que las reservas relacionadas estén en la lista
         }
 
         [Fact]
@@ -56,13 +55,12 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             var reservations = new List<Reservation>();
 
             // Act
-            var result = _converter.Convert(contact, reservations);
+            var result = _converter.Convert(contact);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Empty(result.ReservationList); 
         }
     }
 }

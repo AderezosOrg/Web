@@ -61,7 +61,7 @@ namespace backend.Test.EntitiesTest
         {
             // Arrange
             var bed = new Bed();
-            var capacity = "Double";
+            var capacity = 1;
 
             // Act
             bed.Capacity = capacity;
@@ -74,7 +74,7 @@ namespace backend.Test.EntitiesTest
         public void Bed_CanGet_Capacity()
         {
             // Arrange
-            var capacity = "Single";
+            var capacity = 1;
             var bed = new Bed { Capacity = capacity };
 
             // Act & Assert

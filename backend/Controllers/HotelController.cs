@@ -1,46 +1,56 @@
-using backend.Services;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class HotelController : ControllerBase
 {
-    private readonly HotelService _hotelService;
+    private readonly IHotelService _hotelService;
+    private readonly ISessionService _sessionService;
 
-    public HotelController(HotelService hotelService)
+    public HotelController(IHotelService hotelService, ISessionService sessionService)
     {
         _hotelService = hotelService;
+        _sessionService = sessionService;
     }
 
     [HttpGet("{hotelId}")]
     public async Task<ActionResult<HotelPostDTO>> GetHotelById(Guid hotelId)
     {
-        HotelPostDTO hotel = await _hotelService.GetHotelById(hotelId);
+        HotelPostDTO hotel = await _hotelService.GetElementById(hotelId);
         return Ok(hotel);
     }
     
     [HttpGet]
     public async Task<ActionResult<List<HotelDTO>>> GetHotels()
     {
-        List<HotelDTO> hotels = await _hotelService.GetHotels();
+        List<HotelDTO> hotels = await _hotelService.GetAllElements();
         return Ok(hotels);
     }
     
     [HttpPost]
     public async Task<ActionResult<HotelPostDTO>> CreateHotel([FromBody] HotelPostDTO hotelDto)
     {
-        HotelPostDTO hotel = await _hotelService.CreateHotel(hotelDto);
-        return Ok(true);
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        HotelPostDTO hotel = await _hotelService.CreateSingleElement(hotelDto);
+        return Ok(hotel);
     }
     
     [HttpPut("{hotelId}")]
     public async Task<ActionResult<HotelPostDTO>> UpdateHotel(Guid hotelId, HotelPostDTO hotelDto)
     {
-        HotelPostDTO result = await _hotelService.UpdateHotel(hotelId, hotelDto);
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        HotelPostDTO result = await _hotelService.UpdateElementById(hotelId, hotelDto);
         return Ok(result);
     }
     

@@ -42,7 +42,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             };
 
             // Act
-            var result = _converter.Convert(user, contact, hotels);
+            var result = _converter.Convert(user, contact);
 
             // Assert
             Assert.NotNull(result);
@@ -51,8 +51,6 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             Assert.Equal(user.CINumber, result.CINumber);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Single(result.HotelList);
-            Assert.Equal(hotels[0].HotelID, result.HotelList[0]);
         }
 
         [Fact]
@@ -76,7 +74,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             var hotels = new List<Hotel>(); 
 
             // Act
-            var result = _converter.Convert(user, contact, hotels);
+            var result = _converter.Convert(user, contact);
 
             // Assert
             Assert.NotNull(result);
@@ -85,7 +83,6 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             Assert.Equal(user.CINumber, result.CINumber);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Empty(result.HotelList); 
         }
     }
 }

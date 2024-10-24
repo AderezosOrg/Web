@@ -4,7 +4,7 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import Button from './Button';
 
-export default function RoomCard({bed, capacity, price, floor, code, services, onClick})
+export default function RoomCard({bed, capacity, price, floor, code, services, onClick, hasButton})
 {
   const [details, setDetails] = useState(false);
 
@@ -36,19 +36,20 @@ export default function RoomCard({bed, capacity, price, floor, code, services, o
             <p className='text-[20px] px-1'>{floor}</p>
           </div>
           <div className='flex flex-row px-3 py-2'>
-            <p className='text-[20px] font-bold'>Numero de Habitación:</p>
+            <p className='text-[20px] font-bold'>Habitación:</p>
             <p className='text-[20px] px-1'>{code}</p>
           </div>
         </div>
         <div className='items-center text-center'>
             <p className='text-[20px] font-bold'>Servicios:</p>
             {services.map((item, index) => (
-              <p key={index} className='text-[20px]'>{item}</p>
+              <p key={index} className='text-[20px]'>{item.type}</p>
             ))}
           </div>
-        <div className='flex justify-end items-end h-full' >
+        {hasButton? <div className='flex justify-end items-end h-full' >
           <Button onClick={onClick} type={'common'} className={'h-[40px]'}>Seleccionar</Button>
-        </div>
+        </div> :
+        <></>}
       </div> : <></>}
     </div>
     
@@ -57,10 +58,11 @@ export default function RoomCard({bed, capacity, price, floor, code, services, o
 
 RoomCard.propTypes = {
   bed: PropTypes.string.isRequired,
-  capacity: PropTypes.string.isRequired,
+  capacity: PropTypes.number.isRequired,
   price: PropTypes.number.isRequired,
   floor: PropTypes.number.isRequired,
   code: PropTypes.string.isRequired,
   services: PropTypes.array.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func,
+  hasButton: PropTypes.bool.isRequired
 }

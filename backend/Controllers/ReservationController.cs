@@ -1,20 +1,22 @@
-using backend.Services;
+using backend.DTOs.WithId;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ReservationController : ControllerBase
 {
-    private readonly ReservationService _reservationService;
+    private readonly IReservationService _reservationService;
+    private readonly ISessionService _sessionService;
 
-    public ReservationController(ReservationService reservationService)
+    public ReservationController(IReservationService reservationService, ISessionService sessionService)
     {
         _reservationService = reservationService;
+        _sessionService = sessionService;
     }
     
     [HttpGet("contact/{contactId}")]
@@ -34,22 +36,29 @@ public class ReservationController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ReservationDTO>>> GetReservations()
     {
-        List<ReservationDTO> reservations = await _reservationService.GetReservations();
+        List<ReservationDTO> reservations = await _reservationService.GetAllElements();
         return Ok(reservations);
     }
     
     [HttpPost]
-    public async Task<ActionResult<ReservationDTO>> CreateReservation(ReservationDTO reservationDto)
+    public async Task<ActionResult<List<ReservationDTO>>> CreateReservation( params ReservationPostDTO[] reservationDtos)
     {
-        ReservationDTO reservation = await _reservationService.CreateReservation(reservationDto);
-        return Ok(reservation);
-        
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        List<ReservationDTO> reservations = await _reservationService.CreateReservation(reservationDtos);
+        return Ok(reservations);    
     }
     
     [HttpPatch("cancel/{contactId}")]
-    public async Task<ActionResult<ReservationDTO>> CancelReservation(Guid contactId)
+    public async Task<ActionResult<ReservationDTO>> CancelReservation(CancelReservationDTO cancelReservationDto)
     {
-        ReservationDTO reservation = await _reservationService.CancelReservation(contactId);
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        ReservationDTO reservation = await _reservationService.CancelReservation(cancelReservationDto);
         return Ok(reservation);
     }
 }

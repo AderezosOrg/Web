@@ -133,31 +133,6 @@ namespace backend.Test.DTOsTest.WithIdTest
         }
 
         [Fact]
-        public void UserDTO_CanSet_HotelList()
-        {
-            // Arrange
-            var userDTO = new UserDTO();
-            var hotelList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-
-            // Act
-            userDTO.HotelList = hotelList;
-
-            // Assert
-            Assert.Equal(hotelList, userDTO.HotelList);
-        }
-
-        [Fact]
-        public void UserDTO_CanGet_HotelList()
-        {
-            // Arrange
-            var hotelList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var userDTO = new UserDTO { HotelList = hotelList };
-
-            // Act & Assert
-            Assert.Equal(hotelList, userDTO.HotelList);
-        }
-
-        [Fact]
         public void UserDTO_DefaultValues_AreDefault()
         {
             // Arrange & Act
@@ -169,7 +144,6 @@ namespace backend.Test.DTOsTest.WithIdTest
             Assert.Null(userDTO.CINumber);
             Assert.Null(userDTO.PhoneNumber);
             Assert.Null(userDTO.Email);
-            Assert.Null(userDTO.HotelList);
         }
     }
 }

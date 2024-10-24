@@ -34,7 +34,7 @@ namespace backend.Test.DTOsTest.WithoutIdTest
         {
             // Arrange
             var bedPostDTO = new BedPostDTO();
-            var capacity = "2 persons";
+            var capacity = 2;
 
             // Act
             bedPostDTO.Capacity = capacity;
@@ -47,10 +47,10 @@ namespace backend.Test.DTOsTest.WithoutIdTest
         public void BedPostDTO_CanGet_Capacity()
         {
             // Arrange
-            var bedPostDTO = new BedPostDTO { Capacity = "1 person" };
+            var bedPostDTO = new BedPostDTO { Capacity = 1 };
 
             // Act & Assert
-            Assert.Equal("1 person", bedPostDTO.Capacity);
+            Assert.Equal(1, bedPostDTO.Capacity);
         }
 
         [Fact]

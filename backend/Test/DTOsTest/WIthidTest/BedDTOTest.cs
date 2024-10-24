@@ -61,7 +61,7 @@ namespace backend.Test.DTOsTest.WithIdTest
         {
             // Arrange
             var bedDTO = new BedDTO();
-            var capacity = "2 people";
+            var capacity = 2;
 
             // Act
             bedDTO.Capacity = capacity;
@@ -74,7 +74,7 @@ namespace backend.Test.DTOsTest.WithIdTest
         public void BedDTO_CanGet_Capacity()
         {
             // Arrange
-            var capacity = "1 person";
+            var capacity = 11;
             var bedDTO = new BedDTO { Capacity = capacity };
 
             // Act & Assert

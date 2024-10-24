@@ -83,31 +83,6 @@ namespace backend.Test.DTOsTest.WithIdTest
         }
 
         [Fact]
-        public void ContactDTO_CanSet_ReservationList()
-        {
-            // Arrange
-            var contactDTO = new ContactDTO();
-            var reservations = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-
-            // Act
-            contactDTO.ReservationList = reservations;
-
-            // Assert
-            Assert.Equal(reservations, contactDTO.ReservationList);
-        }
-
-        [Fact]
-        public void ContactDTO_CanGet_ReservationList()
-        {
-            // Arrange
-            var reservations = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var contactDTO = new ContactDTO { ReservationList = reservations };
-
-            // Act & Assert
-            Assert.Equal(reservations, contactDTO.ReservationList);
-        }
-
-        [Fact]
         public void ContactDTO_DefaultValues_AreDefault()
         {
             // Arrange & Act
@@ -117,21 +92,6 @@ namespace backend.Test.DTOsTest.WithIdTest
             Assert.Equal(Guid.Empty, contactDTO.ContactID);
             Assert.Null(contactDTO.PhoneNumber);
             Assert.Null(contactDTO.Email);
-            Assert.Null(contactDTO.ReservationList);
-        }
-
-        [Fact]
-        public void ContactDTO_ReservationList_IsInitialized()
-        {
-            // Arrange
-            var contactDTO = new ContactDTO();
-
-            // Act
-            contactDTO.ReservationList = new List<Guid>();
-
-            // Assert
-            Assert.NotNull(contactDTO.ReservationList);
-            Assert.Empty(contactDTO.ReservationList);
         }
     }
 }

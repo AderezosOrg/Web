@@ -1,56 +1,32 @@
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
 using Converters.ToDTO;
+using Db;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 
 namespace backend.Services;
 
-using backend.Services.AbstractClass;
+using ServicesInterfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BedService : AbstractBedService
+public class BedService : IBedService
 {
-    private static List<Bed> _beds = new List<Bed>()
-    {
-        new Bed()
-        {
-            BedID = Guid.NewGuid(),
-            Capacity = "2",
-            Size = "king"
-        },
-        new Bed()
-        {
-            BedID = Guid.NewGuid(),
-            Capacity = "1",
-            Size = "single"
-        }
-    };
-
-    private List<BedInformation> _bedInformations = new List<BedInformation>()
-    {
-        new BedInformation()
-        {
-            BedID = _beds[0].BedID,
-            Quantity = 1,
-            RoomTemplateID = Guid.NewGuid(),
-        },
-        new BedInformation()
-        {
-            BedID = _beds[1].BedID,
-            Quantity = 3,
-            RoomTemplateID = Guid.NewGuid(),
-        }
-    };
+    private IDAO<Bed> _bedDao;
     
     private BedPostConverter _bedPostConverter = new BedPostConverter();
     private BedConverter _bedConverter = new BedConverter();
 
-    public override async Task<List<BedInfoDTO>> GetBeds()
+    public BedService(IDAO<Bed> bedDao)
+    {
+        _bedDao = bedDao;
+    }
+    public async Task<List<BedInfoDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<BedInfoDTO> result = _beds.Select(b =>
+        List<BedInfoDTO> result = _bedDao.ReadAll().Select(b =>
         {
             return _bedConverter.Convert(b);
         }).ToList();
@@ -58,16 +34,16 @@ public class BedService : AbstractBedService
         return result;
     }
 
-    public override async Task<BedPostDTO> GetBedById(Guid bedID)
+    public async Task<BedPostDTO> GetElementById(Guid bedID)
     {
         await Task.Delay(10);
-        var bed = _beds.FirstOrDefault(b => b.BedID == bedID);
+        var bed = _bedDao.Read(bedID);
         if (bed == null)
             throw new Exception("Bed not found");
         return _bedPostConverter.Convert(bed);
     }
 
-    public override async Task<BedPostDTO> CreateBed(BedPostDTO bedPostDto)
+    public async Task<BedPostDTO> CreateSingleElement(BedPostDTO bedPostDto)
     {
         await Task.Delay(100);
         if (bedPostDto != null)
@@ -79,66 +55,29 @@ public class BedService : AbstractBedService
                 Size = bedPostDto.Size,
                 
             };
-            _beds.Add(newBed);
-            
-            if (_beds.Contains(newBed))
-                return bedPostDto;
-            else
-                throw new Exception("Bed not created");
-        }
-        throw new Exception("Bed not data found");
-    }
-    
-    public override async Task<BedPostDTO> CreateOnlyBed(BedPostDTO bedPostDto)
-    {
-        await Task.Delay(100);
-        if (bedPostDto != null)
-        {
-            var newBed = new Bed
-            {
-                BedID = Guid.NewGuid(),
-                Capacity = bedPostDto.Capacity,
-                Size = bedPostDto.Size,
-                
-            };
-            _beds.Add(newBed);
-            
-            if (_beds.Contains(newBed))
-                return bedPostDto;
-            else
-                throw new Exception("Bed not created");
+            _bedDao.Create(newBed);
+            return bedPostDto;
         }
         throw new Exception("Bed not data found");
     }
 
-    public override async Task<BedPostDTO> EditBed(Guid bedID, BedPostDTO bedDto)
+    public async Task<BedPostDTO> UpdateElementById(Guid bedID, BedPostDTO bedDto)
     {
         await Task.Delay(100);
-        var existingBed = _beds.FirstOrDefault(b => b.BedID == bedID);
-        if (existingBed != null)
+        var bed = new Bed()
         {
-            existingBed.Capacity = bedDto.Capacity;
-            existingBed.Size = bedDto.Size;
-
-            return bedDto;
-        }
-        throw new Exception("Bed not found");
+            BedID = bedID,
+            Capacity = bedDto.Capacity,
+            Size = bedDto.Size,
+        };
+        _bedDao.Update(bed);
+        return _bedPostConverter.Convert(bed);
     }
 
-    public override async Task<bool> DeleteBed(Guid bedID)
+    public async Task<bool> DeleteElementById(Guid elementId)
     {
-        await Task.Delay(100);
-        var bed = _beds.FirstOrDefault(b => b.BedID == bedID);
-        if (bed != null)
-        {
-            _beds.Remove(bed);
-            if (!_beds.Contains(bed))
-                return true;
-            else
-                throw new Exception("Bed not deleted");
-        }
-        else
-            throw new Exception("Bed not found");
+        await Task.Delay(100); 
+        return _bedDao.Delete(elementId);
     }
 }
 

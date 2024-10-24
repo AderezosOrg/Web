@@ -23,7 +23,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             {
                 BedID = Guid.NewGuid(),
                 Size = "King",
-                Capacity = "2"
+                Capacity = 2
             };
 
             var bedInformation = new BedInformation
@@ -50,7 +50,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             var postDto = new BedPostDTO
             {
                 Size = "Queen",
-                Capacity = "2"
+                Capacity = 2
             };
             var id = Guid.NewGuid();
 
@@ -72,7 +72,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             {
                 BedID = Guid.NewGuid(),
                 Size = "Twin",
-                Capacity = "1"
+                Capacity = 1
             };
 
             // Act

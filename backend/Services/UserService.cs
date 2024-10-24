@@ -1,99 +1,50 @@
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
-public class UserService : AbstractUserService
+public class UserService : IUserService
 {
-    private static List<User> _users = new List<User>()
-    {
-        new User()
-        {
-            UserID = Guid.NewGuid(),
-            Name = "user1",
-            CINumber = "6879821",
-        },
-        new User()
-        {
-            UserID = Guid.NewGuid(),
-            Name = "user2",
-            CINumber = "12345678",
-        }
-    };
-
-    private List<Contact> _contacts = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "user1@gmail.com",
-            PhoneNumber = "12345678",
-        },
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "user2@gmail.com",
-            PhoneNumber = "122345678",
-        }
-    };
-
-    private List<Hotel> _hotels = new List<Hotel>()
-    {
-        new Hotel()
-        {
-            HotelID = Guid.NewGuid(),
-            AllowsPets = true,
-            Address = "address",
-            BathRoomID = Guid.NewGuid(),
-            ContactID = Guid.NewGuid(),
-            Name = "hotel1",
-            Stars = 1,
-            UserID = Guid.NewGuid(),
-        },
-        new Hotel()
-        {
-            HotelID = Guid.NewGuid(),
-            AllowsPets = false,
-            Address = "address2",
-            BathRoomID = Guid.NewGuid(),
-            ContactID = Guid.NewGuid(),
-            Name = "hotel2",
-            Stars = 5,
-            UserID = Guid.NewGuid(),
-        }
-    };
-    
+    private IDAO<User> _userDAO;
+    private IDAO<Contact> _contactDAO;
     private UserPostConverter _userPostConverter = new UserPostConverter();
     private UserConverter _userConverter = new UserConverter();
-    public override async Task<UserPostDTO> GetUserById(Guid userId)
+
+    public UserService(IDAO<User> userDAO, IDAO<Contact> contactDAO)
+    {
+        _userDAO = userDAO;
+        _contactDAO = contactDAO;
+    }
+    public async Task<UserPostDTO> GetElementById(Guid userId)
     {
         await Task.Delay(10);
-        var user = _users.FirstOrDefault(u => u.UserID == userId);
+        var user = _userDAO.Read(userId);
         if (user == null)
             throw new Exception("User not found");
-        var contact = _contacts.FirstOrDefault(c => c.ContactID == user.ContactID);
-        var hotel = _hotels.Where(h => h.UserID == user.UserID).ToList();
-        return _userPostConverter.Convert(user,contact, hotel);
+        var contact = _contactDAO.Read(user.ContactID);
+        return _userPostConverter.Convert(user,contact);
     }
 
-    public override async Task<List<UserDTO>> GetUsers()
+    public async Task<List<UserDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<UserDTO> result = _users.Select(x =>
+        
+        List<UserDTO> result = _userDAO.ReadAll().Select(x =>
         {
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == x.ContactID);
-            var hotel = _hotels.Where(h => h.UserID == x.UserID).ToList();
-            return _userConverter.Convert(x, contact, hotel);
+            var contact = _contactDAO.Read(x.ContactID);
+            return _userConverter.Convert(x, contact);
         }).ToList();
         
         return result;
     }
 
-    public override async Task<UserPostDTO> CreateUser(UserPostDTO userPostDto)
+    public async Task<UserDTO> CreateSingleElement(UserPostDTO userPostDto)
     {
         await Task.Delay(10);
         if (userPostDto != null)
@@ -102,78 +53,36 @@ public class UserService : AbstractUserService
             {
                 Name = userPostDto.Name,
                 CINumber = userPostDto.CINumber,
-                ContactID = Guid.NewGuid(),
+                ContactID = userPostDto.ContactId,
                 UserID = Guid.NewGuid(),
             };
-            _users.Add(newUser);
-
-            var newContact = new Contact
-            {
-                ContactID = Guid.NewGuid(),
-                Email = userPostDto.Email,
-                PhoneNumber = userPostDto.PhoneNumber,
-            };
-            _contacts.Add(newContact);
-            
-            var relatedHotels = _hotels.Where(h => h.ContactID == newContact.ContactID).ToList();
-            if (_users.Contains(newUser) && _contacts.Contains(newContact) && relatedHotels.Any())
-                return userPostDto;
-            else
-                throw new Exception("Contact not created");
+            _userDAO.Create(newUser);
+            return _userConverter.Convert(newUser, _contactDAO.Read(userPostDto.ContactId));
         }
         throw new Exception("Contact not Data found");
 
     }
 
-    public override async Task<bool> DeleteUserById(Guid userId)
+
+
+    public async Task<UserPostDTO> UpdateElementById(Guid userId, UpdateUserDTO userPostDto)
     {
         await Task.Delay(10);
-
-        var user = _users.FirstOrDefault(u => u.UserID == userId);
-        if (user != null)
+        var oldUser = _userDAO.Read(userId);
+        var newUser = new User()
         {
-            _users.Remove(user);
-
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == user.ContactID);
-            if (contact != null)
-            {
-                _contacts.Remove(contact);
-            }
-
-            var relatedHotels = _hotels.Where(h => h.ContactID == user.ContactID).ToList();
-            foreach (var hotel in relatedHotels)
-            {
-                _hotels.Remove(hotel);
-            }
-
-            return true; 
-        }
-
-        throw new Exception("User not found");
+            UserID = userId,
+            CINumber = userPostDto.CINumber,
+            Name = userPostDto.Name,
+            ContactID = oldUser.ContactID,
+        };
+        _userDAO.Update(newUser);
+        return _userPostConverter.Convert(newUser, _contactDAO.Read(oldUser.ContactID));
     }
 
-    public override async Task<UserPostDTO> EditUserById(Guid userId, UserPostDTO userPostDto)
+    public async Task<bool> DeleteElementById(Guid elementId)
     {
         await Task.Delay(10);
-        var existingUser = _users.FirstOrDefault(u => u.UserID == userId);
-        if (existingUser != null)
-        {
-            existingUser.Name = userPostDto.Name;
-            existingUser.CINumber = userPostDto.CINumber;
-
-            var existingContact = _contacts.FirstOrDefault(c => c.ContactID == existingUser.ContactID);
-            if (existingContact != null)
-            {
-                existingContact.Email = userPostDto.Email;
-                existingContact.PhoneNumber = userPostDto.PhoneNumber;
-            }
-
-            var relatedHotels = _hotels.Where(h => h.ContactID == existingUser.ContactID).ToList();
-
-            var userPostConverter = new UserPostConverter();
-            return userPostConverter.Convert(existingUser, existingContact, relatedHotels);
-        }
-
-        throw new Exception("User not found");
+        return _userDAO.Delete(elementId);
     }
 }

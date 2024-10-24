@@ -49,16 +49,13 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             };
 
             // Act
-            var result = _converter.Convert(user, contact, hotels);
+            var result = _converter.Convert(user, contact);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(user.Name, result.Name);
             Assert.Equal(user.CINumber, result.CINumber);
-            Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
-            Assert.Equal(contact.Email, result.Email);
-            Assert.Single(result.HotelList); 
-            Assert.Contains(hotels[0].HotelID, result.HotelList);
+            Assert.Equal(user.ContactID, result.ContactId);
         }
     }
 }

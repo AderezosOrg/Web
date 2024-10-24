@@ -136,7 +136,7 @@ namespace backend.Test.ConvertersTest.ToDTOTest
 
             var beds = new List<BedPostDTO>
             {
-                new BedPostDTO { Size = "Queen", Capacity = "2" }
+                new BedPostDTO { Size = "Queen", Capacity = 2 }
             };
 
             var services = new List<ServicePostDTO>

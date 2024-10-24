@@ -5,22 +5,15 @@ using IConverters;
 
 namespace backend.Converters.ToPostDTO;
 
-public class UserPostConverter : IConverter1To3<User, Contact, List<Hotel>, UserPostDTO>
+public class UserPostConverter : IConverter1To2<User, Contact, UserPostDTO>
 {
-    public UserPostDTO Convert(User user, Contact contact, List<Hotel> hotels)
+    public UserPostDTO Convert(User user, Contact contact)
     {
-        var hotelList = hotels
-            .Where(h => h.ContactID == contact.ContactID) 
-            .Select(h => h.HotelID) 
-            .ToList();
-        
         return new UserPostDTO()
         {
             Name = user.Name,
             CINumber = user.CINumber,
-            PhoneNumber = contact.PhoneNumber,
-            Email = contact.Email,
-            HotelList = hotelList
+            ContactId = contact.ContactID,
         };
     }
     

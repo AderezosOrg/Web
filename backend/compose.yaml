@@ -8,5 +8,6 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
+      - ./resources/data:/var/lib/mysql-files/
     ports:
       - 3307:3306

@@ -1,84 +1,46 @@
-using backend.Services;
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers;
+namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class RoomController : ControllerBase
 {
-    private readonly RoomService _roomService;
+    private readonly IRoomService _roomService;
+    private readonly ISessionService _sessionService;
 
-    public RoomController(RoomService roomService)
+    public RoomController(IRoomService roomService, ISessionService sessionService)
     {
         _roomService = roomService;
+        _sessionService = sessionService;
     }
 
     [HttpGet("{roomId}")]
-    public async Task<ActionResult<RoomPostDTO>> GetRoomById(Guid roomId)
+    public async Task<ActionResult<RoomFullInfoDTO>> GetRoomById(Guid roomId)
     {
-        RoomPostDTO room = await _roomService.GetRoomById(roomId);
+        RoomFullInfoDTO room = await _roomService.GetElementById(roomId);
         return Ok(room);
     }
     
     [HttpGet]
     public async Task<ActionResult<List<RoomFullInfoDTO>>> GetRooms()
     {
-        List<RoomFullInfoDTO> rooms = await _roomService.GetRooms();
+        List<RoomFullInfoDTO> rooms = await _roomService.GetAllElements();
         return Ok(rooms);
     }
     
     [HttpPost]
-    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomPostDTO roomDto)
+    public async Task<ActionResult<RoomPostDTO>> CreateRoom(RoomNewPostDTO roomDto)
     {
-        RoomPostDTO room = await _roomService.CreateRoom(roomDto);
+        if (!await _sessionService.IsTokenValid(Guid.Parse(Request.Headers["SessionId"])))
+        {
+            return Redirect("http://localhost:5173/");
+        }
+        RoomPostDTO room = await _roomService.CreateSingleElement(roomDto);
         return Ok(room);
-    }
-    
-    [HttpGet("beds/{roomId}")]
-    public async Task<ActionResult<List<BedDTO>>> GetRoomBedsById(Guid roomId)
-    {
-        List<BedDTO> beds = await _roomService.GetRoomBedsById(roomId);
-        return Ok(beds);
-    }
-    
-    [HttpGet("bathrooms/{roomId}")]
-    public async Task<ActionResult<List<BathroomDTO>>> GetRoomBathRoomsById(Guid roomId)
-    {
-        List<BathroomDTO> bathrooms = await _roomService.GetRoomBathroomsById(roomId);
-        return Ok(bathrooms);
-    }
-    
-    [HttpGet("available/{startDate}/{endDate}")]
-    public async Task<ActionResult<List<RoomFullInfoDTO>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
-    {
-        List<RoomFullInfoDTO> roomDtos = await _roomService.GetAvailableRooms(startDate, endDate);
-        return Ok(roomDtos);
-    }
-    
-    [HttpGet("floor/{floorNumber}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByFloor(int floorNumber)
-    {
-        List<RoomDTO> rooms = await _roomService.GetRoomsByFloor(floorNumber);
-        return Ok(rooms);
-    }
-    
-    [HttpGet("prices/{minPrice}/{maxPrice}")]
-    public async Task<ActionResult<List<RoomDTO>>> GetRoomsByPriceRange(decimal minPrice, decimal maxPrice)
-    {
-        List<RoomDTO> rooms = await _roomService.GetRoomsByPriceRange(minPrice, maxPrice);
-        return Ok(rooms);
-    }
-
-    [HttpGet("services/{roomId}")]
-    public async Task<ActionResult<List<ServiceDTO>>> GetRoomServicesById(Guid roomId)
-    {
-        List<ServiceDTO> services = await _roomService.GetRoomServicesById(roomId);
-        return Ok(services);
-        
     }
     
 }

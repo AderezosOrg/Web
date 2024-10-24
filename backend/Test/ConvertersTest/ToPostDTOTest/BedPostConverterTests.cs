@@ -21,7 +21,7 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             var bed = new Bed
             {
                 Size = "Queen",
-                Capacity = "2"
+                Capacity = 2
             };
 
             // Act
@@ -40,7 +40,7 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             var bed = new Bed
             {
                 Size = "Single",
-                Capacity = "1"
+                Capacity = 1
             };
 
             // Act

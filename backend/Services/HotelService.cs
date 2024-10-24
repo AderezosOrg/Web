@@ -1,119 +1,58 @@
-using DTOs;
-using System.Collections.Generic;
-using System.Linq;
-using backend.Services.AbstractClass;
+using backend.Services.ServicesInterfaces;
 using DTOs.WithoutId;
 using Entities;
 using Converters.ToDTO;
 using DTOs.WithId;
 using backend.Converters.ToPostDTO;
+using backend.MyHappyBD;
+using Db;
 
 namespace backend.Services;
 
-public class HotelService : AbstractHotelService
+public class HotelService : IHotelService
 {
-    private static List<Hotel> _hotels = new List<Hotel>()
-    {
-        new Hotel()
-        {
-            Address = "123'3'2",
-            AllowsPets = false,
-            HotelID = Guid.NewGuid(),
-            Name = "My Hotel",
-            Stars = 3,
-        },
-        new Hotel()
-        {
-            Address = "236'4'0",
-            AllowsPets = true,
-            HotelID = Guid.NewGuid(),
-            Name = "YOUR Hotel",
-            Stars = 5,
-        }
-    };
-
-    private List<User> _users = new List<User>()
-    {
-        new User()
-        {
-            CINumber = "123456",
-            ContactID = Guid.NewGuid(),
-            Name = "John Doe",
-            UserID = Guid.NewGuid(),
-        },
-        new User()
-        {
-            CINumber = "654321",
-            ContactID = Guid.NewGuid(),
-            Name = "DOE hSA",
-            UserID = Guid.NewGuid(),
-        }
-    };
-
-    private List<Contact> _contacts = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "johndoe@gmail.com",
-            PhoneNumber = "555-555-5555",
-        },
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "seguro@gmail.com",
-            PhoneNumber = "666-666-5555",
-        }
-    };
-
-    private List<Bathroom> _bathrooms = new List<Bathroom>()
-    {
-        new Bathroom()
-        {
-            BathRoomID = Guid.NewGuid(),
-            DressingTable = true,
-            Shower = false,
-            Toilet = true
-        },
-        new Bathroom()
-        {
-            BathRoomID = Guid.NewGuid(),
-            DressingTable = false,
-            Shower = false,
-            Toilet = true
-        }
-    };
+    private IDAO<Hotel> _hotelDao;
+    private IDAO<User> _userDao;
+    private IDAO<Contact> _contactDao;
+    private IDAO<Bathroom> _bathroomDao;
     
     private HotelPostConverter _hotelPostConverter = new HotelPostConverter();
     private HotelConverter _hotelConverter = new HotelConverter();
-    
-    public override async Task<HotelPostDTO> GetHotelById(Guid hotelID)
+
+    public HotelService(IDAO<Hotel> hotelDao, IDAO<User> userDao, IDAO<Contact> contactDao, IDAO<Bathroom> bathroomDao)
+    {
+        _bathroomDao = bathroomDao;
+        _contactDao = contactDao;
+        _userDao = userDao;
+        _hotelDao = hotelDao;
+    }
+    public async Task<HotelPostDTO> GetElementById(Guid hotelID)
     {
         await Task.Delay(10);
-        var hotel = _hotels.FirstOrDefault(h => h.HotelID == hotelID);
+        var hotel = _hotelDao.Read(hotelID);
         if (hotel == null)
             throw new Exception("Hotel not found");
-        var user = _users.FirstOrDefault(u => u.UserID == hotel.UserID);
-        var contact = _contacts.FirstOrDefault(c => c.ContactID == hotel.ContactID);
-        var bathroom = _bathrooms.FirstOrDefault(b => b.BathRoomID == hotel.BathRoomID);
+        var user = _userDao.Read(hotel.UserID);
+        var contact = _contactDao.Read(hotel.ContactID);
+        var bathroom =_bathroomDao.Read(hotel.BathRoomID);
         return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
 
-    public override async Task<List<HotelDTO>> GetHotels()
+    public async Task<List<HotelDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<HotelDTO> result = _hotels.Select(h =>
+        List<HotelDTO> result = _hotelDao.ReadAll().Select(h =>
         {
-            var user = _users.FirstOrDefault(u => u.UserID == h.UserID);
-            var contact = _contacts.FirstOrDefault(c => c.ContactID == h.ContactID);
-            var bathroom = _bathrooms.FirstOrDefault(b => b.BathRoomID == h.BathRoomID);
+            var user =_userDao.Read(h.UserID);
+            var contact = _contactDao.Read(h.ContactID);
+            var bathroom = _bathroomDao.Read(h.BathRoomID);
             return _hotelConverter.Convert(h, user, contact, bathroom);
         }).ToList();
         
         return result;
     }
 
-    public override async Task<HotelPostDTO> CreateHotel(HotelPostDTO hotelPostDto)
+    public async Task<HotelPostDTO> CreateSingleElement(HotelPostDTO hotelPostDto)
     {
         await Task.Delay(10);
         if (hotelPostDto != null)
@@ -128,54 +67,30 @@ public class HotelService : AbstractHotelService
                 Name = hotelPostDto.Name,
                 UserID = Guid.NewGuid(),
             };
-            _hotels.Add(newHotel);
-
-            var newUser = new User
-            {
-                CINumber = hotelPostDto.UserCINumber,
-                ContactID = Guid.NewGuid(),
-                Name = hotelPostDto.UserName,
-                UserID = Guid.NewGuid(),
-            };
-            _users.Add(newUser);
-
-            var newContact = new Contact
-            {
-                ContactID = Guid.NewGuid(),
-                Email = hotelPostDto.HotelEmail,
-                PhoneNumber = hotelPostDto.HotelPhoneNumber
-            };
-            _contacts.Add(newContact);
-
-            var newBathroom = new Bathroom
-            {
-                BathRoomID = Guid.NewGuid(),
-                DressingTable = hotelPostDto.DressingTable,
-                Shower = hotelPostDto.Shower,
-                Toilet = hotelPostDto.Toilet
-            };
-            _bathrooms.Add(newBathroom);
-            if (_hotels.Contains(newHotel) && _users.Contains(newUser) && _contacts.Contains(newContact) && _bathrooms.Contains(newBathroom))
-                return hotelPostDto;
-            else
-                throw new Exception("Hotel not created");
+            _hotelDao.Create(newHotel);
+            return hotelPostDto;
         }
         throw new Exception("Hotel not data found");
     }
 
-    public override async Task<HotelPostDTO> UpdateHotel(Guid hotelID, HotelPostDTO hotelPostDtoDto)
+    public async Task<HotelPostDTO> UpdateElementById(Guid hotelID, HotelPostDTO hotelPostDto)
     {
         await Task.Delay(10);
-        var existingHotel = _hotels.FirstOrDefault(h => h.HotelID == hotelID);
-        if (existingHotel != null)
+        var hotel = new Hotel()
         {
-            existingHotel.Name = hotelPostDtoDto.Name;
-            existingHotel.Address = hotelPostDtoDto.Address;
-            existingHotel.AllowsPets = hotelPostDtoDto.AllowsPets;
-            existingHotel.Stars = hotelPostDtoDto.Stars;
-            
-            return hotelPostDtoDto;
-        }
-        throw new Exception("Hotel not found");
+            Address = hotelPostDto.Address,
+            AllowsPets = hotelPostDto.AllowsPets,
+            BathRoomID = Guid.NewGuid(),
+            ContactID = Guid.NewGuid(),
+            HotelID = hotelID,
+            Name = hotelPostDto.Name,
+            UserID = Guid.NewGuid(),
+        };
+        _hotelDao.Update(hotel);
+        var user =_userDao.Read(hotel.UserID);
+        var contact = _contactDao.Read(hotel.ContactID);
+        var bathroom = _bathroomDao.Read(hotel.BathRoomID);
+        return _hotelPostConverter.Convert(hotel, user, contact, bathroom);
     }
+
 }

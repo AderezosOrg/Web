@@ -43,15 +43,13 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             };
 
             // Act
-            var result = _converter.Convert(contact, reservations);
+            var result = _converter.Convert(contact);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(contact.ContactID, result.ContactID);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Single(result.ReservationList);
-            Assert.Equal(reservations[0].RoomID, result.ReservationList[0]);
         }
 
         [Fact]
@@ -68,14 +66,13 @@ namespace backend.Test.ConvertersTest.ToDTOTest
             var reservations = new List<Reservation>(); 
 
             // Act
-            var result = _converter.Convert(contact, reservations);
+            var result = _converter.Convert(contact);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(contact.ContactID, result.ContactID);
             Assert.Equal(contact.PhoneNumber, result.PhoneNumber);
             Assert.Equal(contact.Email, result.Email);
-            Assert.Empty(result.ReservationList); 
         }
     }
 }

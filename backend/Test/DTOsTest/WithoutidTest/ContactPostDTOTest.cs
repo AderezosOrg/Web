@@ -54,32 +54,7 @@ namespace backend.Test.DTOsTest.WithoutIdTest
             // Act & Assert
             Assert.Equal("user@example.com", contactPostDTO.Email);
         }
-
-        [Fact]
-        public void ContactPostDTO_CanSet_ReservationList()
-        {
-            // Arrange
-            var contactPostDTO = new ContactPostDTO();
-            var reservationList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-
-            // Act
-            contactPostDTO.ReservationList = reservationList;
-
-            // Assert
-            Assert.Equal(reservationList, contactPostDTO.ReservationList);
-        }
-
-        [Fact]
-        public void ContactPostDTO_CanGet_ReservationList()
-        {
-            // Arrange
-            var reservationList = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var contactPostDTO = new ContactPostDTO { ReservationList = reservationList };
-
-            // Act & Assert
-            Assert.Equal(reservationList, contactPostDTO.ReservationList);
-        }
-
+        
         [Fact]
         public void ContactPostDTO_DefaultValues_AreNull()
         {
@@ -89,7 +64,6 @@ namespace backend.Test.DTOsTest.WithoutIdTest
             // Assert
             Assert.Null(contactPostDTO.PhoneNumber);
             Assert.Null(contactPostDTO.Email);
-            Assert.Null(contactPostDTO.ReservationList);
         }
     }
 }

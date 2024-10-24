@@ -130,8 +130,8 @@ namespace backend.Test.DTOsTest.WithIdTest
             var roomFullInfoDTO = new RoomFullInfoDTO();
             var bedList = new List<BedPostDTO>
             {
-                new BedPostDTO { Size = "Single", Capacity = "1" },
-                new BedPostDTO { Size = "Double", Capacity = "2" }
+                new BedPostDTO { Size = "Single", Capacity = 1 },
+                new BedPostDTO { Size = "Double", Capacity = 2 }
             };
 
             // Act

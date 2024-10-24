@@ -1,78 +1,51 @@
-using DTOs;
-using System.Collections.Generic;
-using System.Linq;
 using backend.Converters.ToPostDTO;
-using backend.Services.AbstractClass;
+using backend.MyHappyBD;
+using backend.Services.ServicesInterfaces;
 using Converters.ToDTO;
+using Db;
 using DTOs.WithId;
 using DTOs.WithoutId;
 using Entities;
 
 namespace backend.Services;
 
-public class ContactService : AbstractContactService
+public class ContactService : IContactService
 {
-    private static List<Contact> _contact = new List<Contact>()
-    {
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "email@email.com",
-            PhoneNumber = "+35912345678",
-        },
-        new Contact()
-        {
-            ContactID = Guid.NewGuid(),
-            Email = "LEONARDO@email.com",
-            PhoneNumber = "+59174365698",
-        }
-    };
-
-    private List<Reservation> _reservations = new List<Reservation>()
-    {
-        new Reservation()
-        {
-            Cancelled = false,
-            ContactID = _contact[0].ContactID,
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today
-        },
-        new Reservation()
-        {
-            Cancelled = true,
-            ContactID = _contact[1].ContactID,
-            ReservationDate = DateTime.Now,
-            RoomID = Guid.NewGuid(),
-            UseDate = DateTime.Today
-        }
-    };
+    private IDAO<Contact> _contactDao;
+    private ReservationDAO _reservationDao;
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
-    public override async Task<ContactPostDTO> GetContactById(Guid contactID)
+
+    public ContactService(IDAO<Contact> contactDao, ReservationDAO reservationDao)
+    {
+        _reservationDao = reservationDao;
+        _contactDao = contactDao;
+    }
+    public async Task<ContactPostDTO> GetElementById(Guid contactID)
     {
         await Task.Delay(10);
-        var contact = _contact.FirstOrDefault(x => x.ContactID == contactID);
+        var contact = _contactDao.Read(contactID);
         if (contact == null)
             throw new Exception("Contact not found");
-        var reservation = _reservations.Where(x => x.ContactID == contact.ContactID).ToList();
-        return _contactPostConverter.Convert(contact, reservation);
+        var reservation = _reservationDao.GetReservationsByContactId(contactID);
+        return _contactPostConverter.Convert(contact);
     }
 
-    public override async Task<List<ContactDTO>> GetContacts()
+    public async Task<List<ContactDTO>> GetAllElements()
     {
         await Task.Delay(10);
-        List<ContactDTO> result = _contact.Select(x =>
+        List<ContactDTO> result = _contactDao.ReadAll().Select(x =>
         {
-            var reservation = _reservations.Where(x => x.ContactID == x.ContactID).ToList();
-            return _contactConverter.Convert(x, reservation);
+            var contactID = x.ContactID;
+            var reservation = _reservationDao.GetReservationsByContactId(contactID);
+            return _contactConverter.Convert(x);
         }).ToList();
         
         return result;
     }
 
-    public override async Task<ContactPostDTO> CreateContact(ContactPostDTO contactPostDtoDto)
+    public async Task<ContactDTO> CreateSingleElement(ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
         if (contactPostDtoDto != null)
@@ -83,35 +56,22 @@ public class ContactService : AbstractContactService
                 Email = contactPostDtoDto.Email,
                 PhoneNumber = contactPostDtoDto.PhoneNumber
             };
-            _contact.Add(newContact);
-
-            var reservations = new Reservation
-            {
-                Cancelled = false,
-                ContactID = newContact.ContactID,
-                ReservationDate = DateTime.Now,
-                RoomID = Guid.NewGuid(),
-                UseDate = DateTime.Today
-            };
-            _reservations.Add(reservations);
-            if(_contact.Contains(newContact) && _reservations.Contains(reservations))
-                return contactPostDtoDto;
-            else
-                throw new Exception("Contact not created");
+            _contactDao.Create(newContact);
+            return _contactConverter.Convert(newContact);
         }
         throw new Exception("Contact not data found");
     }
 
-    public override async Task<ContactPostDTO> ChangeContact(Guid contactID, ContactPostDTO contactPostDtoDto)
+    public async Task<ContactDTO> UpdateElementById(Guid contactID, ContactPostDTO contactPostDtoDto)
     {
         await Task.Delay(100);
-        var existingContact = _contact.FirstOrDefault(x => x.ContactID == contactID);
-        if (existingContact != null)
+        var contact = new Contact()
         {
-            existingContact.Email = contactPostDtoDto.Email;
-            existingContact.PhoneNumber = contactPostDtoDto.PhoneNumber;
-            return contactPostDtoDto;
-        }
-        throw new Exception("Contact not found");
+            ContactID = contactID,
+            Email = contactPostDtoDto.Email,
+            PhoneNumber = contactPostDtoDto.PhoneNumber
+        };
+        _contactDao.Update(contact);
+        return _contactConverter.Convert(contact);
     }
 }
