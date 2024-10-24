@@ -19,8 +19,8 @@ export default function SelectRoom() {
       }
       try {
         const reservationDetails = {
-          checkInDate,
-          checkOutDate,
+          startDate: checkInDate,
+          endDate: checkOutDate,
           capacity: numPeople
         }
         const availableRooms = await getAvailableRooms(reservationDetails, sessionId);
