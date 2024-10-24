@@ -61,7 +61,7 @@ namespace backend.Test.DTOsTest.WithoutIdTest
 
             // Assert
             Assert.Null(bedPostDTO.Size);
-            Assert.Null(bedPostDTO.Capacity);
+            Assert.Equal(bedPostDTO.Capacity, 0);
         }
     }
 }

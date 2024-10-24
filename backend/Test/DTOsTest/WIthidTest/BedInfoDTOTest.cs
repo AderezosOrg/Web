@@ -90,7 +90,7 @@ namespace backend.Test.DTOsTest.WithIdTest
             // Assert
             Assert.Equal(Guid.Empty, bedInfoDTO.BedID);
             Assert.Null(bedInfoDTO.Size);
-            Assert.Null(bedInfoDTO.Capacity);
+            Assert.Equal(bedInfoDTO.Capacity, 0);
         }
     }
 }

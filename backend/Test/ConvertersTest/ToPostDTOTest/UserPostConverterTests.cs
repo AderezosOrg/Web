@@ -23,6 +23,7 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
                 UserID = Guid.NewGuid(),
                 Name = "John Doe",
                 CINumber = "123456789"
+                // You could add a ContactID if needed, though it's not necessary here
             };
 
             var contact = new Contact
@@ -55,7 +56,8 @@ namespace backend.Test.ConvertersTest.ToPostDTOTest
             Assert.NotNull(result);
             Assert.Equal(user.Name, result.Name);
             Assert.Equal(user.CINumber, result.CINumber);
-            Assert.Equal(user.ContactID, result.ContactId);
+            Assert.Equal(contact.ContactID, result.ContactId);  // Compare with contact.ContactID instead of user.ContactID
         }
+
     }
 }

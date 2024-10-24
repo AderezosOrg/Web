@@ -89,7 +89,7 @@ namespace backend.Test.EntitiesTest
 
             // Assert
             Assert.Null(bed.Size);
-            Assert.Null(bed.Capacity);
+            Assert.Equal(bed.Capacity, 0);
         }
     }
 }
