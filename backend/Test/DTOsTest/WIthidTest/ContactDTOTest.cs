@@ -1,0 +1,97 @@
+using Xunit;
+using DTOs.WithId;
+using System;
+using System.Collections.Generic;
+
+namespace backend.Test.DTOsTest.WithIdTest
+{
+    public class ContactDTOTest
+    {
+        [Fact]
+        public void ContactDTO_CanSet_ContactID()
+        {
+            // Arrange
+            var contactDTO = new ContactDTO();
+            var contactId = Guid.NewGuid();
+
+            // Act
+            contactDTO.ContactID = contactId;
+
+            // Assert
+            Assert.Equal(contactId, contactDTO.ContactID);
+        }
+
+        [Fact]
+        public void ContactDTO_CanGet_ContactID()
+        {
+            // Arrange
+            var contactId = Guid.NewGuid();
+            var contactDTO = new ContactDTO { ContactID = contactId };
+
+            // Act & Assert
+            Assert.Equal(contactId, contactDTO.ContactID);
+        }
+
+        [Fact]
+        public void ContactDTO_CanSet_PhoneNumber()
+        {
+            // Arrange
+            var contactDTO = new ContactDTO();
+            var phoneNumber = "123-456-7890";
+
+            // Act
+            contactDTO.PhoneNumber = phoneNumber;
+
+            // Assert
+            Assert.Equal(phoneNumber, contactDTO.PhoneNumber);
+        }
+
+        [Fact]
+        public void ContactDTO_CanGet_PhoneNumber()
+        {
+            // Arrange
+            var phoneNumber = "987-654-3210";
+            var contactDTO = new ContactDTO { PhoneNumber = phoneNumber };
+
+            // Act & Assert
+            Assert.Equal(phoneNumber, contactDTO.PhoneNumber);
+        }
+
+        [Fact]
+        public void ContactDTO_CanSet_Email()
+        {
+            // Arrange
+            var contactDTO = new ContactDTO();
+            var email = "test@example.com";
+
+            // Act
+            contactDTO.Email = email;
+
+            // Assert
+            Assert.Equal(email, contactDTO.Email);
+        }
+
+        [Fact]
+        public void ContactDTO_CanGet_Email()
+        {
+            // Arrange
+            var email = "user@example.com";
+            var contactDTO = new ContactDTO { Email = email };
+
+            // Act & Assert
+            Assert.Equal(email, contactDTO.Email);
+        }
+
+        [Fact]
+        public void ContactDTO_DefaultValues_AreDefault()
+        {
+            // Arrange & Act
+            var contactDTO = new ContactDTO();
+
+            // Assert
+            Assert.Equal(Guid.Empty, contactDTO.ContactID);
+            Assert.Null(contactDTO.PhoneNumber);
+            Assert.Null(contactDTO.Email);
+        }
+    }
+}

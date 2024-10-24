@@ -9,8 +9,38 @@
   <ItemGroup>
     <PackageReference Include="Scrutor" Version="5.0.1" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0-pre.35">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Test\obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Test\obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Test\obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Test\obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Test\obj\Debug\net8.0\Test.sourcelink.json" />
+    <_ContentIncludedByDefault Remove="Test\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="Test\obj\Test.csproj.nuget.dgspec.json" />
   </ItemGroup>
 
 </Project>
