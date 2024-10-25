@@ -5,6 +5,7 @@ import Container from '../components/Container';
 import useSubmitReservation from './hooks/useSubmitReservation';
 import RoomCard from '../components/RoomCard';
 import { getPartialPrice, getTaxPrice, getTotalPrice } from '../services/priceService';
+import { toast } from 'sonner'
 
 function Confirmation() {
   const location = useLocation();
@@ -58,7 +59,12 @@ function Confirmation() {
     try {
       await submitCompleteReservation(reservationDetails, sessionId);
       localStorage.clear();
-      localStorage.setItem('back', '/');      
+      localStorage.setItem('back', '/');  
+      toast.success('Reserva realizada con éxito');
+    } catch (error) {
+      console.error("Error al realizar la reserva:", error);
+      
+      toast.error('Error al realizar la reserva. Intenta de nuevo');    
     } finally {
       setIsLoading(false);
       navigate('/personal-info')

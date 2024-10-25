@@ -59,7 +59,7 @@ function DateForm() {
           }}
         >
           {({ errors, touched, values }) => (
-            <FormFormik className="flex flex-col gap-4">
+            <FormFormik className="flex flex-col gap-2">
               <InputField
                 id="checkInDate"
                 name="checkInDate"
@@ -68,6 +68,9 @@ function DateForm() {
                 placeholder="Selecciona una fecha"
                 isCorrect={!touched.checkInDate || !errors.checkInDate}
               />
+              {touched.checkInDate && errors.checkInDate && (
+                <div className="text-red-500 text-sm">{errors.checkInDate}</div>
+              )}
               <InputField
                 id="checkOutDate"
                 name="checkOutDate"
@@ -76,6 +79,9 @@ function DateForm() {
                 placeholder="Selecciona una fecha"
                 isCorrect={!touched.checkOutDate || !errors.checkOutDate}
               />
+              {touched.checkOutDate && errors.checkOutDate && (
+                <div className="text-red-500 text-sm">{errors.checkOutDate}</div>
+              )}
               <InputField
                 id="numPeople"
                 name="numPeople"
@@ -84,6 +90,9 @@ function DateForm() {
                 placeholder="Ingresa el número de personas"
                 isCorrect={!touched.numPeople || !errors.numPeople}
               />
+              {touched.numPeople && errors.numPeople && (
+                <div className="text-red-500 text-sm">{errors.numPeople}</div>
+              )}
               <div className='mt-12 flex justify-center items-center space-x-20'>
                 <Button type="common" isSubmit className="w-40 font-roboto text-white">
                   Continuar
