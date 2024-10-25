@@ -1,13 +1,13 @@
 import { Form as FormFormik, Formik } from 'formik';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import Button from '../components/Button';
 import FormContainer from '../components/Container';
 import InputField from '../components/InputField';
-import { putContact } from '../services/contactService';
 import { getDecodedToken } from '../services/authService';
+import { putContact } from '../services/contactService';
 
 const validatePhoneNumber = (phone) => {
   const phoneNumber = parsePhoneNumberFromString(phone);
@@ -51,7 +51,7 @@ function PersonalInfoForm() {
       .min(6, 'El CI debe tener al menos 6 dígitos'),
     phone: Yup.string()
       .required('El celular es obligatorio')
-      .test('isValidPhone', 'Número de teléfono no válido', (value) => validatePhoneNumber(value)),
+      .test('isValidPhone', 'Número de teléfono no válido, debe tener el código de área', (value) => validatePhoneNumber(value)),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -93,7 +93,7 @@ function PersonalInfoForm() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched, isSubmitting }) => (
-            <FormFormik className="flex flex-col gap-4">
+            <FormFormik className="flex flex-col gap-2">
               <InputField
                 id="ci"
                 name="ci"
@@ -102,6 +102,9 @@ function PersonalInfoForm() {
                 placeholder="Ingrese su CI"
                 isCorrect={!touched.ci || !errors.ci}
               />
+              {touched.ci && errors.ci && (
+                <div className="text-red-500 text-sm">{errors.ci}</div>
+              )}
               <InputField
                 id="phone"
                 name="phone"
@@ -110,6 +113,9 @@ function PersonalInfoForm() {
                 placeholder="Ingrese su número de celular"
                 isCorrect={!touched.phone || !errors.phone}
               />
+              {touched.phone && errors.phone && (
+                <div className="text-red-500 text-sm">{errors.phone}</div>
+              )}
               <div className='mt-12 flex justify-center items-center'>
                 <Button type="common" isSubmit className="font-roboto text-white" disabled={isSubmitting}>
                   {isSubmitting ? 'Enviando...' : 'Continuar'}
