@@ -143,4 +143,3 @@ public class PriceServiceTests
         Assert.Equal(110, result); // 100 + 10% tax
     }
 }
-
