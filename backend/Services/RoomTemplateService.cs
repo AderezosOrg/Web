@@ -10,16 +10,16 @@ namespace backend.Services;
 
 public class RoomTemplateService : IRoomTemplateService
 {
-    private RoomTemplateDAO _roomTemplateDao;
-    private RoomBathInformationDAO _roomBathInformationDao;
+    private IDAO<RoomTemplate> _roomTemplateDao;
+    private IRoombathInformationDAO _roomBathInformationDao;
     private IDAO<Bathroom> _bathroomDao;
-    private BedInformationDAO _bedInformationDao;
+    private IBedInformationDAO _bedInformationDao;
     private IDAO<Bed> _bedDAO;
     
     private RoomTemplateConverter _roomTemplateConverter;
 
-    public RoomTemplateService(RoomTemplateDAO roomTemplateDAO, RoomBathInformationDAO roomBathInformationDAO,
-        IDAO<Bathroom> bathroomDAO, BedInformationDAO bedInformationDAO, IDAO<Bed> bedDAO)
+    public RoomTemplateService(IDAO<RoomTemplate> roomTemplateDAO, IRoombathInformationDAO roomBathInformationDAO,
+        IDAO<Bathroom> bathroomDAO, IBedInformationDAO bedInformationDAO, IDAO<Bed> bedDAO)
     {
         _roomTemplateDao = roomTemplateDAO;
         _roomBathInformationDao = roomBathInformationDAO;

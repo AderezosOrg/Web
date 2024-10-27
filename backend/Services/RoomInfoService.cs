@@ -10,9 +10,9 @@ namespace backend.Services;
 public class RoomInfoService : IRoomInfoService
 {
     private IDAO<Room> _roomDao;
-    private BedInformationDAO _bedInformationDAO;
-    private RoomBathInformationDAO _RoomBathInformationDAO;
-    private RoomServicesDAO _RoomServicesDAO;
+    private IBedInformationDAO _bedInformationDAO;
+    private IRoombathInformationDAO _RoomBathInformationDAO;
+    private IRoomServicesDAO _RoomServicesDAO;
     private IDAO<Bathroom> _BathroomDAO;
     private IDAO<Bed> _bedDAO;
     private IDAO<Service> _serviceDAO;
@@ -23,7 +23,7 @@ public class RoomInfoService : IRoomInfoService
     private ServiceConverter _serviceConverter;
 
     public RoomInfoService(IBedService bedService, IServiceService serviceService, IDAO<Room> roomDao,
-        BedInformationDAO bedInformationDao, RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, 
+        IBedInformationDAO bedInformationDao, IRoombathInformationDAO roomBathInformationDao, IRoomServicesDAO roomServicesDao, 
         IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
     {
         _bedConverter = new BedConverter();

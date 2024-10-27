@@ -11,13 +11,13 @@ namespace backend.Services;
 
 public class ReservationService : IReservationService
 {
-    private ReservationDAO _reservationDao;
+    private IReservationDAO _reservationDao;
     private IDAO<Contact> _contactDao;
     private IDAO<Room> _roomDao;
     private ReservationConverter _reservationConverter = new ReservationConverter();
 
 
-    public ReservationService(ReservationDAO reservationDao, IDAO<Contact> contactDao, IDAO<Room> roomDao)
+    public ReservationService(IReservationDAO reservationDao, IDAO<Contact> contactDao, IDAO<Room> roomDao)
     {
         _reservationDao = reservationDao;
         _contactDao = contactDao;

@@ -14,11 +14,11 @@ public class RoomService : IRoomService
     
     
     private IDAO<Room> _roomDao;
-    private RoomTemplateDAO _roomTemplateDao;
+    private IDAO<RoomTemplate> _roomTemplateDao;
     private IDAO<Hotel> _hotelDao;
-    private BedInformationDAO _bedInformationDAO;
-    private RoomBathInformationDAO _RoomBathInformationDAO;
-    private RoomServicesDAO _RoomServicesDAO;
+    private IBedInformationDAO _bedInformationDAO;
+    private IRoombathInformationDAO _RoomBathInformationDAO;
+    private IRoomServicesDAO _RoomServicesDAO;
     private IDAO<Bathroom> _BathroomDAO;
     private IDAO<Bed> _bedDAO;
     private IDAO<Service> _serviceDAO;
@@ -34,8 +34,8 @@ public class RoomService : IRoomService
     private readonly IBathRoomService _bathRoomService;
     
     public RoomService(IServiceService serviceService, IBedService bedService, IBathRoomService bathRoomService, IDAO<Room> roomDao,
-        RoomTemplateDAO roomTemplateDao, IDAO<Hotel> hotelDao, BedInformationDAO bedInformationDao,
-        RoomBathInformationDAO roomBathInformationDao, RoomServicesDAO roomServicesDao, IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
+        IDAO<RoomTemplate> roomTemplateDao, IDAO<Hotel> hotelDao, IBedInformationDAO bedInformationDao,
+        IRoombathInformationDAO roomBathInformationDao, IRoomServicesDAO roomServicesDao, IDAO<Bathroom> bathroomDao, IDAO<Bed> bedDao, IDAO<Service> serviceDao)
     {
         _serviceService = serviceService;
         _bedService = bedService;
