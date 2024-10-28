@@ -12,12 +12,12 @@ namespace backend.Services;
 public class ContactService : IContactService
 {
     private IDAO<Contact> _contactDao;
-    private ReservationDAO _reservationDao;
+    private IReservationDAO _reservationDao;
     
     private ContactPostConverter _contactPostConverter = new ContactPostConverter();
     private ContactConverter _contactConverter = new ContactConverter();
 
-    public ContactService(IDAO<Contact> contactDao, ReservationDAO reservationDao)
+    public ContactService(IDAO<Contact> contactDao, IReservationDAO reservationDao)
     {
         _reservationDao = reservationDao;
         _contactDao = contactDao;

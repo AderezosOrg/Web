@@ -133,7 +133,7 @@ public class SessionService : ISessionService
             Email = contact.Email,
             PhoneNumber = contact.PhoneNumber,
             SessionID = oldSession.SessionID,
-            Token = oldSession.Token,
+            Token = sessionDto.Token,
             CreationDate = createdAt
         };
 
